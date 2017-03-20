@@ -1,0 +1,360 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>{$shopinfo['shop_name']}-{cfg:(site_title,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="{$shopinfo['shop_name']},{cfg:(keywords,sys)}"/>
+<meta name="description" content="{fun_format::len($shopinfo['shop_desc'],50)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css?rand=<?php echo rand();?>"/>
+</head>
+<body>
+{include(label.header)}
+<div class="top">
+	<h1>{$shopinfo['shop_name']}</h1>
+	<a href="?" class="x1"><img src="images/home.png"></a>
+	{if(!empty($table_reserve))}
+		<a href="?app=member&app_act=order.detail&id={$table_reserve['order_id']}" id="id_top_back" class="x2"><img src="images/back.png"></a>
+	{else}
+		<a href="?" id="id_top_back" class="x2"><img src="images/back.png"></a>
+	{/if}
+</div>
+{set $arr=fun_kj::get_ads('B1-wap-shop'.$shopinfo['shop_id'],1)}
+{if(isset($arr['list']))}
+<div class="kj_slider" style="{if(!empty($arr['h']))}height:{$arr['h']};{/if}">
+	<div class="xli" style="{if(!empty($arr['h']))}height:{$arr['h']};{/if}">
+		{foreach($arr['list'] as $item)}
+		<li><a href="{$item['link']}"><img src = "{$item['url']}" style="{if(!empty($arr['h']))}height:{$arr['h']};{/if}"></a></li>
+		{/foreach}
+	</div>
+	<div class="xbtn Tslider_btn" style="display:none">{foreach($arr['list'] as $item)}<a href="javascript:void(0);">&nbsp;</a>{/foreach}</div>
+</div>
+{else if(isset($arr['html']))}
+<div style="float:left;{if(!empty($arr['w']))}width:{$arr['w']};{else}width:100%;{/if}">
+	{$arr['html']}
+</div>
+{/if}
+{if($shopinfo['shop_tips']!='')}
+<div class="shop_toptips" onmouseover="clearInterval(txtmar_timer)" onmouseout="txtmar_timer=setInterval(fun_txtmar,30)" title="{$shopinfo['shop_tips']}"><i>通知：</i><span id="txtmar1"><font id="txtmar2">{$shopinfo['shop_tips']}</font><font id="txtmar3"></font></span></div>
+<script>
+var txtmar_s,txtmar_s2,txtmar_s3,txtmar_timer;
+kj.onload(function() {
+	txtmar_s=kj.obj("#txtmar1");
+	txtmar_s2=kj.obj("#txtmar2");
+	txtmar_s3=kj.obj("#txtmar3");
+	var offset = kj.offset(txtmar_s2);
+	var w = kj.w()*0.8;
+	if(offset.width>w) {
+		txtmar_s.scrollLeft=txtmar_s.scrollLeft+20;
+		txtmar_s3.innerHTML=txtmar_s2.innerHTML;
+		txtmar_timer=setInterval(fun_txtmar,30)
+	}
+});
+function fun_txtmar(){
+	if(txtmar_s2.offsetWidth<=txtmar_s.scrollLeft){
+		txtmar_s.scrollLeft-=txtmar_s2.offsetWidth;
+	} else {
+		txtmar_s.scrollLeft++;
+	}
+}
+</script>
+{/if}
+{if($shopinfo['shop_service']==0 || $shopinfo['shop_service']==1)}
+<table class="box4">
+	<tr><td class="xsel"><li>{if($shopinfo['shop_service']==0)}商品列表{else}在线选座{/if}<i></i></li></td><td class="xmid"><li onclick="window.open('?app_act=shop.detail&shop_id={$shopinfo['shop_id']}','_self');">商家介绍<i></i></li></td><td><li onclick="window.open('?app_act=comment.shop&shop_id={$shopinfo['shop_id']}','_self');">用户评价<i></i></li></td></tr>
+</table>
+{else}
+<table class="box5">
+	{if($shopinfo['shop_service']==3)}
+	<tr><td{if(fun_get::get("type")!='2')} class="xsel"{/if}><li>外卖<i></i></li></td><td{if(fun_get::get("type")=='2')} class="xsel"{/if}><li onclick="window.open('{fun_get::url(array('type'=>'2'))}','_self');">选座<i></i></li></td><td><li onclick="window.open('?app_act=shop.detail&shop_id={$shopinfo['shop_id']}','_self');">商家<i></i></li></td><td><li onclick="window.open('?app_act=comment.shop&shop_id={$shopinfo['shop_id']}','_self');">评价<i></i></li></td></tr>
+	{else}
+	<tr><td{if(fun_get::get("type")!='1')} class="xsel"{/if}><li>选座<i></i></li></td><td{if(fun_get::get("type")=='1')} class="xsel"{/if}><li onclick="window.open('{fun_get::url(array('type'=>'1'))}','_self');">外卖<i></i></li></td><td><li onclick="window.open('?app_act=shop.detail&shop_id={$shopinfo['shop_id']}','_self');">商家<i></i></li></td><td><li onclick="window.open('?app_act=comment.shop&shop_id={$shopinfo['shop_id']}','_self');">评价<i></i></li></td></tr>
+	{/if}
+</table>
+{/if}
+<table class="table2">
+<tr><td valign="top" style="width:70px">
+<div class="catebox" id="id_categorybox">
+	<ul id="id_categoryboxli">
+	<li class="xsel" id="id_cateli"  datacateid='-1' onclick="jsshop.cate_showitem(this,'-1');">全部<span style="display:none"></span></li>
+	{set $index=0}
+	{if(!empty($arr_menu["tj"]))}
+		{set $index=1}
+		<li id="id_cateli0"  datacateid='0' onclick="jsshop.cate_showitem(this,'0');">推荐<span style="display:none"></span></li>
+	{/if}
+	{foreach($arr_menu["list"] as $item)}
+	<li onclick="jsshop.cate_showitem(this,'{$item['id']}');" id="id_cateli{$item["id"]}" datacateid='{$item["id"]}'>{$item['name']}<span style="display:none"></span></li>
+	{set $index=1}
+	{/foreach}
+	</ul>
+</div>
+</td><td>
+<div class="mlist" id="id_right_list">
+	{set $index=0}
+	{if(!empty($arr_menu["tj"]))}
+	<ul class="Tcat0 Tcat" datacateid='0' style="display:none">
+	{set $index=1}
+	{if($shopinfo['shop_mode']==1)}
+		{foreach($arr_menu["tj"] as $menu)}
+		<li class="Tmenu{$menu['menu_id']}">
+			<span class="xinfo">
+				<h2><a href="?app_act=menu&id={$menu['menu_id']}">{$menu['menu_title']}</a>{if(!empty($menu['attribute']))}<font>{$menu['attribute']}</font>{/if}</h2>
+				<p><label class="starbg" onclick="jsshop.comment({$menu['menu_id']});"><font style="width:{$menu['commentrate']}%"></font></label></p>
+				<p class="xbeta">已售：{if(isset($arr_menu['abount_sold']['id_'.$menu['menu_id']]))}$arr_menu['abount_sold']['id_'.$menu['menu_id']]{else}{$menu['menu_sold']}{/if}份</p>
+				<p class="xprice"><font>{fun_kj::get_price($menu['menu_price'])}</font></p>
+			</span>
+			<span class="xbtn btn-s1">
+			{if($cfg_opentime['nowindex']>0)}
+				{if($menu['num']<1)}
+					<font>卖完</font>
+				{else}
+					{if(isset($arr_menu['abount_menu']['id_'.$menu['menu_id']]))}
+						<i>多规格</i>
+						<input type="button" name="btnjia" class="xbtnjia Tbtnjia" onclick="jsshop.guige_show({$menu['menu_id']});">
+					{else}
+						<input type="button" name="btnjian" class="xbtnjian Tbtnjian" onclick="jsshop.change_num({$menu['menu_id']},-1,this);" style="visibility:hidden">
+						<input type="text" name="num" value="" class="xnum Tnum" style="visibility:hidden" onkeyup="jsshop.change_num({$menu['menu_id']},this.value,1)">
+						<input type="button" name="btnjia" class="xbtnjia" onclick="jsshop.cartin(this);jsshop.cart_add({id:'{$menu['menu_id']}',name:'{$menu['menu_title']}',pic:'{$menu['menu_pic_small']}',price:'{$menu['menu_price']}',type:'{$menu['menu_type']}'},this);" class="Tbtnjia">
+					{/if}
+				{/if}
+			{else if($cfg_opentime['havenext']==1)}
+				<font>即将开始</font>
+			{else}
+				<font>明天继续</font>
+			{/if}
+			</span>
+		</li>
+		{/foreach}
+	{else}
+		{foreach($arr_menu["tj"] as $menu)}
+		<li class="Tmenu{$menu['menu_id']}">
+			<span class="xpic">
+				<p class="yimg"><a href="?app_act=menu&id={$menu['menu_id']}"><img src = "{if(empty($menu['menu_pic']))}{$temp_url}images/nopic.png{else}{$menu['menu_pic']}{/if}"></a></p>
+				<h2><a href="?app_act=menu&id={$menu['menu_id']}">{$menu['menu_title']}</a>{if(!empty($menu['attribute']))}<font>{$menu['attribute']}</font>{/if}</h2>
+				<p><label class="starbg" onclick="jsshop.comment({$menu['menu_id']});"><font style="width:{$menu['commentrate']}%"></font></label></p>
+				<p class="xbeta">已售：{if(isset($arr_menu['abount_sold']['id_'.$menu['menu_id']]))}$arr_menu['abount_sold']['id_'.$menu['menu_id']]{else}{$menu['menu_sold']}{/if}份</p>
+				<p class="xprice"><font>{fun_kj::get_price($menu['menu_price'])}</font></p>
+			</span>
+			<span class="xbtn btn-s1">
+			{if($cfg_opentime['nowindex']>0)}
+				{if($menu['num']<1)}
+					<font>卖完</font>
+				{else}
+					{if(isset($arr_menu['abount_menu']['id_'.$menu['menu_id']]))}
+						<i>多规格</i>
+						<input type="button" name="btnjia" class="xbtnjia Tbtnjia" onclick="jsshop.guige_show({$menu['menu_id']});">
+					{else}
+						<input type="button" name="btnjian" class="xbtnjian Tbtnjian" onclick="jsshop.change_num({$menu['menu_id']},-1,this);" style="visibility:hidden">
+						<input type="text" name="num" value="" class="xnum Tnum" style="visibility:hidden" onkeyup="jsshop.change_num({$menu['menu_id']},this.value,1)">
+						<input type="button" name="btnjia" class="xbtnjia Tbtnjia" onclick="jsshop.cartin(this);jsshop.cart_add({id:'{$menu['menu_id']}',name:'{$menu['menu_title']}',pic:'{$menu['menu_pic_small']}',price:'{$menu['menu_price']}',type:'{$menu['menu_type']}'},this);">
+					{/if}
+				{/if}
+			{else if($cfg_opentime['havenext']==1)}
+				<font>即将开始</font>
+			{else}
+				<font>明天继续</font>
+			{/if}
+			</span>
+		</li>
+		{/foreach}
+	{/if}
+	</ul>
+	{set $index=1}
+	{/if}
+{foreach($arr_menu["list"] as $item)}
+	<ul class="Tcat{$item['id']} Tcat" datacateid='{$item["id"]}'>
+	{set $index=1}
+	{if($shopinfo['shop_mode']!=2 && $item['mode']!=2)}
+		{foreach($item['list'] as $menu)}
+		<li class="Tmenu{$menu['menu_id']}">
+			<span class="xinfo">
+				<h2><a href="?app_act=menu&id={$menu['menu_id']}">{$menu['menu_title']}</a>{if(!empty($menu['attribute']))}<font>{$menu['attribute']}</font>{/if}</h2>
+				<p><label class="starbg" onclick="jsshop.comment({$menu['menu_id']});"><font style="width:{$menu['commentrate']}%"></font></label></p>
+				<p class="xbeta">已售：{$menu['menu_sold']}份</p>
+				<p class="xprice"><font>{fun_kj::get_price($menu['menu_price'])}</font></p>
+			</span>
+			<span class="xbtn btn-s1">
+			{if($cfg_opentime['nowindex']>0)}
+				{if($menu['num']<1)}
+					<font>卖完</font>
+				{else}
+					{if(isset($arr_menu['abount_menu']['id_'.$menu['menu_id']]))}
+						<i>多规格</i>
+						<input type="button" name="btnjia" class="xbtnjia Tbtnjia" onclick="jsshop.guige_show({$menu['menu_id']});">
+					{else}
+						<input type="button" name="btnjian" class="xbtnjian Tbtnjian" onclick="jsshop.change_num({$menu['menu_id']},-1,this);" style="visibility:hidden">
+						<input type="text" name="num" value="" class="xnum Tnum" style="visibility:hidden" onkeyup="jsshop.change_num({$menu['menu_id']},this.value,1)">
+						<input type="button" name="btnjia" class="xbtnjia" onclick="jsshop.cartin(this);jsshop.cart_add({id:'{$menu['menu_id']}',name:'{$menu['menu_title']}',pic:'{$menu['menu_pic_small']}',price:'{$menu['menu_price']}',type:'{$menu['menu_type']}'},this);" class="Tbtnjia">
+					{/if}
+				{/if}
+			{else if($cfg_opentime['havenext']==1)}
+				<font>即将开始</font>
+			{else}
+				<font>明天继续</font>
+			{/if}
+			</span>
+		</li>
+		{/foreach}
+	{else}
+		{foreach($item['list'] as $menu)}
+		<li class="Tmenu{$menu['menu_id']}">
+			<span class="xpic">
+				<p class="yimg"><a href="?app_act=menu&id={$menu['menu_id']}"><img src = "{if(empty($menu['menu_pic']))}{$temp_url}images/nopic.png{else}{$menu['menu_pic']}{/if}"></a></p>
+				<h2><a href="?app_act=menu&id={$menu['menu_id']}">{$menu['menu_title']}</a>{if(!empty($menu['attribute']))}<font>{$menu['attribute']}</font>{/if}</h2>
+				<p><label class="starbg" onclick="jsshop.comment({$menu['menu_id']});"><font style="width:{$menu['commentrate']}%"></font></label></p>
+				<p class="xbeta">已售：{$menu['menu_sold']}份</p>
+				<p class="xprice"><font>{fun_kj::get_price($menu['menu_price'])}</font></p>
+			</span>
+			<span class="xbtn btn-s1">
+			{if($cfg_opentime['nowindex']>0)}
+				{if($menu['num']<1)}
+					<font>卖完</font>
+				{else}
+					{if(isset($arr_menu['abount_menu']['id_'.$menu['menu_id']]))}
+						<i>多规格</i>
+						<input type="button" name="btnjia" class="xbtnjia Tbtnjia" onclick="jsshop.guige_show({$menu['menu_id']});">
+					{else}
+						<input type="button" name="btnjian" class="xbtnjian Tbtnjian" onclick="jsshop.change_num({$menu['menu_id']},-1,this);" style="visibility:hidden">
+						<input type="text" name="num" value="" class="xnum Tnum" style="visibility:hidden" onkeyup="jsshop.change_num({$menu['menu_id']},this.value,1)">
+						<input type="button" name="btnjia" class="xbtnjia" onclick="jsshop.cartin(this);jsshop.cart_add({id:'{$menu['menu_id']}',name:'{$menu['menu_title']}',pic:'{$menu['menu_pic_small']}',price:'{$menu['menu_price']}',type:'{$menu['menu_type']}'},this);" class="Tbtnjia">
+					{/if}
+				{/if}
+			{else if($cfg_opentime['havenext']==1)}
+				<font>即将开始</font>
+			{else}
+				<font>明天继续</font>
+			{/if}
+			</span>
+		</li>
+		{/foreach}
+	{/if}
+	</ul>
+{/foreach}
+</div>
+</td></tr></table>
+<div class="bcart" id="id_total_cart">
+<ul>
+<p><font class="xnum Tnum" id="id_cartnum"></font>份&nbsp;&nbsp;合计：<font class="xp">{cfg:(coinsign,sys)}</font><font class="xp Tprice">0</font></p>
+<input type="button" onclick="jsshop.cart_submit();" class="xnone" value="" name="btnok" id="id_cart_submit">
+</ul>
+</div>
+<div id="popup" style="display:none">
+<div class="Put_TL" style="position:absolute" id="id_popup_cart">
+<div class="Box_ BS_ Mag_" style="display:none" id="id_cart_box">
+	<div class="C_">
+		<div class="Auto_Widget Ac" id="id_cart_list">
+		</div>
+	</div>
+</div>
+</div>
+</div>
+<?php $weekday = date("w");?>
+{if($shopinfo['shop_day_limit']>0 && $shopinfo['shop_day_sold']>=$shopinfo['shop_day_limit'])}
+<div class="shop_tips" id="id_shop_tips" style="display:none">
+<ul>
+<li><h1>今日已售完，明天继续</h1></li>
+<li style="margin-top:20px"><input type="button" name="btn" value="返回" class="btn1" onclick="window.open('?','_self');">&nbsp;&nbsp;<input type="button" name="btn" value="看一下" class="btn2" onclick="kj.event('#id_bglayer','click');"></li>
+<ul>
+</div>
+{else if($shopinfo['shop_state']==-1 || empty($cfg_opentime['list']))}
+<div class="shop_tips" id="id_shop_tips" style="display:none">
+<ul>
+<li><h1>{if(empty($shopinfo['shop_close_tips']))}东家有事，暂停营业{else}{$shopinfo['shop_close_tips']}{/if}</h1></li>
+<li style="margin-top:20px"><input type="button" name="btn" value="返回" class="btn1" onclick="window.open('?','_self');">&nbsp;&nbsp;<input type="button" name="btn" value="看一下" class="btn2" onclick="kj.event('#id_bglayer','click');"></li>
+<ul>
+</div>
+{else if($cfg_opentime['nowindex']<=0 || (!empty($shopinfo['extend']['weekday']) && !in_array($weekday,$shopinfo['extend']['weekday'])))}
+<div class="shop_tips" id="id_shop_tips" style="display:none">
+<ul>
+<li><h1>{$shopinfo['shop_name']}送餐时间</h1>
+	{if(!empty($shopinfo['extend']['weekday']))}
+	<h2>每周：{$shopinfo['extend']['weekdayshow']} </h2>
+	{/if}
+	{foreach($shopinfo['extend']['arr_opentime'] as $item=>$key)}
+	<h2>{$key}</h2>
+	{/foreach}
+</li>
+<li style="margin-top:20px"><input type="button" name="btn" value="返回" class="btn1" onclick="window.open('?','_self');">&nbsp;&nbsp;<input type="button" name="btn" value="看一下" class="btn2" onclick="kj.event('#id_bglayer','click');"></li>
+<ul>
+</div>
+{/if}
+{include(label.footer)}
+<div class="guige" id="id_guige" style="display:none">
+	<div class="x1"><img src="images/close.jpg" onclick="jsshop.guige_close();"></div>
+	<div class="x2">
+		<li><label style="margin-top:5px">规格：</label><span id="id_guige_list"><font class="xsel">小份</font><font>中份</font><font>大份</font></span></li>
+		<li><label>单价：</label><span>{cfg:(coinsign,sys)}<i class="Tprice"></i></span></li>
+		<li><label>数量：</label><span><i class="xjian" onclick="jsshop.guige_num(-1);"></i><font class="xnum" id="id_guige_num">1</font><i class="xjia" onclick="jsshop.guige_num(1);"></i></span></li>
+		<li><input type="button" name="btnok" value="加入到购物车" class="xbtn" onclick="jsshop.guige_add();"></li>
+	</div>
+</div>
+<script src="shop.js"></script>
+<script>
+jsshop.mintotal = {if(isset($table_reserve))}0{else}kj.toint('{$shopinfo["shop_dispatch_price"]}'){/if};//最低起送价
+jsshop.tempurl = "{$temp_url}";
+jsshop.shopid =  kj.toint('{$shopinfo["shop_id"]}');
+jsshop.menutype = kj.toint("{$arr_menu['type']}");
+jsshop.obj_guige = {fun_format::json($arr_menu['abount_menu'])};
+jsshop.cart_init = function() {
+	{if(!empty($arr_menu['cart']))}
+		{foreach($arr_menu['cart'] as $cart)}
+			{foreach($cart as $menu)}
+				{if(isset($arr_menu["cart_menu"]["id_".$menu]))}
+				this.cart_add({id:'{$arr_menu["cart_menu"]["id_".$menu]['menu_id']}',name:'{$arr_menu["cart_menu"]["id_".$menu]['menu_title']}',pic:'{$arr_menu["cart_menu"]["id_".$menu]['menu_pic_small']}',price:'{$arr_menu["cart_menu"]["id_".$menu]['menu_price']}',type:'{$arr_menu["cart_menu"]["id_".$menu]['menu_type']}'});
+				{/if}
+				{if(isset($arr_menu['abount_cart']['id_'.$menu]))}
+				this.cart_add({id:'{$arr_menu["abount_cart"]["id_".$menu]['menu_id']}',name:'{$arr_menu["abount_cart"]["id_".$menu]['menu_title']}',pic:'',price:'{$arr_menu["abount_cart"]["id_".$menu]['menu_price']}',type:''});
+				{/if}
+			{/foreach}
+		{/foreach}
+	{else}
+		jsshop.cart_refresh();
+	{/if}
+}
+jsshop.cart_init();
+{if(($shopinfo['shop_day_limit']>0 && $shopinfo['shop_day_sold']>=$shopinfo['shop_day_limit']) || $shopinfo['shop_state']==-1 || $cfg_opentime['nowindex']<=0 || (!empty($shopinfo['extend']['weekday']) && !in_array($weekday,$shopinfo['extend']['weekday'])))}
+kj.bglayer('id_shop_tips','#000',0.5);
+kj.show("#id_shop_tips");
+var lng_left = kj.w()/2-kj.w("#id_shop_tips")/2;
+kj.set("#id_shop_tips",'style.left',lng_left+'px');
+{/if}
+{if(isset($table_reserve))}
+jsshop.cart_submit = function() {
+	var i,val,j,arr_1=[];
+	var obj = kj.obj("#id_cart_list :menuid[]");
+	for(i = 0 ; i < obj.length ; i++ ) {
+		arr = kj.obj("#id_cart_"+obj[i].value + " .Tnum");
+		val = kj.toint(arr[0].value);
+		for(j=0;j<val;j++) {
+			arr_1[arr_1.length] = obj[i].value;
+		}
+	}
+	var xid = this.shopid;
+	if(this.menutype!=1) xid = xid + '-' + this.menutype;
+	if(arr_1.length>0) {
+		var str_ids = xid + ":" + arr_1.join("|");
+	} else {
+		window.open("?app=member&app_act=order.detail&id={$table_reserve['order_id']}","_self");
+		//alert("请选择商品再来提交");return;
+	}
+
+	kj.ajax.get("{fun_get::url(array('app_act'=>'shop.table.reserve.save','app'=>'ajax','cart_ids'=>''))}&cart_ids="+str_ids,function(data) {
+		var obj = kj.json(data);
+		if(obj.isnull) {
+			alert("系统繁忙");
+			return;
+		}
+		if(obj.code == '0') {
+			jsshop.clear();
+			jsshop.save_cookie();
+			window.open("?app=member&app_act=order.detail&id={$table_reserve['order_id']}","_self");
+		} else {
+		}
+	});
+}
+{/if}
+</script>
+<script src="/common/js/kj.slider.js"></script>
+</body>
+</html>

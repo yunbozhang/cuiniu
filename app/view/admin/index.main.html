@@ -1,0 +1,198 @@
+{include(header)}
+<script src="/components/report/jquery.min.js"></script>
+<style>
+body{color:#888;overflow:scroll}
+.me_unset{color:#888888}
+.me_unset li{color:#888888}
+</style>
+<table align="center" style="width:1160px">
+<tr><td><div id="container" style="float:left;width:98%;height:300px"></div></td></tr>
+<tr><td>
+		<div class="main_box1" style="height:200px">
+			<li>您好，{$user->uname}<br>所属角色：{$login_info['group_name']}</li>
+			<li class="x_line">&nbsp;</li>
+			<li>上次登录时间：<br>{$login_info['lastlogintime']}<br>上次登录IP：<br>{$login_info['loginip']}<br>登录总次数：{$login_info['loginnum']}</li>
+		</div>
+		<div class="main_list1x">
+			<li><a href="javascript:thisjs.go('?app_module=sys&app=user');">会员总数：{$count_info['user_num']}</a></li>
+			<li><a href="javascript:thisjs.go('?app_module=sys&app=user','&s_regtime1={$varval['todaydate']}');">新增用户：{$count_info['user_new']}</a></li>
+			<li><a href="javascript:thisjs.go('?app_module=sys&app=user','&s_logintime1={$varval['todaydate']}');">回头用户：{$count_info['user_continue']}</a></li>
+			<li><a href="javascript:thisjs.go('?app_module=sys&app=user.action','&s_score1=1');">用户积分：{$count_info['score_total']}</a></li>
+			<li style="border-bottom:0px"><a href="javascript:thisjs.go('?app_module=sys&app=user.action','&s_score1=1&s_addtime1={$varval['todaydate']}');">今日送出：{$count_info['today_score_send']}</a></li>
+			<li style="border-bottom:0px"><a href="javascript:thisjs.go('?app_module=sys&app=user.action','&s_score2=-1&s_addtime1={$varval['todaydate']}');">今日消耗：{$count_info['today_score_consume']}</a></li>
+		</div>
+		<div class="main_list1">
+			<li><a href="javascript:thisjs.go('?app_module=meal&app=shop');">店铺数量：{$count_info['shop_num']}</a></li>
+			<li><a href="javascript:thisjs.go('?app_module=meal&app=shop','&s_state=1');">上线店铺：{$count_info['shop_onlinenum']}</a></li>
+			<li><a href="javascript:thisjs.go('?app_module=meal&app=order','&url_shop_id=-999&url_channel=all');">订单总量：{$count_info['order_allnum']}</a></li>
+			<li><a href="javascript:thisjs.go('?app_module=meal&app=order','&url_shop_id=-999&url_channel=all&s_state=1');">有效订单：{$count_info['order_num']}</a></li>
+			<li>有效总额：{$count_info['order_total']}</li>
+			<li style="border-bottom:0px">抵扣金额：{$count_info['order_score_money']}</li>
+			<li style="border-bottom:0px">实收金额：{$count_info['order_total_pay']}</li>
+		</div>
+		<div class="main_list1">
+			<li><a href="javascript:thisjs.go('?app_module=meal&app=order','&url_shop_id=-999');">今日订单：{$count_info['today_order_allnum']}</a></li>
+			<li><a href="javascript:thisjs.go('?app_module=meal&app=order','&url_shop_id=-999&s_state=1');">已 处 理：{$count_info['today_order_num']}</a></li>
+			<li><a href="javascript:thisjs.go('?app_module=meal&app=order','&url_shop_id=-999&s_state=0');">未 处 理：{$count_info['today_order_0']}</a></li>
+			<li><a href="javascript:thisjs.go('?app_module=meal&app=order','&url_shop_id=-999&s_state=-1');">已 拒 绝：{$count_info['today_order_1']}</a></li>
+			<li>有效总额：{$count_info['today_order_total']}</li>
+			<li style="border-bottom:0px">抵扣金额：{$count_info['today_order_score_money']}</li>
+			<li style="border-bottom:0px">实收金额：{$count_info['today_order_total_pay']}</li>
+		</div>
+		<div class="main_list1">
+			<li><a href="javascript:thisjs.go('?app_module=sys&app=user.repayment','&s_val1=1');">预存总额：{$user_repayment['total']}</a></li>
+			<li><a href="javascript:thisjs.go('?app_module=sys&app=user.repayment','&s_val2=-1');">消耗总额：{$user_repayment['over']}</a></li>
+			<li><a href="javascript:thisjs.go('?app_module=sys&app=user.repayment');">当前总额：{$user_repayment['now']}</a></li>
+			<li style="border-bottom:0px"><a href="javascript:thisjs.go('?app_module=sys&app=user.repayment','&s_val1=1&s_addtime1={$varval['todaydate']}');">今日预存：{$user_repayment['today_total']}</a></li>
+			<li style="border-bottom:0px"><a href="javascript:thisjs.go('?app_module=sys&app=user.repayment','&s_val2=-1&s_addtime1={$varval['todaydate']}');">今日消耗：{$user_repayment['today_over']}</a></li>
+		</div>
+		<div class="main_list1{if($sms_info['code']!=0)} me_unset{/if}">
+			<li>短信余量：{$sms_info['over']}{if($sms_info['code']==500)}&nbsp;&nbsp;<a href="javascript:thisjs.open('帮助中心：安装短信','app=service&app_act=help&key=sms');" style="color:#ff8800">如何安装？</a>{else if($sms_info['code']!=0)}&nbsp;&nbsp;<a href="javascript:thisjs.open('帮助中心：短信问题','app=service&app_act=help&key=sms.err');" style="color:#ff8800">如何解决?</a>{/if}</li>
+			<li>发送总量：{$sms_info['total']}</li>
+			<li>今日发送：{$sms_info['today']}</li>
+			<li style="border-bottom:0px">今日确认：{$sms_info['today_order']}</li>
+			<li style="border-bottom:0px">今日未确认：{$sms_info['today_re']}</li>
+		</div>
+		<div style="float:left;width:100%">&nbsp;</div>
+		<div class="main_box1" style="width:600px">
+			<li style="width:360px"><b>服务器信息</b><br>操作系统：{$server_info['os']}<br>PHP版本：{$server_info['php_version']}<br>服务器软件：{$server_info['software']}<br>Mysql版本：{$server_info['mysql_version']}<br>Mysql最大连接数：{$server_info['mysql_maxlink']}<br>最大上传：{$server_info['max_upload']}<br>最大占用内存：{$server_info['max_memory']}<br>最大执行时间：{$server_info['max_time']}</li>
+			<li style="width:220px"><b>系统版本信息</b><br>系统名称：<a href="javascript:thisjs.open_klkkdj()">{$version_info['name']}</a><br>当前版本：{$version_info['version_name']}<span id="id_version_new" style="color:#ff8800"></span><br>官方账号：{$version_info['web_uname']}&nbsp;&nbsp;<span style="color:#ff8800;cursor:pointer" id="id_new_msg" onclick="thisjs.ucenter();"><fotn style="color:#888">【消息中心】</font></span></li>
+		</div>
+		<div class="main_listly">
+			<li class='xtit'>官方动态</li>
+			<li class="xli" id="id_kjcmsnews">
+			</li>
+		</div>
+</td></tr></table>
+<script src="/components/report/highcharts.js"></script>
+<div style="width:0px;height:0px;float:left;overflow:hidden" id="id_ding_music"><bgsound src="" loop="1" id="id_ding_music_ie"></div>
+<script>
+var thisjs = new function() {
+	this.update = function(com) {
+		kj.dialog({id:'update',title:'在线升级',url:'{fun_get::url(array("app_act"=>"update"))}&version='+thisjs.version,w:500,showbtnhide:false,showbtnmax:false,h:300,type:'iframe'});
+	}
+	this.klkkdj_logo = function() {
+		var url = this.get_klkkdj_url("app_act=logo&app=service");
+		var obj;
+		(parent.kj)? obj = parent.kj : obj = kj;
+		obj.dialog({'id':'klkkdj_help','type':'iframe','url':url , 'title':'更新日志','w':600,'max_h':700,'showbtnmax':true,'notoolbar':'1'});
+	}
+	//生成官网链接字符串
+	this.get_klkkdj_url = function(url) {
+		url = kj.urlencode("{$klkkdj_url}" , url);
+		return url;
+	}
+	//生成官网链接字符串
+	this.open_klkkdj = function() {
+		var url = this.get_klkkdj_url();
+		window.open(url,"_blank");
+	}
+	this.open = function(title,url) {
+		parent.thisjs.klkkdj_open(title,url);
+	}
+	this.ucenter = function() {
+		parent.thisjs.klkkdj_open("KLKKDJ会员中心",'app_act=user');
+	}
+	this.go = function(url , act) {
+		var id,module,url;
+		var arr = parent.kj.obj("#id_left input");
+		for(var i = 0 ; i < arr.length ; i++) {
+			if(arr[i].value == url) {
+				id = arr[i].parentNode.id;
+				arr = id.split("_");
+				arr.removeat(1);
+				arr.removeat(0);
+				arr.removeat(arr.length-1);
+				module = arr.join("_");
+				break;
+			}
+		}
+		if(!id) return;
+		if(!act) act = "";
+		parent.thisjs.menu_click(id,module,url + act);
+	}
+}
+kj.onload(function(){
+	//授权级别信息
+	kj.ajax.get("{fun_get::url(array('app_act'=>'official_login'))}" , function(data){
+		var obj_data = kj.json(data);
+		if('code' in obj_data && obj_data.code=='0') {
+			var obj=kj.obj("#id_grade_info");
+			if(obj) obj.innerHTML = obj_data.grade.name;
+			thisjs.version = obj_data.version;
+			var version = kj.toint(obj_data.version);
+			var message = kj.toint(obj_data.message);
+			if(version>kj.toint("{$version_info['version']}")) {
+				obj = kj.obj("#id_version_new");
+				var html = "<br>最新版本：" + obj_data.version_name + "&nbsp;&nbsp;&nbsp;<a href=\"javascript:thisjs.update();\" style='color:#004499'>在线升级</a>&nbsp;&nbsp;&nbsp;<a href='javascript:thisjs.klkkdj_logo();' style='color:#004499'>了解详情</a>";
+				if(obj) obj.innerHTML = html;
+			}
+			if(message>0) {
+				kj.obj("#id_new_msg").innerHTML = message + "条未读消息";
+				if(kj.agent()=='ie') {
+					kj.obj("#id_ding_music_ie").src = '{$temp_url}../common/ding.mp3';
+				} else {
+					kj.obj("#id_ding_music").innerHTML = '<embed src="{$temp_url}../common/ding.mp3" hidden="true" border="0" width="0" height="0" autostart="true" loop=3>';
+				}
+			}
+			var i,obj_a;
+			if(obj_data.list.length>0) {
+				for(var i  =  0 ; i < obj_data.list.length ; i++) {
+					obj_a=document.createElement("a");
+					obj_a.innerHTML = obj_data.list[i].title;
+					obj_a.href = obj_data.list[i].url;
+					obj_a.target = '_blank';
+					kj.obj("#id_kjcmsnews").appendChild(obj_a);
+				}
+			}
+		}
+	});
+});
+
+$(function () {
+    var chart;
+    $(document).ready(function() {
+        chart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'container',
+                type: 'line'
+            },
+            title: {
+                text: ''
+            },
+            subtitle: {
+                text: ''
+            },
+            xAxis: {
+                categories: {$report['sub']}
+            },
+            yAxis: {
+                title: {
+                    text: '今日订单量'
+                }
+            },
+            tooltip: {
+                enabled: false,
+                formatter: function() {
+                    return '<b>'+ this.series.name +'</b><br/>'+
+                        this.x +': '+ this.y;
+                }
+            },
+            plotOptions: {
+                line: {
+                    dataLabels: {
+                        enabled: true
+                    },
+                    enableMouseTracking: false
+                }
+            },
+            series: [{
+                name: '今日订单量统计',
+                data: {$report['data']}
+            }]
+        });
+    });
+    
+});
+</script>
+{include(footer)}

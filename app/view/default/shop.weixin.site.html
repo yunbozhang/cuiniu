@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>微信站点-商家管理-{cfg:(site_title,sys)}</title>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+<script src="{cfg:(dirpath,base)}/common.php?app=sys&app_act=web.config&app_ajax=1"></script>
+<script src="/common/js/kj.js"></script>
+<script src="/common/js/kj.ajax.js"></script>
+<script src="/common/js/kj.dialog.js"></script>
+<script src="/common/js/date.js"></script>
+<script src="/common/js/kj.rule.js"></script>
+<script src="/common/js/kj.alert.js"></script>
+<style>
+body{background:#fff}
+</style>
+</head>
+<body style="overflow-x:hidden">
+{include(shop.header)}
+	<div class="sright bgcolor2">
+	<table class='edit_table'>
+		<tr>
+			<td class="x_colname" valign="top">站点名称：</td><td class="x_colval" valign="top"><input name="site_name" type="text" class="pTxt1 pTxtL300" value="{$editinfo['site_name']}"/> <font class="txt_red">*</font>
+			</td></tr>
+		<tr>
+			<td class="x_colname" valign="top">绑定域名：</td><td class="x_colval" valign="top">
+				<input name="site_domain" type="text" class="pTxt1 pTxtL200" value="{$editinfo['site_domain']}"/> <font class="txt_red">*</font>
+			</td></tr>
+		<tr>
+			<td class="x_colname" valign="top">微信号：</td><td class="x_colval" valign="top" style="line-height:30px">
+				<input type="text" name="site_wx_uname" value="{$editinfo['site_wx_uname']}" class='pTxt1 pTxtL200' ruletips="微信号不能为空" required>&nbsp;<span style="color:#ff0000">*</span><span class="pBeta"> 注意不是微信的登录号，而是微信管理中心设置里的微信号</span>
+			</td></tr>
+		<tr>
+			<td class="x_colname" valign="top">token：</td><td class="x_colval" valign="top" style="line-height:30px">
+			<input type="text" name="site_wx_token" value="{$editinfo['site_wx_token']}" class='pTxt1 pTxtL200'>&nbsp;<span class="pBeta">自定义token 用于微信验证</span>
+			</td></tr>
+		<tr>
+			<td class="x_colname" valign="top">APP ID：</td><td class="x_colval" valign="top" style="line-height:30px">
+			<input type="text" name="site_wx_appid" value="{$editinfo['site_wx_appid']}" class='pTxt1 pTxtL200'>&nbsp;<span class="pBeta">开通服务号后会有这个</span>
+			</td></tr>
+		<tr>
+			<td class="x_colname" valign="top">APP Secret：</td><td class="x_colval" valign="top" style="line-height:30px">
+			<input type="text" name="site_wx_appsecret" value="{$editinfo['site_wx_appsecret']}" class='pTxt1 pTxtL200'>&nbsp;<span class="pBeta">开通服务号后会有这个</span>
+			</td></tr>
+		<tr>
+			<td class="x_colname" valign="top">认证服务号：</td><td class="x_colval" valign="top" style="line-height:30px">
+			<input type="checkbox" name="site_wx_certify" value="1"{if($editinfo['site_wx_certify']==1)} checked{/if}>&nbsp;<span class="pBeta">是否为认证的服务号，用于后台确定是否有相关微信权限</span>
+			</td></tr>
+		<tr>
+			<td class="x_colname" valign="top">启用搜索模式：</td><td class="x_colval" valign="top" style="line-height:30px">
+			<input type="checkbox" name="site_wx_msgmode" value="1"{if($editinfo['site_wx_msgmode']==1)} checked{/if}>&nbsp;<span class="pBeta">启用的话，用户向公众号发消息时将优先搜索相关商家或菜品</span>
+			</td></tr>
+		<tr>
+			<td class="x_colname" valign="top">模板独立显示：</td><td class="x_colval" valign="top" style="line-height:30px">
+			<input type="checkbox" name="site_customview" value="1"{if($editinfo['site_customview']==1)} checked{/if}>&nbsp;<span class="pBeta">当用户从此域名进来时，只显示本店信息，不显示平台信息</span>
+			</td></tr>
+		<tr>
+			<td class="x_colname" valign="top"></td><td class="x_colval" valign="top" style="line-height:30px">
+				<input type="button" name="btn_submit" class="button4" value="保 存" onclick="thisjs.save();">
+			</td></tr>
+		</table>
+	</div>
+{include(shop.footer)}
+<script src="shop.js"></script>
+<script>
+var thisjs = new function() {
+	this.save = function() {
+		if(kj.rule.form(document.frm_main) == false) {
+			return false;
+		}
+		shop.frm_ajax('site.save');
+	}
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,1 @@
+alter table {DB_PRE}act_gift_record engine innodb;

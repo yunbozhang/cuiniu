@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>评价-{cfg:(site_title,sys)}</title>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+<script src="{cfg:(dirpath,base)}/common.php?app=sys&app_act=web.config&app_ajax=1"></script>
+<script src="/common/js/kj.js"></script>
+<script src="/common/js/kj.dialog.js"></script>
+<script src="/common/js/kj.ajax.js"></script>
+<script src="/common/js/kj.alert.js"></script>
+<style>
+body{background:#fff}
+.comment{float:left;width:360px;padding:10px 40px}
+.comment li{float:left;width:330px;padding:5px 0px 5px 30px;color:#333}
+.comment .xtit{width:360px;padding-left:0px;font-weight:bold;color:#000}
+.comment .col1{float:left;width:100px}
+.comment .col2{float:left;}
+.comment .col2 img{vertical-align:middle}
+.comment .col2 input{vertical-align:middle}
+.comment .xsel{background:#efefef}
+.comment textarea{width:350px;height:80px;background:#f8f8f8;border:1px #666 solid}
+.comment .good{color:#CC0000;background:url(images/comment1.png) no-repeat 20px}
+.comment .general{color:#78D417;background:url(images/comment2.png) no-repeat 20px}
+.comment .fail{color:#666666;background:url(images/comment3.png) no-repeat 20px}
+.comment .xinfo{margin:8px 0px;border:1px #ff8800 dotted;padding:5px 8px;color:#ff8800}
+.comment .xpic{float:left;width:360px}
+.comment .xpic .xxpic{float:left;margin:5px 10px 5px 0px;width:80px}
+.comment .xpic .xxpic .img{width:80px;height:60px}
+.comment .xpic .xxpic .xdiv{position:relative;top:-15px;width:80px;height:15px;text-align:right}
+.comment .xpic .xxpic .xdiv img{cursor:pointer}
+.comment .xupload{float:left;width:360px;margin-top:5px}
+.comment .xupload font{float:left;margin-top:3px}
+.comment .xupload iframe{float:left}
+.comment .xxbeta{float:left;width:340px;border:1px #ccc dotted;padding:5px 10px;line-height:18px;color:#aa8800;margin-left:30px}
+</style>
+</head>
+<body style="overflow-x:hidden">
+<form name="frmMain" method="post" action="{fun_get::url(array('app_act'=>'comment.save'))}">
+<input type="hidden" name="commentid" value="{$arr_list['comment']['id']}">
+<div class="comment">
+	{if(!empty($arr_list['score']))}
+	<div class="xinfo">
+	{if(empty($arr_list['comment']['id']))}
+		本次订单可以获得：{$arr_list['score']} 积分 ，将在评论后送出
+	{else}
+		本次订单已奖励：{$arr_list['score']} 积分
+	{/if}
+	</div>
+	{/if}
+	<li class="xtit">套餐评价</li>
+	{foreach($arr_list['list'] as $item)}
+		<li onmouseover="kj.addClassName(this,'xsel');" onmouseout="kj.delClassName(this,'xsel');" class="Tgoods{$item['menu_id']}"><span class="col1">{$item['menu_title']}{set $iix=$item['comment']['comment_val']-1}</span>
+		<span class="col2 Tcomments">
+		<input type="hidden" name="commentval{$item['menu_id']}" value="{$iix}" class="Tcommentval Tcmenu" kjdata="{$item['menu_title']}">
+		<input type="hidden" name="commentid{$item['menu_id']}" value="{$item['comment']['comment_id']}">
+		{set $datatit=''}
+		{foreach($arr_comment_menu as $ii=>$item3)}
+		<font {if($item['comment']['comment_val']>$ii)}class="star2"{set $datatit=$item3}{else}class="star1"{/if} datatit="{$item3}" title="{$ii}"></font>
+		{/foreach}
+		<label class="xxinfo">{$datatit}</label>
+		</li>
+	{/foreach}
+	<li class="xtit">您对本次购买打几分？</li>
+	{foreach($arr_comment_shop as $item=>$key)}
+		<li onmouseover="kj.addClassName(this,'xsel');" onmouseout="kj.delClassName(this,'xsel');"><span class="col1">{$item}</span>
+		<span class="col2 Tcomments">
+		<input type="hidden" name="commentname[]" value="{$item}">
+		<input type="hidden" name="commentval[]" value="{if(isset($arr_list['comment']['list'][$item]))}{$arr_list['comment']['list'][$item]-1}{else}-1{/if}" class="Tcommentval">
+		{set $datatit=''}
+		{foreach($key as $ii=>$item3)}
+		<font {if(isset($arr_list['comment']['list'][$item]) && $arr_list['comment']['list'][$item]>$ii)}class="star2"{set $datatit=$item3}{else}class="star1"{/if} datatit="{$item3}"></font>
+		{/foreach}
+		<label class="xxinfo">{$datatit}</label>
+		</li>
+	{/foreach}
+	<li>亲，分享一下您本次的感受吧</li>
+	<li><textarea name="comment_beta">{$arr_list['comment']['beta']}</textarea></li>
+	<li class="xpic" id="id_piclist">
+		{foreach($arr_list['comment']['pic'] as $pic)}
+			<div class="xxpic"><input type="hidden" name="pic[]" value="{$pic}"><a href="{fun_get::html_url($pic)}" target="_blank"><img src = "{fun_get::html_url($pic)}" class="img"></a><div class="xdiv transparent"><img src="images/close.png" onclick="thisjs.removepic(this);" title="删除"></div></div>
+		{/foreach}
+	</li>
+	<li class="xupload">
+		<font>贴图：</font><iframe name="frm_upload" src = "common.php?app=other&app_act=upload&hidebtn=1" width="300px" height="30px" frameborder=0 scrolling="no"></iframe>
+	</li>
+	<li style="text-align:right"><input type="button" name="btncomment" value="评论" class="button4" onclick="thisjs.save();"></li>
+</div>
+</form>
+<script>
+var thisjs = new function() {
+	this.removepic = function(o) {
+		var objp = kj.parent(o , '.xxpic');
+		kj.remove(objp);
+	}
+	this.save = function(id) {
+		thisjs.comment_gid = id;
+		var arrmenu = kj.obj(".Tcmenu");
+		var i = 0,txt;
+		for( i = 0 ; i < arrmenu.length ; i++) {
+			if(arrmenu[i].value == -1) {
+				txt = kj.getAttribute(arrmenu[i],"kjdata");
+				alert("请为"+txt+"打分");
+				return;
+			}
+		}
+		var arrval = kj.obj(":commentval[]");
+		var arrname = kj.obj(":commentname[]");
+		for(i = 0 ; i < arrval.length ; i++) {
+			if(arrval[i].value=='-1') {
+				alert("请为本次的"+arrname[i].value+"打分");
+				return;
+			}
+		}
+		document.frmMain.btncomment.disabled=true;
+		document.frmMain.btncomment.className='button4x';
+		kj.ajax.post(document.frmMain,function(data) {
+			var objdata = kj.json(data);
+			if(objdata.isnull || !('code' in objdata)) {
+				alert("系统繁忙");
+				return;
+			}
+			if(objdata.code=='0') {
+				kj.alert.show("谢谢您的评论",function() {
+					thisjs.commentok();
+				});
+			} else {
+				alert(objdata.msg);
+			}
+		});
+	}
+	this.commentok = function() {
+		parent.location.reload(true);
+	}
+}
+kj.onload(function(){
+	kj.handler(".Tcomments font","mouseover",function(e){
+		var objp = kj.parent(this,'.Tcomments');
+		var info = kj.getAttribute(this,'datatit');
+		kj.set(kj.obj(".xxinfo" , objp) , "innerHTML" , info);
+		var arr = kj.obj("font" , objp);
+		var index = kj.index(arr , this);
+		for(var i = 0; i <= index ; i++) {
+			kj.set(arr[i],'className','star2');
+		}
+		for(i = index+1; i < arr.length ; i++) {
+			kj.set(arr[i],'className','star1');
+		}
+	});
+	kj.handler(".Tcomments font","mouseout",function(e){
+		var objp = kj.parent(this,'.Tcomments');
+		var arrx = kj.obj(".Tcommentval" , objp);
+		var index = kj.toint(arrx[0].value);
+		var arr = kj.obj("font" , objp);
+		for(var i = 0; i <= index ; i++) {
+			kj.set(arr[i],'className','star2');
+		}
+		for(i = index+1; i < arr.length ; i++) {
+			kj.set(arr[i],'className','star1');
+		}
+		var info = '';
+		if(index>=0) info = kj.getAttribute(arr[index],'datatit');
+		kj.set(kj.obj(".xxinfo" , objp) , "innerHTML" , info);
+	});
+	kj.handler(".Tcomments font","click",function(e){
+		var objp = kj.parent(this,'.Tcomments');
+		var arr = kj.obj("font" , objp);
+		var index = kj.index(arr , this);
+		var arrx = kj.set(kj.obj(".Tcommentval" , objp) , 'value' , index);
+
+	});
+});
+function upload_callback(data) {
+	var obj = kj.json(data);
+	if(obj.isnull || !('url' in obj)) return;
+	var obj_div=document.createElement("div");
+	obj_div.className = 'xxpic';
+	obj_div.innerHTML = '<input type="hidden" name="pic[]" value="'+obj.url+'"><img src = "' + kj.url_view(obj.url) + '" class="img"><div class="xdiv transparent"><img src="images/close.png" onclick="thisjs.removepic(this);" title="删除"></div>';
+	kj.obj("#id_piclist").appendChild(obj_div);
+}
+</script>
+</body>
+</html>

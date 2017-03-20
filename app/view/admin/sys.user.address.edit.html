@@ -1,0 +1,129 @@
+{include(header)}
+<div class="pMenu" id="id_pMenu">
+	<li class="sel">基本信息</li>
+</div>
+<div class="pMain" id="id_main">
+<table class='pEditTable'>
+<tr class='pTabTitRow'><td class='pTabTitCol' colspan="2"></td></tr>
+<tr>
+	<td class="pTabColName">用户：</td><td class="pTabColVal">{$editinfo['user_name']}</div>
+	</td>
+	</tr>
+<tr>
+	<td class="pTabColName">地区：</td>
+	<td class="pTabColVal">
+	<input type="hidden" name="address_area_id" id="id_address_area_id" value="{$editinfo['address_area_id']}">
+	<input type="hidden" name="address_area_allid" id="id_address_area_allid" value="{$editinfo['address_area_allid']}">
+	<input type="hidden" name="address_area" id="id_address_area" value="{$editinfo['address_area']}">
+	<select name="area_id[]" onchange="thisjs.changearea(this.value,0);" id="id_area_0">
+		<option value=""></option>
+	{foreach($editinfo["area"]["default"] as $item)}
+		<option value="{$item['area_id']}"{if(in_array($item['area_id'] , explode("," , $editinfo['address_area_allid']) ) )} selected{/if}>{$item['area_name']}</option>
+	{/foreach}
+	</select>
+	{for($i=1;$i<$editinfo["area"]["depth"];$i++)}
+		<select name="area_id[]" onchange="thisjs.changearea(this.value,{$i});" id="id_area_{$i}">
+		</select>
+	{/foreach}
+	</td></tr>
+<tr>
+	<td class="pTabColName">具体位置：</td>
+	<td class="pTabColVal">
+		<input type="text" name="address_address" value="{$editinfo['address_address']}" class='pTxt1 pTxtL150'>
+	</td></tr>
+<tr>
+	<td class="pTabColName">姓名：</td>
+	<td class="pTabColVal">
+		<input type="text" name="address_name" value="{$editinfo['address_name']}" class='pTxt1 pTxtL150'>
+	</td></tr>
+<tr style="display:none">
+	<td class="pTabColName">性别：</td><td class="pTabColVal"><input type="radio" name="address_sex" value="先生"{if($editinfo['address_sex']=='先生')} checked{/if}>先生&nbsp;&nbsp;<input type="radio" name="address_sex" value="女士"{if($editinfo['address_sex']=='女士')} checked{/if}>女士</td></tr>
+<tr>
+	<td class="pTabColName">电话：</td><td class="pTabColVal"><input type="text" name="address_tel" value="{$editinfo['address_tel']}" class='pTxt1 pTxtL100'></td>
+	</tr>
+<tr>
+	<td class="pTabColName">邮箱：</td><td class="pTabColVal"><input type="text" name="address_email" value="{$editinfo['address_email']}" class='pTxt1 pTxtL150'></td>
+	</tr>
+</table>
+<!--label 1 end-->
+</div>
+<div class="pFootAct" id="id_pFootAct">
+	<li>
+	<input type="button" name="dosubmit" value="保存" onclick="admin.frm_ajax('save');" class="pBtn">
+	</li>
+</div>
+<script>
+var thisjs = new function() {
+	this.arealist = {$editinfo["area"]["list"]};//json格式，指定id包函的子地区
+	this.areainfo = {$editinfo["area"]["area"]};//对应id地区详细信息
+	this.depth = {$editinfo["area"]["depth"]};//当前地区深度
+	this.defaultval = "{$editinfo['address_area_allid']}"//当前选择值
+	this.defaultval = this.defaultval.split(",");//格式化成数组
+	//地区下拉发生改变时触发
+	this.changearea = function(val , index) {
+		var obj,i,ii;
+		index++;
+		//当index大于深度时跳出
+		if(index>this.depth) return;
+		//发生改变后，重置之后的地区下拉
+		for(i = index ; i < this.depth; i++) {
+			obj = kj.obj("#id_area_" + i);
+			if(!obj) break;
+			obj.options.length = 0;
+			if(i>index) kj.hide(obj);
+		}
+
+		var key = "id_" + val;
+		if(!(key in this.arealist) || !("length" in this.arealist[key])) {
+			kj.hide("#id_area_" + index);
+			//跳出则刷新当前地区值
+			this.refresh_area_val();
+			return;
+		}
+		kj.show("#id_area_" + index);
+		kj.add_option("#id_area_" + index , '' , '');
+		for(i = 0 ; i < this.arealist["id_"+val].length ; i++ ) {
+			obj = kj.obj("#id_area_" + index);
+			ii = this.arealist["id_"+val][i];
+			if( !("id_" + ii in this.areainfo ) ) continue;
+			kj.add_option(obj , this.areainfo["id_" + ii]["area_name"] , ii);
+			//选中默认值
+			if(this.defaultval.length>index && obj.options[i+1].value == this.defaultval[index]) {
+				obj.options[i+1].selected=true;
+			}
+		}
+		this.changearea(obj.value , index);
+		this.refresh_area_val();
+	}
+	this.refresh_area_val = function() {
+		var obj = kj.obj(":area_id[]");
+		var arr_id = [];
+		var arr_val = [];
+		var id = 0;
+		for(var i = 0 ; i < obj.length ; i++) {
+			if(obj[i].value != '') {
+				if( !("id_" + obj[i].value in this.areainfo ) ) continue;
+				arr_id[arr_id.length] = obj[i].value;
+				arr_val[arr_val.length] = ('area_val' in this.areainfo["id_" + obj[i].value]) ? this.areainfo["id_" + obj[i].value]["area_val"] : this.areainfo["id_" + obj[i].value]["area_name"];
+			} else {
+				break;
+			}
+		}
+		if(arr_id.length>0) {
+			kj.obj("#id_address_area_id").value = arr_id[arr_id.length-1];
+		} else {
+			kj.obj("#id_address_area_id").value = '';
+		}
+		kj.obj("#id_address_area_allid").value = arr_id.join(",");
+		kj.obj("#id_address_area").value = arr_val.join(" ");
+	}
+}
+kj.onload(function() {
+	//加载默认值选中
+	thisjs.changearea(kj.obj("#id_area_0").value,0);
+	{for($i=1;$i<$editinfo["area"]["depth"];$i++)}
+		thisjs.changearea(kj.obj("#id_area_{$i}").value,{$i});
+	{/for}
+});
+</script>
+{include(footer)}

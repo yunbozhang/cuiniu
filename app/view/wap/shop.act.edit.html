@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>编辑活动-{cfg:(site_title,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+<style>
+#id_pic_view img{max-width:100px;max-height:100px}
+.meselect select{width:260px;float:left;margin:5px 0px 3px 0px;clear:both}
+</style>
+</head>
+<body>
+{include(label.header)}
+<div class="top">
+	<h1>编辑活动</h1>
+	<a href="?" class="x1"><img src="images/home.png"></a>
+	<a href="?app_module=shop&app=act" id="id_top_back" class="x2"><img src="images/back.png"></a>
+</div>
+<div class="main">
+<form name="frm_main" action="{fun_get::url(array('app_act'=>'save'))}" method="post">
+<input type="hidden" name="id" value="{$editinfo['act_id']}">
+<input type="hidden" name="act_where_val" value="">
+<input type="hidden" name="act_method_val" value="">
+<div class="shopedit">
+	<div class="xtitle">主题描述</div>
+	<div class="xtext">
+		<input type="text" name="act_name" value="{$editinfo['act_name']}">
+	</div>
+	<div class="xtitle">开始时间</div>
+	<div class="xtext">
+		<input type="text" name="act_starttime" value="{$editinfo['act_starttime']}" onfocus="new Calendar().show(this);">
+	</div>
+	<div class="xtitle">结束时间</div>
+	<div class="xtext">
+		<input type="text" name="act_endtime" value="{$editinfo['act_endtime']}" onfocus="new Calendar().show(this);">
+	</div>
+	<div class="xtitle">条 件</div>
+	<div class="xtext">
+		<select name="act_where" onchange="thisjs.act_where(this.value);">
+		{foreach($arr_where as $item=>$key)}
+			<option value="{$key}"{if($key==$editinfo['act_where'])} selected{/if}>{$item}</option>
+		{/foreach}
+		</select><br>
+		<span id="id_where_1" style="display:none"><input type="text" name="act_where_val_1" value="{if($editinfo['act_where']=='1')}{$editinfo['act_where_val']}{/if}" class='pTxt1 pTxtL60'>&nbsp;￥</span>
+		<span id="id_where_2" style="display:none">
+		<select name="act_where_val_2_1">
+		{for($i=8;$i<24;$i++)}
+		<option value="{$i}00"{if(isset($editinfo['act_where_val1']) && $editinfo['act_where_val1']==$i*100)} selected{/if}>{$i}:00</option>
+		<option value="{$i}30"{if(isset($editinfo['act_where_val1']) && $editinfo['act_where_val1']==($i*100+30))} selected{/if}>{$i}:30</option>
+		{/for}
+		</select> 到 <select name="act_where_val_2_2">
+		{for($i=8;$i<24;$i++)}
+		<option value="{$i}00"{if(isset($editinfo['act_where_val2']) && $editinfo['act_where_val2']==$i*100)} selected{/if}>{$i}:00</option>
+		<option value="{$i}30"{if(isset($editinfo['act_where_val2']) && $editinfo['act_where_val2']==($i*100+30))} selected{/if}>{$i}:30</option>
+		{/for}
+		</select>
+		</span>
+		<span id="id_where_3" style="display:none"><input type="text" name="act_where_val_3" value="{if($editinfo['act_where']=='3')}{$editinfo['act_where_val']}{/if}" class='pTxt1 pTxtL60'>&nbsp;份</span>
+		<span id="id_where_4" style="display:none">
+		<select name="act_where_val_4_1">
+		{for($i=8;$i<24;$i++)}
+		<option value="{$i}00"{if(isset($editinfo['act_where_val1']) && $editinfo['act_where_val1']==$i*100)} selected{/if}>{$i}:00</option>
+		<option value="{$i}30"{if(isset($editinfo['act_where_val1']) && $editinfo['act_where_val1']==($i*100+30))} selected{/if}>{$i}:30</option>
+		{/for}
+		</select> 到 <select name="act_where_val_4_2">
+		{for($i=8;$i<24;$i++)}
+		<option value="{$i}00"{if(isset($editinfo['act_where_val2']) && $editinfo['act_where_val2']==$i*100)} selected{/if}>{$i}:00</option>
+		<option value="{$i}30"{if(isset($editinfo['act_where_val2']) && $editinfo['act_where_val2']==($i*100+30))} selected{/if}>{$i}:30</option>
+		{/for}
+		</select>
+		&nbsp;&nbsp;<input type="text" name="act_where_val_4_3" value="{if($editinfo['act_where']=='4')}{$editinfo['act_where_val3']}{/if}" class='pTxt1 pTxtL60'>&nbsp;份
+		</span>
+	</div>
+	<div class="xtitle">优 惠</div>
+	<div class="xtext">
+		<select name="act_method" onchange="thisjs.act_method(this.value);">
+		{foreach($arr_method as $item=>$key)}
+			<option value="{$key}"{if($key==$editinfo['act_method'])} selected{/if}>{$item}</option>
+		{/foreach}
+		</select><br>
+		<span id="id_method_1" style="display:none"><input type="text" name="act_method_val_1" value="{if($editinfo['act_method']=='1')}{$editinfo['act_method_val']}{/if}" class='pTxt1 pTxtL200'></span>
+		<span id="id_method_2" style="display:none"><input type="text" name="act_method_val_2" value="{if($editinfo['act_method']=='2')}{$editinfo['act_method_val']}{/if}" class='pTxt1 pTxtL60'>&nbsp;折</span>
+		<span id="id_method_3" style="display:none"><input type="text" name="act_method_val_3" value="{if($editinfo['act_method']=='3')}{$editinfo['act_method_val']}{/if}" class='pTxt1 pTxtL60'>&nbsp;分</span>
+		<span id="id_method_4" style="display:none"><input type="text" name="act_method_val_4" value="{if($editinfo['act_method']=='4')}{$editinfo['act_method_val']}{/if}" class='pTxt1 pTxtL60'>&nbsp;倍</span>
+		<span id="id_method_5" style="display:none"><input type="text" name="act_method_val_5" value="{if($editinfo['act_method']=='5')}{$editinfo['act_method_val']}{/if}" class='pTxt1 pTxtL60'>&nbsp;￥</span>
+		<span id="id_method_6" style="display:none"><input type="text" name="act_method_val_6" value="{if($editinfo['act_method']=='6')}{$editinfo['act_method_val']}{/if}" class='pTxt1 pTxtL60'>&nbsp;￥</span>
+	</div>
+	<div class="xtitle">状 态</div>
+	<div class="xtext">
+		<select name="act_state">
+		{foreach($arr_state as $item=>$key)}
+			<option value="{$key}"{if($key==$editinfo['act_state'])} selected{/if}>{$item}</option>
+		{/foreach}
+		</select>
+	</div>
+	<div class="xtitle">备注</div>
+	<div class="xtext">
+		<textarea cols="50" rows="5" name="act_beta" class='pTxt1'>{$editinfo['act_beta']}</textarea>
+	</div>
+	<div class="xbtn"><input type="button" name="btn_saveinfo" value=" 提 交 " class="btn1" onclick="thisjs.on_save();"></div>
+</div>
+</form>
+</div>
+{include(label.footer)}
+</body>
+</html>
+<script>
+var thisjs = new function() {
+	this.act_where = function(val) {
+		(val == '1')? kj.show('#id_where_1') : kj.hide('#id_where_1');
+		(val == '2')? kj.show('#id_where_2') : kj.hide('#id_where_2');
+		(val == '3')? kj.show('#id_where_3') : kj.hide('#id_where_3');
+		(val == '4')? kj.show('#id_where_4') : kj.hide('#id_where_4');
+	}
+	this.act_method = function(val) {
+		(val == '1')? kj.show('#id_method_1') : kj.hide('#id_method_1');
+		(val == '2')? kj.show('#id_method_2') : kj.hide('#id_method_2');
+		(val == '3')? kj.show('#id_method_3') : kj.hide('#id_method_3');
+		(val == '4')? kj.show('#id_method_4') : kj.hide('#id_method_4');
+		(val == '5')? kj.show('#id_method_5') : kj.hide('#id_method_5');
+		(val == '6')? kj.show('#id_method_6') : kj.hide('#id_method_6');
+	}
+	this.on_save = function() {
+		var where = document.frm_main.act_where.value;
+		var method = document.frm_main.act_method.value;
+		if(where == 2) {
+			//指定时间，用逗号分隔
+			document.frm_main.act_where_val.value = document.frm_main.act_where_val_2_1.value+","+ document.frm_main.act_where_val_2_2.value;
+		} else if(where == 4) {
+			document.frm_main.act_where_val.value = document.frm_main.act_where_val_4_1.value+","+ document.frm_main.act_where_val_4_2.value+","+ document.frm_main.act_where_val_4_3.value;
+		} else if(where == 5) {
+			document.frm_main.act_where_val.value = '';
+		} else {
+			document.frm_main.act_where_val.value = document.frm_main['act_where_val_'+where].value;
+		}
+		document.frm_main.act_method_val.value = kj.obj("#id_method_" + method) ? document.frm_main['act_method_val_'+method].value : '';
+		kj.ajax.post(document.frm_main , function(data) {
+			var objdata = kj.json(data);
+			if(objdata.isnull) {
+				alert("系统繁忙");
+				return;
+			}
+			if(objdata.code == '0') {
+				kj.alert.show("保存成功");
+			} else {
+				alert(objdata.msg);
+			}
+		});
+	}
+}
+kj.onload(function(){
+	thisjs.act_where(document.frm_main.act_where.value);
+	thisjs.act_method(document.frm_main.act_method.value);
+});
+</script>
+<script src="/common/js/kj.pic.js"></script>

@@ -1,0 +1,1 @@
+alter table {DB_PRE}meal_table_reserve engine innodb;

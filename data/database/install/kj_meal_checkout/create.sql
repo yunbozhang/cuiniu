@@ -1,0 +1,6 @@
+#-----------------创建表--- kj_meal_checkout
+DROP TABLE IF EXISTS `{DB_PRE}meal_checkout`;
+CREATE TABLE IF NOT EXISTS `{DB_PRE}meal_checkout` (
+`checkout_id` int(10) NOT NULL auto_increment,`checkout_shop_id` int(10) NOT NULL COMMENT '店铺id',`checkout_money` decimal(10,2) NOT NULL COMMENT '结算金额',`checkout_user_id` int(10) NOT NULL COMMENT '操作人',`checkout_addtime` int(10) NOT NULL COMMENT '添加时间',`checkout_beta` varchar(255) NOT NULL COMMENT '备注',`checkout_date1` datetime NOT NULL COMMENT '结算结束日(不包括)',`checkout_date2` datetime NOT NULL,`checkout_moneytotal` decimal(10,2) default '0.00' COMMENT '货品金额',`checkout_moneyrepay` decimal(10,2) default '0.00' COMMENT '预付金额',`checkout_moneyall` decimal(10,2) default '0.00' COMMENT '有效金额',`checkout_moneypay` decimal(10,2) default '0.00' COMMENT '在线支付金额',`checkout_moneyaffter` decimal(10,2) default '0.00' COMMENT '线下支付金额',`checkout_moneyadd` decimal(10,2) default '0.00' COMMENT '配送金额',`checkout_moneyfav` decimal(10,2) default '0.00' COMMENT '优惠金额',`checkout_num` int(10) default '0' COMMENT '订单总数',`checkout_numpay` int(10) default '0' COMMENT '在线支付总数',`checkout_rebate` int(10) default '0' COMMENT '抽成比例',`checkout_rebate_money` int(10) default '0' COMMENT '起抽金额',PRIMARY KEY (`checkout_id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1
+

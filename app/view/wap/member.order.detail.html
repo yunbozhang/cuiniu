@@ -1,0 +1,343 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>订单明细-{cfg:(site_title,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+{if(!empty($order_list['reserve']))}
+<script>
+var obj_share = {'title':'【{$order_list['shopinfo']['shop_name']}】-微信餐厅','desc':'我点了几个菜，大家快来看看吧','url':'<?php echo fun_get::html_url("/wap.php?app_act=shop.table.qrcode&id=" . $order_list['shopinfo']['shop_id'] . "&table_number=".$order_list['reserve']['table_number'],1);?>'};
+</script>
+{/if}
+</head>
+<body>
+{include(label.header)}
+{foreach($order_list["list"] as $item)}
+<div class="top">
+	<h1>{$item['shop_name']}</h1>
+	<a href="?" class="x1"><img src="images/home.png"></a>
+	<a href="?app=member" id="id_top_back" class="x2"><img src="images/back.png"></a>
+</div>
+<div class="box11">
+	<li class='xtit'><font>订单号：{$item['order_id']}</font><span><?php echo date("Y-m-d H:i" , $item['order_addtime']);?></span></li>
+</div>
+{/foreach}
+<div class="main">
+	<table class="box12">
+		{set $ii=0}
+		{foreach($item['menu'] as $menu)}
+		<tr><td class="xcol1"{if($ii==0)} style="border-top:1px #76AC23 solid"{/if}>
+		{set $price=0}
+		{foreach($menu['id'] as $item_menu)}
+			{set $price+=$order_list['price']['id_'.$item_menu]}
+			{$order_list['menu']['id_'.$item_menu]['menu_title']}&nbsp;&nbsp;
+		{/foreach}
+		</td>
+		<td style="color:#ff3300{if($ii==0)};border-top:1px #76AC23 solid{/if}">{cfg:(coinsign,sys)}<?php echo $price*$menu['num'];?></td>
+		{if(empty($item['order_reserve_id']))}
+		<td{if($ii==0)} style="border-top:1px #76AC23 solid"{/if}>{$menu['num']}份</td>
+		{else}
+		{set $menuid=implode(',',$menu['id'])}
+		<td{if($ii==0)} style="border-top:1px #76AC23 solid"{/if}><a href="javascript:thisjs.delmenu('{$order_list['reserve']['reserve_number']}','{$menuid}');">[取消]</a></td>
+		{/if}
+		</tr>
+		{set $ii=$ii+1}
+		{/foreach}
+	</table>
+	<div class="mdetail">
+		<li class='x2'>
+		{if(!empty($item['order_ids']))}
+			<p class="xtotal">商品{fun_kj::get_price($item['order_total'])}{if($item['order_addprice']>0)} + 配送{fun_kj::get_price($item['order_addprice'])}{/if}{if($item['order_score_money']>0)} - 抵扣{fun_kj::get_price($item['order_score_money'])}{/if}{if($item['order_favorable']>0)} - 优惠{fun_kj::get_price($item['order_favorable'])}{/if}{if($item['order_repayment']>0)} - 预付款{fun_kj::get_price($item['order_repayment'])}{/if} = 结算：<font>{fun_kj::get_price($item['order_total_pay'])}</font></p>
+		{else}
+			预付订金：<font>{cfg:(coinsign,sys)}{$order_list['reserve']['reserve_deposit']}</font>
+		{/if}
+		</li>
+		<li class="x1">
+			{if(empty($item['order_reserve_id']))}
+			<p><span class="y1">姓名：</span><span>{$item['order_name']}</span></p>
+			<p><span class="y1">电话：</span><span>{$item['order_mobile']}</span></p>
+			<p><span class="y1">地址：</span><span>{$item["order_area"]} — {$item['order_louhao1']}</span></p>
+			<p><span class="y1">付款方式：</span><span>{if($item['order_pay_method']=='paymented')}已抵扣{else if($item['order_pay_method']=='onlinepayment')}在线支付{else}货到付款{/if}</span></p>
+			{if(!empty($item["order_beta"]))}<p><span class="y1">备注：</span><span>{$item["order_beta"]}</span></p>{/if}
+			{else}
+			<p><span class="y1">桌位：</span><span>{$order_list['reserve']['reserve_tablename']}</span></p>
+			<p><span class="y1">桌号密码：</span><span>{$order_list['reserve']['reserve_pwd']}</span></p>
+			{if(!empty($order_list['reserve']['reserve_num']))}<p><span class="y1">人数：</span><span>{$order_list['reserve']['reserve_num']}</span></p>{/if}
+			{if(!empty($order_list['reserve']['reserve_name']))}<p><span class="y1">联系人：</span><span>{$order_list['reserve']['reserve_name']}</span></p>{/if}
+			{if(!empty($order_list['reserve']['reserve_tel']))}<p><span class="y1">电话：</span><span>{$order_list['reserve']["reserve_tel"]}</span></p>{/if}
+			{if(!empty($order_list['reserve']['reserve_beta']))}<p><span class="y1">备注：</span><span>{$order_list['reserve']['reserve_beta']}</span></p>{/if}
+			{/if}
+			{if(!empty($item['order_act']))}
+				<p><span class="y1">优惠活动：</span><span>
+					<?php $str_act=implode("," , $item['order_act']);?>
+					{$str_act}
+				</span></p>
+			{/if}
+			<p><span class="y1">订单状态：</span><span class="xstate">
+				{if(empty($item['order_reserve_id']))}
+					{$item['state']}{if(!empty($item['order_state_beta']))}<font>({$item['order_state_beta']})</font>{/if}</span>
+				{else}
+					{if($order_list['reserve']['reserve_state']==0)}
+						待付订金
+					{else if($order_list['reserve']['reserve_state']==1)}
+						待点菜
+					{else if($order_list['reserve']['reserve_state']==2)}
+						待上菜
+					{else if($order_list['reserve']['reserve_state']>=10)}
+						用餐结束
+					{else if($order_list['reserve']['reserve_state']>0)}
+						用餐中
+					{else}
+						已取消
+					{/if}
+				{/if}
+			</p>
+		</li>
+	</div>
+	<div class="mstep" id="id_step_{$item['order_id']}">
+		{if(empty($item['order_reserve_id']))}
+			{if($item['order_pay_method']=='onlinepayment')}
+				{if($item['order_state']==-2)}
+				<li><i></i><span><p>订单提交成功，等待付款</p><p class="xx1">{if($item['order_state']==-2)}<input type="button" class="btn1" value="继续付款" name="btnpay" onclick="thisjs.pay({$item['order_id']});" id="id_btn_pay">&nbsp;&nbsp;<input type="button" class="btn2" value="取消订单" name="btncancel" onclick="thisjs.cancel({$item['order_id']})">{/if}</p></span></li>
+				{else}
+				<li><i></i><span><p>支付成功，等待商家接单</p><p class="xx1"></p></span></li>
+				{/if}
+			{else}
+			<li><i></i><span><p>下单成功，等待商家接单</p><p class="xx1">{if($item['order_state']==0)}<input type="button" class="btn1" value="我要催单" name="btn" onclick="thisjs.cuidan('{$order_list['shopinfo']['shop_name']}','{$order_list['shopinfo']['shop_tel']}');">&nbsp;&nbsp;<input type="button" class="btn2" value="取消订单" name="btncancel" onclick="thisjs.cancel({$item['order_id']})">{/if}</p></span></li>
+			{/if}
+			{if($item['order_state']==1)}
+				<li><i></i><span><p>商家已接单，正在配送中</p><p class="xx1"></p></span></li>
+				<li class="nobg{if($item['order_comment']==0)} xoff{/if}"><i></i><span><p>订单完成</p><p class="xx1">{if($item['order_comment']==0)}<input type="button" class="btn1" value="已收到，我要评论" name="btnok"  onclick="thisjs.comment()">{else}<input type="button" class="btn2" value="已评论" name="btnok" onclick="thisjs.comment()">{/if}</p></span></li>
+			{else if($item['order_state']==0 || $item['order_state']==-2)}
+				<li class="xoff"><i></i><span><p>商家已接单，正在配送中</p><p class="xx1"></p></span></li>
+				<li class="xoff"><i></i><span><p>订单完成</p></span></li>
+			{else}
+				<li class="xclose"><i></i><span><p>{$item['state']}</p></span></li>
+			{/if}
+		{else}
+			{if($order_list['reserve']['reserve_state']==0)}
+			<li><i></i><span><p>等待付订金</p><p class="xx1"><a href="javascript:thisjs.pay2({$item['order_reserve_id']});" class="y1">继续付款</a><a href="javascript:thisjs.cancel2('{$order_list['reserve']['reserve_number']}')" class="y2" style="margin-left:10px">取消订单</a></p></span></li>
+			{else if($order_list['reserve']['reserve_state']>0)}
+				<li><i></i><span><p>预订成功，等待到位</p><p class="xx1">
+				{if($order_list['reserve']['reserve_state']==1)}
+				<a href="javascript:thisjs.go('{$item['order_shop_id']}','{$order_list['reserve']['reserve_number']}');" class="y1">在线点菜</a>
+				{else if($order_list['reserve']['reserve_state']==2)}
+				<a href="javascript:thisjs.upmenu('{$order_list['reserve']['reserve_number']}');" class="y1">可以上菜了</a>
+				<a href="javascript:thisjs.go('{$item['order_shop_id']}','{$order_list['reserve']['reserve_number']}');" class="y1" style="margin-left:10px">我要加菜</a>
+				{else if($order_list['reserve']['reserve_state']<10)}
+				<a href="javascript:thisjs.go('{$item['order_shop_id']}','{$order_list['reserve']['reserve_number']}');" class="y1" style="margin-left:10px">我要加菜</a>
+				{/if}
+				</p></span></li>
+			{else}
+				<li><i></i><span><p>已取消</p><p class="xx1"></p></span></li>
+			{/if}
+			{if($order_list['reserve']['reserve_state']>2)}
+				<li class=""><i></i><span><p>已到位，用餐中</p><p class="xx1">{if($order_list['reserve']['reserve_state']<10)}<a href="javascript:thisjs.pay({$item['order_id']});" class="y1" id="id_btn_pay" style="margin-left:10px">在线买单</a>{/if}</p></span></li>
+			{else}
+				<li class="xoff"><i></i><span><p>已到位，用餐中</p><p class="xx1"></p></span></li>
+			{/if}
+			{if($order_list['reserve']['reserve_state']==10)}
+				<li class=""><i></i><span><p>订单完成</p></span></li>
+			{else if($order_list['reserve']['reserve_state']==11)}
+				<li class=""><i></i><span><p>订单完成,线下结款</p></span></li>
+			{else}
+				<li class="xoff"><i></i><span><p>订单完成</p></span></li>
+			{/if}
+		{/if}
+	</div>
+</div>
+<script src="/common/js/kj.dialog.js"></script>
+<script>
+var thisjs = new function() {
+	this.upmenu = function(number) {
+		kj.ajax.get("?app=ajax&app_act=upmenu&number="+number,function(data) {
+			var obj = kj.json(data);
+			if(obj.isnull) {
+				alert("系统繁忙");return;
+			}
+			if(obj.code == '0') {
+				kj.alert.show("已通知上菜",function(){
+					location.reload(true);
+				});
+			} else {
+				alert(obj.msg);
+			}
+		});
+	}
+	this.delmenu = function(number,menuid) {
+		kj.ajax.get("?app=ajax&app_act=reserve.delmenu&number="+number+"&menuid="+menuid,function(data) {
+			var obj = kj.json(data);
+			if(obj.isnull) {
+				alert("系统繁忙");return;
+			}
+			if(obj.code == '0') {
+				kj.alert.show("已成功取消",function(){
+					location.reload(true);
+				});
+			} else {
+				alert(obj.msg);
+			}
+		});
+	}
+	this.go = function(shopid,number) {
+		window.open('?app_act=shop&id='+shopid+'&type=2&reserve_id='+ number,'_self');
+	}
+	{if(cls_obj::get("cls_session")->get("weixin")==1 && $item['order_state']==-2)}
+	this.wxpay = function() {
+		if (typeof WeixinJSBridge == "undefined"){
+		   if( document.addEventListener ){
+			   document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+		   }else if (document.attachEvent){
+			   document.attachEvent('WeixinJSBridgeReady', onBridgeReady); 
+			   document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+		   }
+		}else{
+		   onBridgeReady();
+		}
+	}
+	{/if}
+	this.cancel = function(id) {
+		if( !confirm("确定要取消订单吗？") ) return;
+		kj.ajax.get("{cfg:(dirpath,base)}/index.php?app=member&app_act=order.cancel&id="+id , function(data) {
+			var obj_data = kj.json(data);
+			if(obj_data.isnull) {
+				alert("系统繁忙，请稍后再试");
+				return;
+			}
+			if(obj_data.code == "0") {
+				kj.alert.show("成功取消");
+				kj.remove("#id_step_"+obj_data.id + " .xoff");
+				kj.set("#id_step_"+obj_data.id + " .xx1","innerHTML","");
+				var obj = document.createElement("li");
+				obj.className = "xclose";
+				obj.innerHTML = '<i></i><span><p>用户取消</p></span>';
+				kj.set(".Tstate"+obj_data.id , "innerHTML" , "用户取消");
+				var objli =kj.obj("#id_step_"+obj_data.id);
+				objli.appendChild(obj);
+			} else {
+				alert(obj_data.msg);
+			}
+		});
+	}
+	this.cancel2 = function(number) {
+		if( !confirm("确定要取消预订吗？") ) return;
+		kj.ajax.get("{cfg:(dirpath,base)}/index.php?app=member&app_act=reserve.cancel&number="+number , function(data) {
+			var obj_data = kj.json(data);
+			if(obj_data.isnull) {
+				alert("系统繁忙，请稍后再试");
+				return;
+			}
+			if(obj_data.code == "0") {
+				kj.alert.show("成功取消",function() {
+					location.reload(true);
+				});
+			} else {
+				alert(obj_data.msg);
+			}
+		});
+	}
+
+	this.cuidan = function(name,tel) {
+		var html = '<div style="padding:30px;font-size:16px;color:#ff8800">催单电话：<a href="tel:' + tel + '">'+tel+'</a></div>';
+		kj.dialog({'html':html,'id':'cuidan','type':'html','title':'商家：'+name,'w':300,'showbtnmax':false,'showbtnhide':false});
+	}
+	this.showdetail = function(id,o) {
+		id = "#id_detail_"+id;
+		if(kj.obj(id).style.display=='') {
+			kj.hide(id);
+			kj.set(kj.obj("span",o),"innerHTML","展开详情");
+			kj.delClassName(kj.obj("span",o) , "yopen");
+		} else {
+			kj.show(id);
+			kj.set(kj.obj("span",o),"innerHTML","收起详情");
+			kj.addClassName(kj.obj("span",o) , "yopen");
+		}
+	}
+	this.comment = function() {
+		window.open("{fun_get::url(array('app_act'=>'comment','order_id'=>$item['order_id']))}" , "_self");
+	}
+	this.pay = function(id) {
+		{if(cls_obj::get("cls_session")->get("weixin")==1)}
+			kj.obj("#id_btn_pay").value = '正在支付...';
+			kj.obj("#id_btn_pay").disabled = true;
+			kj.ajax.get("{cfg:(dirpath,base)}/index.php?app=member&app_act=order_pay&id="+id+"&pay_method=weixin",function(data) {
+				var obj = kj.json(data);
+				if(obj.isnull) {
+					alert("系统繁忙");
+					kj.obj("#id_btn_pay").value = '继续支付';
+					kj.obj("#id_btn_pay").disabled = false;
+					return;
+				}
+				if(obj.code == '0') {
+					thisjs.appId = obj.appId;
+					thisjs.timeStamp = obj.timeStamp+'';
+					thisjs.nonceStr = obj.nonceStr;
+					thisjs.package = obj.package;
+					thisjs.paySign = obj.paySign;
+					thisjs.wxpay();
+				} else {
+					alert(obj.msg);
+				}
+			});
+		{else}
+			window.open("{cfg:(dirpath,base)}/index.php?app=member&app_act=order_pay&id=" + id + "&pay_method=alipaywap",'_self');
+		{/if}
+	}
+	this.pay2 = function(id) {
+		{if(cls_obj::get("cls_session")->get("weixin")==1)}
+			kj.obj("#id_btn_pay").innerHTML = '正在支付...';
+			kj.ajax.get("{cfg:(dirpath,base)}/index.php?app=member&app_act=reserve.pay&id="+id+"&pay_method=weixin",function(data) {
+				alert(data);
+				var obj = kj.json(data);
+				if(obj.isnull) {
+					alert("系统繁忙");
+					kj.obj("#id_btn_pay").innerHTML = '立即支付';
+					return;
+				}
+				if(obj.code == '0') {
+					thisjs.appId = obj.appId;
+					thisjs.timeStamp = obj.timeStamp+'';
+					thisjs.nonceStr = obj.nonceStr;
+					thisjs.package = obj.package;
+					thisjs.paySign = obj.paySign;
+					thisjs.wxpay();
+				} else {
+					alert(obj.msg);
+				}
+			});
+		{else}
+			window.open('{cfg:(dirpath,base)}/index.php?app=member&app_act=reserve.pay&id='+id+'&pay_method=alipay','_blank');
+		{/if}
+	}
+
+}
+{if(cls_obj::get("cls_session")->get("weixin")==1 && $item['order_state']==-2)}
+function onBridgeReady(){
+   WeixinJSBridge.invoke(
+	   'getBrandWCPayRequest', {
+		   "appId" : thisjs.appId,     //公众号名称，由商户传入     
+		   "timeStamp": thisjs.timeStamp,         //时间戳，自1970年以来的秒数     
+		   "nonceStr" : thisjs.nonceStr, //随机串     
+		   "package" : thisjs.package,     
+		   "signType" : "MD5",         //微信签名方式:     
+		   "paySign" : thisjs.paySign //微信签名 
+	   },
+	   function(res){     
+		   if(res.err_msg == "get_brand_wcpay_request:ok" ) {
+				location.reload(true);
+		   }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。 
+			kj.obj("#id_btn_pay").value = '继续支付';
+			kj.obj("#id_btn_pay").disabled = false;
+	   }
+   ); 
+}
+{/if}
+
+</script>
+{include(label.footer)}
+</body>
+</html>

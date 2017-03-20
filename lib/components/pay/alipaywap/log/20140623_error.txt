@@ -1,0 +1,3 @@
+success
+status=
+http://www.0743wangou.com/common.php?app=pay&app_act=notify&paymethod=alipaywap&out_trade_no=5151406230928271&trade_no=2014062337531283&key=2fcc32c1f150cc57044304626b6c8089

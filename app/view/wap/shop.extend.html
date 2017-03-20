@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>运营配置-{cfg:(site_title,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+<style>
+#id_pic_view img{max-width:100px;max-height:100px}
+.meselect select{width:260px;float:left;margin:5px 0px 3px 0px;clear:both}
+</style>
+</head>
+<body>
+{include(label.header)}
+<div class="top">
+	<h1>运营配置</h1>
+	<a href="?" class="x1"><img src="images/home.png"></a>
+	<a href="?app=shop" id="id_top_back" class="x2"><img src="images/back.png"></a>
+</div>
+<div class="main">
+<form name="frm_main" action="{fun_get::url(array('app_act'=>'extend.save'))}" method="post">
+<input type="hidden" name="shop_progress" value="{$editinfo['shop_progress']}">
+<div class="shopedit">
+	<div class="xtitle">起送价&nbsp;&nbsp;<font>(0 表示不限)</font></div>
+	<div class="xtext">
+		<input type="text" name="shop_dispatch_price" value="{$editinfo['shop_dispatch_price']}" placeholder="{cfg:(coinsign,sys)}">
+	</div>
+	<div class="xtitle">配送费&nbsp;&nbsp;<font>(0 表示免费配送)</font></div>
+	<div class="xtext">
+		<input type="text" name="shop_addprice" value="{$editinfo['shop_addprice']}" placeholder="{cfg:(coinsign,sys)}">
+	</div>
+	<div class="xtitle">每天销量限制</div>
+	<div class="xtext">
+		<input type="text" name="shop_day_limit" value="{$editinfo['shop_day_limit']}">
+		<font><br>0表示不限</font>
+	</div>
+	<div class="xtitle">提前下单时间</div>
+	<div class="xtext">
+		<input type="text" name="arrivedelay" value="{$editinfo['extend']['arrivedelay']}" placeholder="分钟">
+		<font><br>下单时间与要求送餐时间相隔分钟数，如10点下单，这里如果是30分钟，那么表示最快10:30能送到</font>
+	</div>
+	<div class="xtitle">开放时间</div>
+	<div class="xtime">
+		<ul id="id_opentime">
+		<li>
+		<label><input type="checkbox" name="shop_weekday[]" value="1"{if(in_array('1',$editinfo['weekday']))} checked{/if}>周一</label>&nbsp;&nbsp;<label><input type="checkbox" name="shop_weekday[]" value="2"{if(in_array('2',$editinfo['weekday']))} checked{/if}>周二</label>&nbsp;&nbsp;<label><input type="checkbox" name="shop_weekday[]" value="3"{if(in_array('3',$editinfo['weekday']))} checked{/if}>周三</label>&nbsp;&nbsp;<label><input type="checkbox" name="shop_weekday[]" value="4"{if(in_array('4',$editinfo['weekday']))} checked{/if}>周四</label>&nbsp;&nbsp;<label><input type="checkbox" name="shop_weekday[]" value="5"{if(in_array('5',$editinfo['weekday']))} checked{/if}>周五</label>&nbsp;&nbsp;<label><input type="checkbox" name="shop_weekday[]" value="6"{if(in_array('6',$editinfo['weekday']))} checked{/if}>周六</label>&nbsp;&nbsp;<label><input type="checkbox" name="shop_weekday[]" value="0"{if(in_array('0',$editinfo['weekday']))} checked{/if}>周天</label>
+		</li>
+		{foreach($editinfo['opentime'] as $opentime)}
+		<li><select name="opentime_hour1[]">{for($i=0;$i<24;$i++)}<option value="{$i}"{if($i==$opentime['hour1'])} selected{/if}>{$i}点</option>{/for}</select><select name="opentime_minu1[]">{for($i=0;$i<59;$i++)}<option value="{$i}"{if($i==$opentime['minu1'])} selected{/if}>{$i}分</option>{/for}</select> 到 <select name="opentime_hour2[]">{for($i=0;$i<24;$i++)}<option value="{$i}"{if($i==$opentime['hour2'])} selected{/if}>{$i}点</option>{/for}</select><select name="opentime_minu2[]">{for($i=0;$i<59;$i++)}<option value="{$i}"{if($i==$opentime['minu2'])} selected{/if}>{$i}分</option>{/for}</select><br><input type="text" name="opentime_name[]" value="{$opentime['name']}" placeholder="别称：">&nbsp;&nbsp;&nbsp;<button type="button" class="btn2" onclick="kj.remove(kj.parent(this,'li'));">删除</button></li>
+		{/foreach}
+		</ul>
+		<a href="javascript:thisjs.opentime_add();">添加</a>
+	</div>
+	<div class="xtitle">送餐时间</div>
+	<div class="xtime">
+		<ul id="id_arrivetime">
+		{foreach($editinfo['arrivetime'] as $arrivetime)}
+		<li><select name="arrivetime_hour[]">{for($i=0;$i<24;$i++)}<option value="{$i}"{if($i==$arrivetime['hour'])} selected{/if}>{$i}点</option>{/for}</select><select name="arrivetime_minu[]">{for($i=0;$i<60;$i++)}<option value="{$i}"{if($i==$arrivetime['minu'])} selected{/if}>{$i}分</option>{/for}</select> <input type="text" class="xtxt1" name="arrivetime_name[]" value="{$arrivetime['name']}" placeholder="别称：">&nbsp;&nbsp;&nbsp;<button type="button" class="btn2" onclick="kj.remove(kj.parent(this,'li'));">删除</button></li>
+		{/foreach}
+		</ul>
+	</div>
+	<div class="xbtn"><input type="button" name="btn_saveinfo" value=" 提 交 " class="btn1" onclick="thisjs.on_save();"></div>
+</div>
+</form>
+</div>
+<div id="id_new_opentime" style="display:none">
+<select name="opentime_hour1[]">{for($i=0;$i<24;$i++)}<option value="{$i}">{$i}点</option>{/for}</select><select name="opentime_minu1[]">{for($i=0;$i<60;$i++)}<option value="{$i}">{$i}分</option>{/for}</select> 到 <select name="opentime_hour2[]">{for($i=0;$i<24;$i++)}<option value="{$i}">{$i}点</option>{/for}</select><select name="opentime_minu2[]">{for($i=0;$i<60;$i++)}<option value="{$i}">{$i}分</option>{/for}</select><br><input type="text" name="opentime_name[]" value="" placeholder="别称：">&nbsp;&nbsp;&nbsp;<button type="button" class="btn2" onclick="kj.remove(kj.parent(this,'li'));">删除</button>
+</div>
+<div id="id_new_arrivetime" style="display:none">
+<select name="arrivetime_hour[]">{for($i=0;$i<24;$i++)}<option value="{$i}">{$i}点</option>{/for}</select><select name="arrivetime_minu[]">{for($i=0;$i<60;$i++)}<option value="{$i}">{$i}分</option>{/for}</select> 别称：<input type="text" name="arrivetime_name[]" value="">&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" onclick="kj.remove(kj.parent(this,'li'));">移除</a>
+</div>
+{include(label.footer)}
+</body>
+</html>
+<script>
+var thisjs = new function() {
+	this.opentime_add = function() {
+		var objli = document.createElement("li");
+		objli.innerHTML = this.opentime_html;
+		kj.obj("#id_opentime").appendChild(objli);
+	}
+	this.arrivetime_add = function() {
+		var objli = document.createElement("li");
+		objli.innerHTML = this.arrivetime_html;
+		kj.obj("#id_arrivetime").appendChild(objli);
+	}
+	this.on_save = function() {
+		kj.ajax.post(document.frm_main , function(data) {
+			var objdata = kj.json(data);
+			if(objdata.isnull) {
+				alert("系统繁忙");
+				return;
+			}
+			if(objdata.code == '0') {
+				kj.alert.show("保存成功");
+			} else {
+				alert(objdata.msg);
+			}
+		});
+	}
+}
+thisjs.opentime_html = kj.obj("#id_new_opentime").innerHTML;
+thisjs.arrivetime_html = kj.obj("#id_new_arrivetime").innerHTML;
+kj.remove("#id_new_opentime");
+kj.remove("#id_new_arrivetime");
+</script>
+<script src="/common/js/kj.pic.js"></script>

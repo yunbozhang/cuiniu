@@ -1,0 +1,145 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>配送范围-商家管理-{cfg:(site_title,sys)}</title>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+</head>
+<body>
+{include(header)}
+{include(shop.header)}
+{include(shop.left)}
+<div class="uright">
+		<div class="pMenu" id="id_pMenu">
+			<li class="sel">管理</li>
+			<li onclick="parent.kj.dialog({id:'add',title:'添加范围',url:'{fun_get::url(array('app_act'=>'add','url_pid'=>fun_get::get('url_pid'),'url_area_pid'=>fun_get::get('url_area_pid')))}',w:500,max_h:600,showbtnhide:true,showbtnmax:false,showbtnclose:false,type:'iframe'});" class="x_btn">添加</li>
+		</div>
+		<div style="float:left;width:100%;margin:15px 0px 5px 0px">&nbsp;&nbsp;路径：<a href="javascript:shop.refresh('url_pid=');">顶级</a>
+			{foreach($arr_path as $path)}
+			 -> <a href="javascript:shop.refresh('url_pid={$path['area_id']}&topid={$topid}');">{$path['area_name']}</a>
+			{/foreach}
+		</div>
+		<div class="pTableMain" id="id_main">
+			<div class="pTableBox" id="id_table_box">
+				<div class='pTableTit' id="id_table_title">
+					<li><span class="x_tit" style="width:25px">&nbsp;</span></li>
+					{foreach($arr_list["tabtit"] as $item)}
+						<li><span class="x_tit"{if($item["w"]>0)} style="width:{$item["w"]}px"{/if} onclick="shop.table.list1.sort('{$item['key']}')">{$item["name"]}
+						{if(isset($arr_list['sort'][$item['key']]))}<img src="images/sort_{$arr_list['sort'][$item['key']]}.png">{/if}</span><span class="x_split"></span></li>
+					{/if}
+					<li><span class="x_tit" style="cursor:none;width:80px">操作</span></li>
+				</div>
+				<div class="pTableList" id="id_table_list">
+					<div class='pTable' id="id_table">
+						{foreach($arr_list['area'] as $item)}
+							<div class='pTabRow' id="id_dir_{$item['area_id']}">
+								<li></li>
+								{foreach($arr_list["tabtd"] as $field)}
+									{if($field=='area_name')}
+									<li>{$item[$field]}</li>
+									{else}
+									<li></li>
+									{/if}
+								{/foreach}
+								<li>
+								{if($this_limit->chk_act("delete"))}<input type="button" name="btnExe" value="移除" onclick="thisjs.remove('' , '{$item['area_id']}');" class="btn-2">{/if}
+								<a href="javascript:shop.refresh('url_pid={$item['area_id']}&topid={$topid}');" style="color:#ff0000">下级</a>
+								</li>
+							</div>
+						{/foreach}
+						{foreach($arr_list['list'] as $item)}
+							<div class='pTabRow' id="id_tabrow_{$item['dispatch_id']}">
+								<li></li>
+								{foreach($arr_list["tabtd"] as $field)}
+									{if($field=='area_name')}
+									<li>{$item[$field]}</li>
+									{else}
+									<li><input type="text" name="{$field}[]" value="{$item[$field]}" class="autosize"></li>
+									{/if}
+								{/foreach}
+								<li>
+								{if($this_limit->chk_act("delete"))}<input type="button" name="btnExe" value="移除" onclick="thisjs.remove('{$item['dispatch_id']}');" class="btn-2">{/if}
+								<input type='hidden' name='dispatch_id[]' value="{$item['dispatch_id']}"></li>
+							</div>
+						{/foreach}
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="pFootAct" id="id_pFootAct">
+			<li>{if($this_limit->chk_act("save"))}<input type="button" name="btnExe" value="保存" onclick="shop.frm_ajax('save');" class="btn-3">{/if}</li>
+		</div>
+</div>
+{include(shop.footer)}
+{include(footer)}
+</body>
+</html>
+<script src="shop.js"></script>
+<script src="shop.table.js"></script>
+<script>
+//初始化表格控件
+kj.onload(function(){
+shop.table.list1.init('#id_table_title' , '#id_table');
+});
+//自动保存
+shop.table.list1.save_resize = function() {
+	var lng_w = (kj.w(this.field));
+	kj.ajax.get("common.php?app=config&app_module=user&dir={$app_dir}&app_act=save_resize&filename=meal&key=meal.dispatch&index=" + this.fieldsindex + "&w=" + lng_w , function(data){
+		//alert(data);
+	});
+}
+shop.table.list1.sort = function(key) {
+	kj.ajax.get("common.php?app=config&app_module=user&dir={$app_dir}&app_act=sort&key=meal.dispatch&filename=meal&sortby=" + key , function(data){
+			var obj_data=kj.json(data);
+			if(!obj_data.isnull) {
+				shop.refresh();
+			}
+	});
+}
+//当前页面js对象
+var thisjs = new function() {
+	this.remove = function(id , pid) {
+		if(!pid) {
+			thisjs.id = id;
+			shop.ajax_delete( id , true , function() {kj.remove("#id_tabrow_" + thisjs.id);} );
+		} else {
+			thisjs.id = pid;
+			shop.ajax_url({'url':'?app={$app}&app_act=delete&app_module={$app_module}&pid='+pid, 'refresh' : false} , function() {kj.remove("#id_dir_" + thisjs.id);});
+		}
+	}
+	//当编辑时，ajax刷新
+	this.ajax_refresh = function() {
+		kj.ajax.get("{fun_get::url(array('app_act'=>'refresh_list'))}" , function(data) {
+			var obj = kj.json(data);
+
+				var html = '';
+				for(var i = 0 ; i < obj['list'].length ; i++ ) {
+					html += '<div class="pTabRow" id="id_tabrow_' + obj['list'][i]['dispatch_id'] + '">';
+					html += '<li><input type="hidden" name="dispatch_id[]" value="' + obj['list'][i]['dispatch_id'] + '"></li>';
+					for(j = 0 ; j < obj["tabtd"].length ; j++) {
+						if( obj["tabtd"][j] == 'area_name') {
+							html += '<li>' + obj['list'][i][obj["tabtd"][j]] + '</li>';
+						} else {
+							html += '<li><input type="text" name="' + obj["tabtd"][j] + '[]" value="' + obj['list'][i][obj["tabtd"][j]] + '" class="autosize"></li>';
+						}
+					}
+					html += '<li>';
+					html += '<a href="javascript:shop.refresh(\'url_pid=' + obj['list'][i]['dispatch_id'] + '&url_area_pid=' + obj['list'][i]['dispatch_area_id'] + '\');">下级</a>';
+					html += '&nbsp;&nbsp;<a href="javascript:thisjs.remove(\'' + obj['list'][i]['dispatch_id'] + '\');">移除</a>';
+					html += '</li></div>';
+				}
+				kj.obj("#id_table").innerHTML = html;
+				shop.table.list1.init('#id_table_title' , '#id_table');
+		});
+	}
+}
+//店铺选择回调函数
+function shop1_callback(o) {
+	if("id" in o) {
+		kj.set("#id_url_shop_id" , "value" , o.id);
+		shop.refresh();
+	}
+}
+</script>

@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>购物车-{cfg:(site_title,sys)}</title>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+</head>
+<body>
+{include(header)}
+{foreach($cart_list['shop'] as $item=>$shop)}
+	<div class="carttit Tshop{$shop['info']['shop_id']}">{$shop['info']['shop_name']}</div>
+	<table class="carttab Tshop{$shop['info']['shop_id']}" kjdata="{$shop['info']['shop_id']}">
+	<tr class="xtit"><td class="x1">餐品</td><td class="x2">单价</td><td class="x3">数量</td><td class="x4">小计</td><td class="x5">操作</td></tr>
+	{foreach($shop['cart'] as $key=>$cart)}
+	<tr>
+		<td class="x1">
+			{set $price=0}
+			<input type="hidden" name="menuid[]" value="{$key}">
+			{foreach($cart['ids'] as $menu)}
+			<b>{$cart_list['menu']['id_'.$menu]['menu_title']}</b>
+			{set $price=$price+$cart_list['menu']['id_'.$menu]['menu_price']}
+			{/foreach}
+			<input type="hidden" name="menuprice[]" value="{$price}">
+			</td>
+		<td class="x2">{fun_kj::get_price($price)}</td>
+		<td class="x3 btn-s1">
+			<input type="button" name="btnjian" class="xbtnjian Tnumbtn{$item['id']}" onclick="thisjs.change_num(this,-1);"><input type="text" name="menunum[]" value="{$cart['num']}" class="xnum"><input type="button" name="btnjia" class="xbtnjia" onclick="thisjs.change_num(this,1);">
+		</td><td class="x4 Tgtotal{$item['id']}">{fun_kj::get_price($price*$cart['num'])}</td><td class="x5"><a href="javascript:void(0);" onclick="thisjs.remove(this);">[移除]</a></td></tr>
+	{/foreach}
+	</table>
+	<div class="cartbtn Tshop{$shop['info']['shop_id']}">
+		<li style="float:right;padding-right:5px"><a href="{fun_get::url(array('shop_id'=>$shop['info']['shop_id']))}" class="btn-a1"><font>去结算</font></a></li>
+	</div>
+{/foreach}
+{include(footer)}
+<script>
+var thisjs = new function() {
+	this.change_num = function(obj,val) {
+		var objp = kj.parent(obj , "td");
+		var objnum = kj.obj(".xnum" , objp);
+		if(!objnum || !('length' in objnum)) return;
+		var num = kj.toint(objnum[0].value) + val;
+		if(num<=0) this.remove(obj);
+		objnum[0].value = num;
+		this.save_cookie();
+	}
+	this.save_cookie = function() {
+		var arr_table = kj.obj(".carttab");
+		var j , arr , arr_shop = [] , shop_id , k;
+		for(var i = 0 ; i < arr_table.length ; i++) {
+			arr_menuid = kj.obj(":menuid[]" , arr_table[i]);
+			arr_menunum = kj.obj(":menunum[]" , arr_table[i]);
+			arr = [];
+			for(k = 0 ; k < arr_menuid.length ; k++) {
+				num = kj.toint(arr_menunum[k].value);
+				for(j = 0 ; j < num ; j++) {
+					arr[arr.length] = arr_menuid[k].value;
+				}
+			}
+			shop_id = kj.getAttribute(arr_table[i] , 'kjdata');
+			arr_shop[arr_shop.length] = shop_id + ":" + arr.join("|");
+		}
+		var ids = arr_shop.join("||");
+		kj.cookie_set("cart_ids" , ids , 24);
+	}
+	this.remove = function(obj) {
+		var objtable = kj.parent(obj , 'table');
+		kj.remove(kj.parent(obj,'tr'));
+		var objrow = kj.obj("tr",objtable);
+		if(objrow.length<2) {
+			var shop_id = kj.getAttribute(objtable , 'kjdata');
+			kj.remove(".Tshop"+shop_id);
+		}
+		thisjs.save_cookie();
+	}
+}
+</script>
+</body>
+</html>

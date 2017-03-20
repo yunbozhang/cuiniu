@@ -1,0 +1,179 @@
+{include(header)}
+<div class="pMenu" id="id_pMenu">
+	<li onclick="admin.act('');" class="sel">未结算</li>
+	<li onclick="admin.act('list');">已结算</li>
+	<li onclick="admin.menu_display(0);" class = "x_btn">查找</li>
+	<li class="fdpic" onclick="master_open({url:'common.php?app=config&app_module=user&dir={$app_dir}&filename=meal&key=meal.checkout.no',title:'设置字段',w:400});">&nbsp;</li>
+</div>
+<div class="btnMenuDiv" id="id_btnMenuDiv"{if($arr_list['issearch']==0)} style="display:none"{/if}>
+<li>结算日：<input type="text" name="s_date1" value="{fun_get::get('s_date1')}" class='pTxt1 pTxtL150' onfocus="new Calendar().show(this);"> 到 <input type="text" name="s_date2" value="{fun_get::get('s_date2')}" class='pTxt1 pTxtL150' onfocus="new Calendar().show(this);"></li>
+<li>关 键 字：<input type="text" id="s_key" name="s_key" value="{fun_get::get('s_key')}" class='pTxt1'>　<input type="button" name="btn_s_ok" value="查找" class="pBtn" onclick="admin.search();"> 　<input type="button" name="btn_s_clear" value="清空" class="pBtn" onclick="admin.clear_search();"></li>
+</table>
+</div>
+<div class="pMain" id="id_main">
+<div class="pTableBox" id="id_table_box">
+	<div class='pTableTit' id="id_table_title">
+		<li><span class="x_tit" style="width:25px">&nbsp;</span></li>
+		{foreach($arr_list["tabtit"] as $item)}
+			<li><span class="x_tit"{if($item["w"]>0)} style="width:{$item["w"]}px"{/if} onclick="admin.table.list1.sort('{$item['key']}')">{$item["name"]}
+			{if(isset($arr_list['sort'][$item['key']]))}<img src="images/sort_{$arr_list['sort'][$item['key']]}.png">{/if}</span><span class="x_split"></span></li>
+		{/if}
+		<li><span class="x_tit" style="cursor:none;width:100px">操作</span></li>
+	</div>
+	<div class="pTableList" id="id_table_list">
+		<div class='pTable' id="id_table">
+			{foreach($arr_list['list'] as $item)}
+			<div class='pTabRow'>
+				<li id="id_row_{$item['shop_id']}"><input type='checkbox' name='selid[]' value="{$item['shop_id']}"></li>
+				{foreach($arr_list["tabtd"] as $field)}
+					<li>{if(empty($item[$field]))}&nbsp;{else}{$item[$field]}{/if}</li>
+				{/foreach}
+				<li>
+				<input type="button" name="btndetail" value="明细" onclick="thisjs.detail({$item['shop_id']});" class="pBtn">
+				{if($this_limit->chk_act("edit"))}
+				&nbsp;<input type="button" name="btnedit" value="结算" onclick="thisjs.settlement({$item['shop_id']},{$item['money']});" class="pBtn">
+				{/if}
+				</li>
+			</div>
+			{/foreach}
+		</div>
+	</div>
+</div>
+</div>
+{if(!empty($arr_list['pagebtns']))}
+<div class="pPage" id="id_pPage">
+{$arr_list['pagebtns']}
+</div>
+{/if}
+<div id="id_settlement_html" style="display:none">
+	<div class="me_div1">
+		<li style="width:100%">
+			<textarea name="x" cols=36 rows=5 id="id_settlement_beta"></textarea>
+		</li>
+		<li><input type="button" name="btn_cancel" value="确定" class="pBtn" onclick="thisjs.on_exe()"></li>
+	</div>
+</div>
+<div class="pFootAct" id="id_pFootAct">
+<li>
+<label><input type='checkbox' name='selall' value='1'>全选</label>　
+<select name="selact" onchange="thisjs.changeact(this.value)" id="id_selact">
+	<option value="">--操作--</option>
+		{if($this_limit->chk_act("settlement"))}<option value="settlement">批量结款</option>{/if}
+		{if($this_limit->chk_act("excel"))}<option value="excel">导出Excel</option>{/if}
+	</select>
+	<span id="id_selact_excel" style="display:none">
+		导出名称：<input type="text" name="excel_name" value="{fun_get::get('s_date')}待结算款">
+	</span>
+	&nbsp;<input type="button" name="btnExe" value="执行" onclick="thisjs.selact();" class="pBtn">
+</li>
+<li>
+货品金额：{cfg:(coinsign,sys)}{$arr_list['moneytotal']}&nbsp;&nbsp;&nbsp;预付总额：{cfg:(coinsign,sys)}{$arr_list['moneyrepay']}&nbsp;&nbsp;&nbsp;配送总额：{cfg:(coinsign,sys)}{$arr_list['moneyadd']}&nbsp;&nbsp;&nbsp;优惠金额：{cfg:(coinsign,sys)}{$arr_list['moneyfav']}&nbsp;&nbsp;&nbsp;有效金额：{cfg:(coinsign,sys)}{$arr_list['moneyall']}&nbsp;&nbsp;&nbsp;在线支付：{cfg:(coinsign,sys)}{$arr_list['moneypay']}
+</li>
+</div>
+<script src="admin.table.js"></script>
+<script>
+//初始化表格控件
+kj.onload(function(){
+admin.table.list1.init('#id_table_title' , '#id_table');
+});
+//自动保存
+admin.table.list1.save_resize = function() {
+	var lng_w = (kj.w(this.field));
+	kj.ajax.get("common.php?app=config&app_module=user&dir={$app_dir}&app_act=save_resize&filename=meal&key=meal.checkout.no&index=" + this.fieldsindex + "&w=" + lng_w , function(data){
+		//alert(data);
+	});
+}
+admin.table.list1.sort = function(key) {
+	kj.ajax.get("common.php?app=config&app_module=user&dir={$app_dir}&app_act=sort&key=meal.checkout.no&filename=meal&sortby=" + key , function(data){
+			var obj_data=kj.json(data);
+			if(!obj_data.isnull) {
+				admin.refresh();
+			}
+	});
+}
+//当前页面js对象
+var thisjs = new function() {
+	this.shop_id = 0;
+	this.money = 0;
+	this.settlement_id = [];
+	this.settlement_index = 0;
+	this.selact = function(val) {
+		kj.obj("#id_selact_state").style.display = (val == "state") ? "" : "none";
+	}
+	this.settlement = function(shop_id) {
+		var obj = kj.obj('#id_settlement_html');
+		if(obj) {
+			this.settlement_html = obj.innerHTML;
+			kj.remove(obj);
+		}
+		this.shop_id = shop_id;
+		kj.dialog({'html':this.settlement_html,'id':'settlement_box','type':'html','title':'结算备注','w':300,'h':200,'showbtnmax':false});
+	}
+	this.on_exe = function(id) {
+		var beta = kj.obj("#id_settlement_beta").value;
+		if(!id) id = this.shop_id;
+		kj.ajax('?app={$get_app}&app_module={$get_app_module}&app_act=checkout&date1={fun_get::get("s_date1")}&date2={fun_get::get("s_date2")}&shop_id='+id+'&money='+this.money,{'beta':beta},function(data) {
+			var objdata = kj.json(data);
+			if(objdata.isnull) {
+				alert("系统繁忙");
+			} else if(thisjs.settlement_id.length>0) {
+				if(objdata.code=='0') {
+					var id = thisjs.settlement_id[thisjs.settlement_index];
+					var objrow = kj.parent(kj.obj("#id_row_"+id),"div")
+					kj.remove(objrow);
+				} else {
+					alert(objdata.msg);
+				}
+				thisjs.settlement_index++;
+				if(thisjs.settlement_index<thisjs.settlement_id.length) {
+					thisjs.on_exe(thisjs.settlement_id[thisjs.settlement_index]);
+				} else {
+					kj.alert.show("结算完成");
+				}
+			} else {
+				if(objdata.code=='0') {
+					kj.alert.show("结算成功" , function(){
+						location.reload(true);
+					});
+				} else {
+					alert(objdata.msg);
+				}
+			}
+
+		});
+	}
+	this.detail = function(id) {
+		master_open({'url':"?app_module=meal&app=order&ischeckout=1&checkout_date1={fun_get::get('s_date1')}&checkout_date2={fun_get::get('s_date2')}&shop_id="+id,'id':'checkout_order','type':'iframe','title':'结算明细','w':1000,'showbtnmax':false});
+	}
+	this.changeact = function(val) {
+		kj.obj("#id_selact_excel").style.display = (val == "excel") ? "" : "none";
+	}
+	this.selact = function() {
+		var act = kj.obj("#id_selact").value;
+		if(act == 'excel') {
+			document.frm_main.target='_blank';
+			document.frm_main.app_act.value=act;
+			document.frm_main.submit();
+			document.frm_main.target='_self';
+			document.frm_main.app_act.value = '';
+			return;
+		} else if(act == 'settlement') {
+			var arr = kj.obj(":selid[]");
+			var arr_id = [];
+			for(var i = 0 ; i < arr.length ; i++) {
+				if(arr[i].checked) arr_id[arr_id.length] = arr[i].value;
+			}
+			if(arr_id.length<1) {
+				alert("请选择要结算的商家");
+				return;
+			}
+			this.settlement_id = arr_id;
+			this.settlement_index = 0;
+			this.on_exe(arr_id[0]);
+			return;
+		}
+		admin.selact();
+	}
+}
+</script>
+{include(footer)}

@@ -1,0 +1,694 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>来单显示</title>
+<meta name="keywords" content="" />
+<meta name="description" content=" 由克网站程序  - XXGO.NET" />
+<meta name="generator" content="klkkdj! 2.0.0" />
+<meta name="author" content="klkkdj!由克" />
+<meta name="copyright" content="2009-2012 XXGO NET" />
+<meta name="MSSmartTagsPreventParsing" content="True" />
+<meta http-equiv="MSThemeCompatible" content="Yes" />
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+<script src="{cfg:(dirpath,base)}/common.php?app=sys&app_act=web.config&app_ajax=1"></script>
+<script src="/common/js/kj.js"></script>
+<script src="/common/js/kj.ajax.js"></script>
+<script src="/common/js/kj.dialog.js"></script>
+<script src="/common/js/kj.alert.js"></script>
+<script src="/common/js/kj.table.js"></script>
+<script src="/common/js/kj.windiv.js"></script>
+<style>
+.header{float:left;width:100%;height:58px;background:#438eb9}
+.header .x_logo{float:left;width:126px;text-align:center;padding-top:10px;font-family:微软雅黑;color:#fff}
+.header .x_txt{color:#fff;float:left;margin:18px 0px 0px 20px}
+h2{margin:0px}
+.header .xli{float:left}
+.header .xli li{float:left;clear:both;margin-top:5px;color:#fff}
+.header .xli li .pTxt1{width:120px;border:0px #ccc solid}
+.me_table{float:left;width:100%;margin-top:10px;border-collapse: collapse;}
+.me_table td{border-top:1px #cccccc solid;padding:5px 0px 3px 0px;font-size:14px;font-weight:bold}
+.me_table .x_0{background:#FFFF00}
+.me_table .x_2{background:#fff}
+.me_table .x_1{background:#aaaa00;color:#fff}
+.me_table .x_3{background:#ccc}
+.me_table .x_tit{font-weight:bold}
+.me_table .x_tit td{height:30px;cursor:pointer}
+.me_table .xnew{float:left;border-radius:8px;background:#ff3300;color:#fff;padding:3px;font-size:12px}
+.me_div1{float:left;width:300px}
+.me_div1 li{float:left;width:300px;margin:10px 0px 5px 0px;line-height:25px}
+.me_row{float:left;width:600px;}
+.me_row li{float:left;width:100%;text-align:left;padding:5px 0px 3px 0px}
+.me_row .x_col1{float:left;width:300px}
+.me_row .x_col2{float:right;width:100px}
+.me_row .x_col3{float:right;width:100px}
+.me_detail{}
+.me_detail td{border:0px;font-size:12px;font-weight:200}
+h2{float:left}
+.meTxt{background:#3A6EA5;color:#fff;font-size:18px;height:20px;border:0px;font-weight:bold;cursor:pointer}
+div{text-align:left}
+.mebtn{float:right;margin:0px 10px 0px 0px}
+.mebtn li{float:left;margin-left:3px}
+.mebtn .pBtn{border:1px #fff solid;float:left;margin-top:3px}
+</style>
+<script src="/common/js/date.js"></script>
+</head>
+<body>
+<div class="header">
+	<div class="x_logo"><a href="{cfg:(dirpath,base)}/"><img src="/admin/images/logo.png"></a><br>来单提醒</div>
+	<div class="x_txt">
+	{if(isset($shopinfo))}
+		<input type="text" name="area" value="【{$shopinfo['shop_name']}】" class="meTxt" id="id_area_box">
+	{else}
+		<input type="hidden" name="area" id="id_area" value="{$area_val}">
+		<select name="area_id[]" onchange="thisjs.changearea(this.value,0);" id="id_area_0">
+			<option value=""></option>
+		{foreach($area_list["default"] as $item)}
+			<option value="{$item['area_id']}"{if(in_array($item['area_id'] , explode("," , $area_val) ) )} selected{/if}>{$item['area_name']}</option>
+		{/foreach}
+		</select>
+		{for($i=1;$i<$area_list["depth"];$i++)}
+			<select name="area_id[]" onchange="thisjs.changearea(this.value,{$i});" id="id_area_{$i}">
+			</select>
+		{/foreach}
+		&nbsp;<input type="button" name="btnselarea" value="切换" class="pBtn" id="id_btnselarea" style="display:none" onclick="thisjs.refresh_area_val();">
+	{/if}
+	</div>
+	<div class="xli">
+	<li><h2>总单量：</h2><h2 id="id_order_num">{$arr_list['ordernum']}</h2><h2>总份数：</h2><h2 id="id_menu_num">{$arr_list['menunum']}</h2><h2>总金额：</h2><h2 id="id_order_total">{cfg:(coinsign,sys)}{$arr_list['ordertotal']}</h2><h2>刷新计时：</h2><h2 id="id_time_view"></h2></li>
+		<li><input type="text" name="starttime" value="{$arr_list['starttime']}" class='pTxt1' onfocus="new Calendar().show(this,null,function(){thisjs.changetime();});" placeholder="开始时间" id="id_starttime">&nbsp;<input type="text" name="endtime" value="{$arr_list['endtime']}" class='pTxt1' onfocus="new Calendar().show(this,null,function(){thisjs.changetime();});" placeholder="结束时间" id="id_endtime"></li>
+	</div>
+	<div style="color:#fff;float:right;text-align:left"><label><input type="checkbox" name="agree_print" id="id_agree_print" value=1 onclick="thisjs.agree_print(this.checked);" {if($agree_print)} checked{/if}>接受订单时自动打印小票</label><br><label><input type="checkbox" name="handle" id="id_handle" value=1{if($hide_handle)} checked{/if} onclick="thisjs.hide_handle(this.checked);">隐藏已处理订单</label>
+	<br><label><input type="checkbox" name="detail" id="id_detail" value=1{if($hide_detail)} checked{/if} onclick="thisjs.hide_detail(this.checked);">隐藏订单详情</label>
+	</div>
+	{if($isremote == 1)}
+	<div style="color:#fff;float:right;text-align:left">
+	<br><label><input type="checkbox" name="isremote" id="id_isremote" value=1{if($hide_isremote)} checked{/if} onclick="thisjs.hide_isremote(this.checked);">使用本地打印</label>
+	</div>
+	{/if}
+	<div class="mebtn">
+		<li><input type="button" name="btn_acceptall" value="一键接单" class="pBtn" onclick="thisjs.accept();" id="id_btn_acceptall">
+		<br><input type="button" name="btn_excel" value="一键导出" class="pBtn" onclick="thisjs.excel();" id="id_btn_excel"></li>
+		{if($isremote == 1)}<li><input type="button" name="btn_printall" value="一键打印" class="pBtn" onclick="thisjs.print();" id="id_btn_printall"{if($hide_isremote)} style="display:none"{/if}></li><br>{/if}
+		<li><input type="button" name="btn_reserve" value="切到订桌" class="pBtn" onclick="window.open('{fun_get::url(array('app_act'=>'reserve'))}','_self');" id="id_btn_reserve"></li>
+	</div>
+</div>
+<table class="me_table" id="id_tab_list">
+<tr class="x_tit"><td width="70" onclick="admin.table.list1.sort('order_id')"><font>订单id</font>{if(isset($arr_list['sort']["order_id"]))} <img src="/admin/images/sort_{$arr_list['sort']['order_id']}.png">{/if}</td>
+<td onclick="admin.table.list1.sort('order_area')"><font>区域</font>{if(isset($arr_list['sort']["order_area"]))} <img src="/admin/images/sort_{$arr_list['sort']['order_area']}.png">{/if}</td>
+<td onclick="admin.table.list1.sort('order_louhao1')"><font>地址</font>{if(isset($arr_list['sort']["order_louhao1"]))} <img src="/admin/images/sort_{$arr_list['sort']['order_louhao1']}.png">{/if}</td>
+<td onclick="admin.table.list1.sort('order_name')"><font>订餐人</font>{if(isset($arr_list['sort']["order_name"]))} <img src="/admin/images/sort_{$arr_list['sort']['order_name']}.png">{/if}</td>
+<td onclick="admin.table.list1.sort('order_time')"><font>下单时间</font>{if(isset($arr_list['sort']["order_time"]))} <img src="/admin/images/sort_{$arr_list['sort']['order_time']}.png">{/if}</td>
+<td onclick="admin.table.list1.sort('order_arrive')"><font>要求到达时间</font>{if(isset($arr_list['sort']["order_arrive"]))} <img src="/admin/images/sort_{$arr_list['sort']['order_arrive']}.png">{/if}</td>
+{if(!isset($shopinfo))}<td onclick="admin.table.list1.sort('shop_name')"><font>店铺</font>{if(isset($arr_list['sort']["shop_name"]))} <img src="/admin/images/sort_{$arr_list['sort']['shop_name']}.png">{/if}</td>{/if}
+<td onclick="admin.table.list1.sort('order_total_pay')"><font>应付</font>{if(isset($arr_list['sort']["order_total_pay"]))} <img src="/admin/images/sort_{$arr_list['sort']['order_total_pay']}.png">{/if}</td>
+<td onclick="admin.table.list1.sort('order_state')"><font>状态</font>{if(isset($arr_list['sort']["order_state"]))} <img src="/admin/images/sort_{$arr_list['sort']['order_state']}.png">{/if}</td><td>操作</td></tr>
+{foreach($arr_list['list'] as $item)}
+<tr{if($item['state']==1)} class="x_1"{else if($item['order_state']>0)} class="x_2"{else if($item['order_state']<0)} class="x_3"{else} class="x_0"{/if}><td width="50"><input type="hidden" name="selid[]"  id="id_order_{$item['order_id']}" value="{$item['order_id']}">{if($item['order_newuser']==1)}<font class="xnew">新</font>{/if}{$item['order_id']}</td><td>{$item['order_area']}</td><td>{$item['order_louhao1']}</td><td>{$item['order_name']}</td><td>{$item['order_time']}</td><td>{$item['order_arrive']}</td>{if(!isset($shopinfo))}<td>{$item['shop_name']}</td>{/if}<td>{cfg:(coinsign,sys)}{$item['order_total_pay']}</td><td id="id_state_{$item['order_id']}">{if($item['state']==1)}<span style="color:#ff0000">超时未处理</span>{else}{$item['state']}{/if}</td><td>
+{if(!isset($shopinfo))}
+<input type="button" name="btn_shop_{$item['order_id']}" id="id_btn_shop_{$item['order_id']}" value="联系店主" class="pBtn" onclick="thisjs.show_shopinfo('{$item['shop_name']}','{$item['shop_linkname']}','{$item['shop_linktel']}','{$item['shop_tel']}');">
+{/if}
+{if(empty($item['order_state']))}&nbsp;&nbsp;<input type="button" name="id_btn_print_{$item['order_id']}" id="id_btn_print_{$item['order_id']}" value="{if(empty($item['order_isprint']))}打印订单{else}重新打印{/if}" class="pBtn2" onclick="thisjs.print({$item['order_id']});" style="display:none">&nbsp;&nbsp;<input type="button" name="btn_accept_{$item['order_id']}" id="id_btn_accept_{$item['order_id']}" value="接受预订" class="pBtn" onclick="thisjs.accept({$item['order_id']});">&nbsp;&nbsp;<input type="button" name="btn_cancel_{$item['order_id']}" id="id_btn_cancel_{$item['order_id']}" value="取消订单" class="pBtn2" onclick="thisjs.show_cancel_box({$item['order_id']},'{$item['order_mobile']}','{$item['order_tel']}');">
+{else}&nbsp;&nbsp;<input type="button" name="id_btn_print_{$item['order_id']}" id="id_btn_print_{$item['order_id']}" value="{if(empty($item['order_isprint']))}打印订单{else}重新打印{/if}" class="pBtn2" onclick="thisjs.print({$item['order_id']});">
+{/if}
+&nbsp;&nbsp;<input type="button" name="btn_invalid_{$item['order_id']}" id="id_btn_invalid_{$item['order_id']}" value="作废" class="pBtn2" onclick="thisjs.invalid({$item['order_id']});"{if($item['order_state']<1)} style="display:none"{/if}>
+</td></tr>
+<tr id="id_detail_{$item['order_id']}" class="me_detail"{if($hide_detail)} style="display:none"{/if}><td>&nbsp;</td><td colspan='9'>
+<div class="me_row">
+{foreach($item['menu'] as $key => $menu)}
+	<li>
+		<span class="x_col1">
+		{set $price=0}
+		{foreach($menu['id'] as $item_menu)}
+			{set $price+=$arr_list['price']['id_'.$item_menu]}
+			{$arr_list['menu']['id_'.$item_menu]['menu_title']}&nbsp;&nbsp;
+		{/foreach}
+		</span>
+		<span class="x_col3">{$menu['num']}份</span>
+		<span class="x_col2">{cfg:(coinsign,sys)}{$price*$menu['num']}</span>
+	</li>
+{/foreach}
+	<li>总计 {cfg:(coinsign,sys)}{$item['order_total']}{if(!empty($item['order_addprice']))} + 配送费 {cfg:(coinsign,sys)}{$item['order_addprice']}{/if}{if($item['order_score_money']>0)} - 抵扣 {cfg:(coinsign,sys)}{$item['order_score_money']}{/if}{if((float)$item['order_favorable']>0)} - 优惠 {cfg:(coinsign,sys)}{$item['order_favorable']}{/if}{if($item['order_repayment']>0)} - 预付款 {cfg:(coinsign,sys)}{$item['order_repayment']}{/if} = 结算：<font class="txt_redB" style='font-size:18px'>{cfg:(coinsign,sys)}{$item['order_total_pay']}{if($item['order_pay_val']>0)} <font style="color:#ff0000">(已支付 {cfg:(coinsign,sys)}{$item['order_pay_val']}，{$item['pay_method']})</font>{/if}</li>
+	<li>联系电话：{if(!empty($item['order_tel']))}{$item['order_tel']}/{/if}{$item['order_mobile']}</li>
+	{if(!empty($item['order_beta']))}<li>备注：{$item['order_beta']}</li>{/if}
+</div>
+{if(count($item['order_act'])>0)}
+<div class="me_row" style="width:400px">
+{foreach($item['order_act'] as $act)}
+<li style="color:#ff8800">{$act}</li>
+{/foreach}
+</div>
+{/if}
+</td></tr>
+{/foreach}
+</table>
+<div id="id_cancel_order_html" style="display:none">
+	<div class="me_div1">
+		<li id="id_cancel_smstxt">
+			请输入通知用户短信内容<br>
+			<textarea name="cont" cols=30 rows=5 id="id_cancel_for"></textarea>
+		</li>
+		<li id="id_cancel_teltxt">用户未填写手机号，无法短信通知，请电话通知：<span id="id_cancel_tel"></span></li>
+		<li style="margin:0px">
+		<label id="id_checkbox_issms"><label><input type="checkbox" name="closeshop" value=1 id="id_cancel_closeshop">关闭店铺</label>
+		</li>
+		<li style="margin:0px"><input type="button" name="btn_cancel" value="确定取消" class="pBtn" onclick="thisjs.cancel_ok()"></li>
+	</div>
+</div>
+<div id="id_shopinfo_html" style="display:none">
+	<div class="me_div1">
+		<li>联 系 人：<span id="id_shopinfo_linkname"></span></li>
+		<li>联系电话：<span id="id_shopinfo_linktel"></span></li>
+		<li>订餐电话：<span id="id_shopinfo_tel"></span></li>
+	</div>
+</div>
+<div id="id_ding_music" style="width:0px;height:0px;float:left;overflow:hidden"><bgsound src="" loop="1" id="id_ding_music_ie"></div>
+<script src="/admin/admin.js"></script>
+<script src="/admin/admin.table.js"></script>
+<script>
+var thisjs = new function() {
+	this.arealist = {$area_list["list"]};//json格式，指定id包函的子地区
+	this.areainfo = {$area_list["area"]};//对应id地区详细信息
+	this.depth = {$area_list["depth"]};//当前地区深度
+	this.defaultval = "{$area_val}"//当前选择值
+	this.defaultval = this.defaultval.split(",");//格式化成数组
+	this.endid = {$arr_list['endid']};
+	this.arr_id = "{$arr_list['ids']}".split(",");
+	this.timeval = 15;//秒
+	//显示修改密码窗口
+	this.show_cancel_box = function(id,mobile,tel) {
+		this.cancel_id = id;
+		var obj = kj.obj('#id_cancel_order_html');
+		if(obj) {
+			this.cancel_box_html = obj.innerHTML;
+			kj.remove(obj);
+		}
+		kj.dialog({'html':this.cancel_box_html,'id':'cancel_box','type':'html','title':'取消订单(订单号：'+id+')','w':300,'h':230,'showbtnmax':false});
+		if(mobile == '') {
+			kj.hide("#id_cancel_smstxt");
+			kj.hide("#id_checkbox_issms");
+			obj = kj.obj("#id_cancel_tel");
+			if(obj) obj.innerHTML = tel;
+		} else {
+			kj.hide("#id_cancel_teltxt");
+		}
+	}
+	//显示店铺负责人信息
+	this.show_shopinfo = function(shopname,linkname,linktel,tel) {
+		var obj = kj.obj('#id_shopinfo_html');
+		if(obj) {
+			this.shopinfo_box_html = obj.innerHTML;
+			kj.remove(obj);
+		}
+		kj.dialog({'html':this.shopinfo_box_html,'id':'shopinfo_box','type':'html','title':shopname,'w':300,'h':230,'showbtnmax':false});
+		kj.obj("#id_shopinfo_linkname").innerHTML = linkname;
+		kj.obj("#id_shopinfo_linktel").innerHTML = linktel;
+		kj.obj("#id_shopinfo_tel").innerHTML = tel;
+	}
+
+	this.refresh = function() {
+		var ids = this.arr_id.join(",");
+		var objdata = {'ids':ids , 'endid':this.endid};
+		kj.ajax.post("{fun_get::url(array('app_act'=>'refresh'))}&rnd="+Math.random(),objdata,function(data){
+			var objdata = kj.json(data);
+			var obj;
+			if('list' in objdata) {
+				var i,j,x,btn,menu;
+				//更新状态
+				for( i = 0 ; i < thisjs.arr_id.length; i++ ) {
+					x = 'id_'+thisjs.arr_id[i];
+					if(x in objdata.orderstate) {
+						obj = kj.parent("#id_order_"+thisjs.arr_id[i] , "tr");
+						if(kj.toint(objdata.orderstate[x].order_state) > 0) {//已处理
+							{if($hide_handle)}
+							kj.table.row_del("#id_tab_list" , obj);
+							kj.table.row_del("#id_tab_list" , '#id_detail_'+thisjs.arr_id[i]);
+							i--;
+							{else}
+								kj.set("#id_state_" + thisjs.arr_id[i] , "innerHTML" , "已处理");
+								if(obj) obj.className = "x_2";
+								kj.hide("#id_btn_accept_" + thisjs.arr_id[i]);
+								kj.hide("#id_btn_cancel_" + thisjs.arr_id[i]);
+								kj.show("#id_btn_print_" + thisjs.arr_id[i]);
+							{/if}
+						} else if(objdata.orderstate[x].state == '1') {//已过期
+							if(obj) obj.className = "x_1";
+							kj.set("#id_state_" + thisjs.arr_id[i] , "innerHTML" , "<span style=\"color:#ff0000\">超时未处理</span>");
+						} else if(objdata.orderstate[x].order_state!='0') {
+							if(obj) obj.className = "x_3";
+							kj.set("#id_state_" + thisjs.arr_id[i] , "innerHTML" , objdata.orderstate[x].state);
+							kj.hide("#id_btn_accept_"+thisjs.arr_id[i]);
+							kj.hide("#id_btn_cancel_"+thisjs.arr_id[i]);
+						}
+						if(kj.toint(objdata.orderstate[x].order_state)>0 || kj.toint(objdata.orderstate[x].order_state)<0) {
+							thisjs.arr_id.removeat(i);
+						}
+					}
+				}
+				var state,selid,btn;
+				var length = 0;
+				if('length' in objdata.list) length = objdata.list.length;
+				//处理新增
+				for( i = 0; i < length ; i++) {
+					var perms1 = [];
+					//添加详情
+
+					x = '<div class="me_row">';
+					for(menu in objdata.list[i].menu){
+						x+='<li><span class="x_col1">';
+						price = 0;
+						for(j = 0;j<objdata.list[i].menu[menu].id.length;j++) {
+							id = "id_" + objdata.list[i].menu[menu].id[j];
+							x+=objdata.menu[id]['menu_title']+'&nbsp;&nbsp;';
+							price+=objdata.menu[id]['menu_price'];
+						}
+						x+='</span><span class="x_col3">'+objdata.list[i].menu[menu].num;
+						price = price * objdata.list[i].menu[menu].num;
+						x+='份</span><span class="x_col2">{cfg:(coinsign,sys)}'+price;
+						x+='</span></li>';
+					}
+					x+='<li>总计 {cfg:(coinsign,sys)}'+objdata.list[i].order_total;
+					if(objdata.list[i].order_addprice) x+=' + 配送费 {cfg:(coinsign,sys)}'+objdata.list[i].order_addprice;
+					if(objdata.list[i].order_score_money) x+=' + 抵扣 {cfg:(coinsign,sys)}'+objdata.list[i].order_score_money;
+					if(objdata.list[i].order_favorable) x+=' + 优惠 {cfg:(coinsign,sys)}'+objdata.list[i].order_favorable;
+					x+=' = 应收：<font class="txt_redB" style="font-size:18px">{cfg:(coinsign,sys)}'+objdata.list[i].order_total_pay+'</font>';
+					if(objdata.list[i].order_pay_val>0) { 
+						x+='<font style="color:#ff0000">(已支付 {cfg:(coinsign,sys)}'+objdata.list[i].order_pay_val+'，'+objdata.list[i].pay_method+')</font>';
+					}
+					x+='</li>';
+					x+='<li>联系电话：';
+					if(objdata.list[i].order_tel) x+=objdata.list[i].order_tel+'/';
+					x+=objdata.list[i].order_mobile+'</li>';
+					if(objdata.list[i].order_beta) x+='<li>备注：'+objdata.list[i].order_beta+'</li>';
+					x+='</div>';
+
+					if(objdata.list[i].order_act.length>0){
+						x+='<div class="me_row" style="width:400px">';
+						for(j=0;j<objdata.list[i].order_act.length;j++) {
+							x+='<li style="color:#ff8800">'+objdata.list[i].order_act[j]+'</li>';
+						}
+						x+='</div>';
+					}
+					perms1[perms1.length] = {'attribute':{'innerHTML':''}};
+					perms1[perms1.length] = {'attribute':{'innerHTML':x,'colSpan':9}};
+					obj = kj.table.row_insert("#id_tab_list",perms1,'',1,2);
+					obj.className = "me_detail";
+					obj.id="id_detail_"+objdata.list[i].order_id;
+					if(kj.obj("#id_detail").checked) kj.hide(obj);
+					//添加信息
+					perms1 = [];
+					if(objdata.list[i].state=='1') {
+						state = '<span style="color:#ff0000">超时未处理</span>';
+					} else {
+						state = '待处理';
+					}
+					btn = '';
+					{if(!isset($shopinfo))}
+					btn = '<input type="button" name="btn_shop_' + objdata.list[i].order_id + '" id="id_btn_shop_' + objdata.list[i].order_id + '" value="联系店主" class="pBtn" onclick="thisjs.show_shopinfo(\''+objdata.list[i].shop_name +'\',\''+objdata.list[i].shop_linkname+'\',\''+objdata.list[i].shop_linktel+'\',\''+objdata.list[i].shop_tel+'\');">&nbsp;&nbsp;';
+					{/if}
+					btn += '<input type="button" name="accept_' + objdata.list[i].order_id + '" id="id_btn_accept_' + objdata.list[i].order_id + '" value="接受预订" class="pBtn"  onclick="thisjs.accept(' + objdata.list[i].order_id + ');">&nbsp;&nbsp;<input type="button" name="btn_cancel_' + objdata.list[i].order_id + '" id="id_btn_cancel_' + objdata.list[i].order_id + '" value="取消订单" class="pBtn" onclick="thisjs.show_cancel_box('+objdata.list[i].order_id+',\''+objdata.list[i].order_mobile+'\',\''+objdata.list[i].order_tel+'\');">&nbsp;&nbsp;<input type="button" name="btn_print_' + objdata.list[i].order_id + '" id="id_btn_print_' + objdata.list[i].order_id + '" value="打印订单" class="pBtn2" onclick="thisjs.print('+objdata.list[i].order_id+');" style="display:none">';
+					btn += '&nbsp;&nbsp;<input type="button" name="btn_invalid_' + objdata.list[i].order_id + '" id="id_btn_invalid_' + objdata.list[i].order_id + '" value="作废" class="pBtn2" onclick="thisjs.invalid(' + objdata.list[i].order_id + ');" style="display:none">';
+					selid = '<input type="hidden" name="selid[]"  id="id_order_'+objdata.list[i].order_id+'" value="'+objdata.list[i].order_id+'">' + objdata.list[i].order_id;
+					perms1 = [];
+					perms1[perms1.length] = {'attribute':{'innerHTML':selid}};
+					perms1[perms1.length] = {'attribute':{'innerHTML':objdata.list[i].order_area}};
+					perms1[perms1.length] = {'attribute':{'innerHTML':objdata.list[i].order_louhao1}};
+					perms1[perms1.length] = {'attribute':{'innerHTML':objdata.list[i].order_name}};
+					perms1[perms1.length] = {'attribute':{'innerHTML':objdata.list[i].order_time}};
+					perms1[perms1.length] = {'attribute':{'innerHTML':objdata.list[i].order_arrive}};
+					{if(!isset($shopinfo))}
+					perms1[perms1.length] = {'attribute':{'innerHTML':objdata.list[i].shop_name}};
+					{/if}
+					perms1[perms1.length] = {'attribute':{'innerHTML':'{cfg:(coinsign,sys)}'+objdata.list[i].order_total_pay}};
+					perms1[perms1.length] = {'attribute':{'innerHTML':state,'id':'id_state_'+objdata.list[i].order_id}};
+					perms1[perms1.length] = {'attribute':{'innerHTML':btn}};
+					obj = kj.table.row_insert("#id_tab_list",perms1,'',1,10);
+					thisjs.arr_id[thisjs.arr_id.length] = objdata.list[i].order_id;
+					if(objdata.list[i].state=='1') {
+						obj.className = 'x_1';
+					} else if(objdata.list[i].order_state == '0') {
+						obj.className = 'x_0';
+					} else if( kj.toint(objdata.list[i].order_state) < 0) {
+						obj.className = 'x_3';
+					}
+					if(kj.agent()=='ie') {
+						kj.obj("#id_ding_music_ie").src = '{$temp_url}ding.mp3';
+					} else {
+						kj.obj("#id_ding_music").innerHTML = '<embed src="{$temp_url}ding.mp3" hidden="true" border="0" width="0" height="0" autostart="true" loop=3>';
+					}
+				}
+				if(objdata.endid!='0') thisjs.endid = objdata.endid;
+				obj = kj.obj("#id_time_view");
+				obj.innerHTML = "获取到" + length + "笔新订单";
+				obj = kj.obj("#id_order_num");
+				obj.innerHTML =  kj.toint(kj.toint(obj.innerHTML) + kj.toint(objdata['ordernum']));
+				obj = kj.obj("#id_menu_num");
+				obj.innerHTML =  kj.toint(kj.toint(obj.innerHTML) + kj.toint(objdata['menunum']));
+				obj = kj.obj("#id_order_total");
+				obj.innerHTML = '{cfg:(coinsign,sys)}'+kj.toint(kj.toint(obj.innerHTML) + kj.toint(objdata['ordertotal']));
+			}
+			window.setTimeout("thisjs.setinterval()" , 3000);
+		});
+	}
+	this.setinterval = function() {
+		obj = kj.obj("#id_time_view");
+		obj.innerHTML = thisjs.timeval;
+		thisjs.timeinterval = window.setInterval("thisjs.timer()" , 1000);//自动刷新
+	}
+	this.timer = function() {
+		var obj = kj.obj("#id_time_view");
+		var val = kj.toint(obj.innerHTML);
+		if(val <= 0) {
+			//获取新订单
+			clearTimeout(thisjs.timeinterval);
+			obj.innerHTML = "获取新订单";
+			thisjs.refresh();
+			val = thisjs.timeval;
+		} else {
+			val--;
+			obj.innerHTML = val;
+		}
+	}
+	this.accept = function(id) {
+		if(!id) {
+			var arr = kj.obj(":selid[]");
+			this.accept_id = [];
+			for(i = 0 ; i < arr.length ; i++) {
+				if(kj.obj("#id_btn_accept_"+arr[i].value) && kj.obj("#id_btn_accept_"+arr[i].value).style.display!='none') {
+					this.accept_id[this.accept_id.length] = arr[i].value;
+				}
+			}
+			if(this.accept_id.length>0) {
+				id = this.accept_id[0];
+				this.accept_next = (this.accept_id.length>1) ? 1 : 0;
+			} else {
+				kj.alert.show("没有待处理订单");
+				return;
+			}
+			kj.obj("#id_btn_acceptall").value = "正在处理...";
+			kj.obj("#id_btn_acceptall").disabled = true;
+		}
+		kj.ajax.get("{fun_get::url(array('app_act'=>'accept','id'=>''))}&id="+id,function(data){
+			var obj_data = kj.json(data);
+			if(obj_data.isnull) {
+				alert("处理失败");
+			} else {
+				if('code' in obj_data && obj_data.code=='0') {
+					//删除行
+					var obj = kj.parent("#id_order_"+obj_data.id , "tr");
+					if(kj.obj("#id_handle").checked) {
+						kj.table.row_del("#id_tab_list" , obj);
+						kj.table.row_del("#id_tab_list", kj.obj("#id_detail_"+obj_data.id));
+					} else {
+						var obj_state = kj.obj("#id_state_"+obj_data.id);
+						obj.className = "x_2";
+						obj_state.innerHTML = "已接受";
+						kj.hide("#id_btn_cancel_" + obj_data.id);
+						kj.hide("#id_btn_accept_" + obj_data.id);
+						kj.show("#id_btn_print_" + obj_data.id);
+						kj.show("#id_btn_invalid_" + obj_data.id);
+					}
+					thisjs.arr_id.remove(obj_data.id);
+					kj.alert.show("接受成功");
+					//是否启动打印
+					if(kj.obj("#id_agree_print").checked) {
+						kj.set("#id_btn_print_" + obj_data.id , 'value' , "重新打印");
+						thisjs.print(obj_data.id);
+					}
+				}else{
+					if("msg" in obj_data){
+						alert(obj_data.msg);
+					}else{
+						alert("处理失败");
+					}
+				}
+			}
+			if(thisjs.accept_next && thisjs.accept_next>0 && thisjs.accept_id && thisjs.accept_id.length>thisjs.accept_next) {
+				var id = thisjs.accept_id[thisjs.accept_next];
+				thisjs.accept_next++;
+				if(thisjs.accept_id.length<=thisjs.accept_next) thisjs.accept_next = 0;
+				thisjs.accept(id);
+			} else if(kj.obj("#id_btn_acceptall").value != "一键接单") {
+				kj.obj("#id_btn_acceptall").value = "一键接单";
+				kj.obj("#id_btn_acceptall").disabled = false;
+			}
+		});
+	}
+	this.invalid = function(id) {
+		if(!confirm("作废后将不能恢复，确定继续操作吗？")) return;
+		kj.ajax.get("{fun_get::url(array('app_act'=>'invalid','id'=>''))}&id="+id,function(data){
+			var obj_data = kj.json(data);
+			if(obj_data.isnull) {
+				alert("处理失败");
+			} else {
+				if('code' in obj_data && obj_data.code=='0') {
+					//删除行
+					var obj = kj.parent("#id_order_"+obj_data.id , "tr");
+					if(kj.obj("#id_handle").checked) {
+						kj.table.row_del("#id_tab_list" , obj);
+						kj.table.row_del("#id_tab_list", kj.obj("#id_detail_"+obj_data.id));
+					} else {
+						var obj_state = kj.obj("#id_state_"+obj_data.id);
+						obj.className = "x_3";
+						obj_state.innerHTML = "已作废";
+						kj.hide("#id_btn_cancel_" + obj_data.id);
+						kj.hide("#id_btn_accept_" + obj_data.id);
+						kj.hide("#id_btn_invalid_" + obj_data.id);
+						kj.show("#id_btn_print_" + obj_data.id);
+					}
+					thisjs.arr_id.remove(obj_data.id);
+					var msg = ('msg' in obj_data && obj_data.msg !='') ? obj_data.msg : "处理成功";
+					kj.alert.show(msg);
+					//是否启动打印
+					if(kj.obj("#id_agree_print").checked) {
+						kj.set("#id_btn_print_" + obj_data.id , 'value' , "重新打印");
+						thisjs.print(obj_data.id);
+					}
+				}else{
+					if("msg" in obj_data){
+						alert(obj_data.msg);
+					}else{
+						alert("处理失败");
+					}
+				}
+			}
+		});
+	}
+	this.cancel_ok = function() {
+		var id = this.cancel_id;
+		if(id<1) {
+			alert("没有选择要取消的订单");
+			return;
+		}
+		this.refuse_id = 0;
+		var beta = kj.obj("#id_cancel_for").value;
+		//var issms = (kj.obj("#id_cancel_issms").checked)? 1 : 0;
+		var closeshop = (kj.obj("#id_cancel_closeshop").checked)? 1 : 0;
+		kj.ajax.get("{fun_get::url(array('app_act'=>'cancel','id'=>''))}&id="+id+"&beta="+beta+"&closeshop=" + closeshop,function(data){
+			var obj_data = kj.json(data);
+			if(obj_data.isnull) {
+				alert("处理失败");
+			} else {
+				if('code' in obj_data && obj_data.code=='0') {
+					kj.dialog.close('#winstate_show');
+					var obj = kj.parent("#id_order_"+obj_data.id , "tr");
+					if(kj.obj("#id_handle").checked) {
+						//删除行
+						kj.table.row_del("#id_tab_list" , obj);
+					} else {
+						var obj_state = kj.obj("#id_state_"+obj_data.id);
+						obj.className = "x_3";
+						obj_state.innerHTML = "已取消";
+						kj.hide("#id_btn_cancel_" + obj_data.id);
+						kj.hide("#id_btn_accept_" + obj_data.id);
+					}
+					thisjs.arr_id.remove(obj_data.id);
+					kj.alert.show("订单成功取消");
+					kj.dialog.close("#wincancel_box");
+				}else{
+					if("msg" in obj_data){
+						alert(obj_data.msg);
+					}else{
+						alert("处理失败");
+					}
+				}
+			}
+		});
+	}
+	this.agree_print = function(val) {
+		(val)? val = 1 : val = 0;
+		kj.ajax.get("common.php?app=config&app_module=user&dir={$app_dir}&app_act=save_var&var=call.agree.print&val=" + val , function(data){
+			//alert(data);
+		});
+	}
+	this.hide_handle = function(val) {
+		(val)? val = 1 : val = 0;
+		kj.ajax.get("common.php?app=config&app_module=user&dir={$app_dir}&app_act=save_var&var=call.hide.handle&val=" + val , function(data){
+			//alert(data);
+			location.reload(true);
+		});
+	}
+	this.hide_detail = function(val) {
+		if(val) {
+			val = 1;
+			kj.hide(".me_detail");
+		} else {
+			kj.show(".me_detail");
+			val = 0;
+		}
+		kj.ajax.get("common.php?app=config&app_module=user&dir={$app_dir}&app_act=save_var&var=call.hide.detail&val=" + val , function(data){
+		});
+	}
+	this.hide_isremote = function(val) {
+		if(val) {
+			val = 1;
+			kj.hide("#id_btn_printall");
+		} else {
+			val = 0;
+			kj.show("#id_btn_printall");
+		}
+		kj.ajax.get("common.php?app=config&app_module=user&dir={$app_dir}&app_act=save_var&var=call.hide.isremote&val=" + val , function(data){
+		});
+	}
+	this.print = function(val) {
+		var isremote = (kj.obj("#id_isremote") && kj.obj("#id_isremote").checked) ? false : true;
+		if('{$isremote}'=='1' && isremote) {
+			if(!val) {
+				var arr = kj.obj(":selid[]");
+				this.print_id = [];
+				for(i = 0 ; i < arr.length ; i++) {
+					if(kj.obj("#id_btn_print_"+arr[i].value) && kj.obj("#id_btn_print_"+arr[i].value).style.display!='none') {
+						this.print_id[this.print_id.length] = arr[i].value;
+					}
+				}
+				if(this.print_id.length>0) {
+					val = this.print_id[0];
+					this.print_next = (this.print_id.length>1) ? 1 : 0;
+				} else {
+					kj.alert.show("没有待打印订单");
+					return;
+				}
+				kj.obj("#id_btn_printall").value = "正在处理...";
+				kj.obj("#id_btn_printall").disabled = true;
+			}
+			//无线打印
+			kj.ajax.get('{fun_get::url(array("app_act"=>"print"))}&isremote&order_id='+val , function(data){
+				var objdata = kj.json(data);
+				if(objdata.isnull) {
+					alert("打印失败");
+				} else {
+					if(objdata.code == '0') {
+						kj.alert.show("已提交打印");
+					} else {
+						alert(objdata.msg);
+					}
+				}
+				if(thisjs.print_next && thisjs.print_next>0 && thisjs.print_id && thisjs.print_id.length>thisjs.print_next) {
+					var id = thisjs.print_id[thisjs.print_next];
+					thisjs.print_next++;
+					if(thisjs.print_id.length<=thisjs.print_next) thisjs.print_next = 0;
+					thisjs.print(id);
+				} else if(kj.obj("#id_btn_printall").value != "一键打印") {
+					kj.obj("#id_btn_printall").value = "一键打印";
+					kj.obj("#id_btn_printall").disabled = false;
+				}
+
+			});
+		} else {
+			var agent = kj.agent();
+			if(agent == 'ie') {
+				vReturnValue = window.showModelessDialog('{fun_get::url(array("app_act"=>"print"))}&order_id='+val, 'win_print', "dialogHeight:500px;dialogWidth:300px");
+			} else {
+				window.open('{fun_get::url(array("app_act"=>"print"))}&order_id='+val,"_blank");
+			}
+		}
+	}
+	//地区下拉发生改变时触发
+	this.changearea = function(val , index , isload) {
+		var obj,i,ii;
+		index++;
+		//当index大于深度时跳出
+		if(index > this.depth) {
+			return;
+		}
+		//发生改变后，重置之后的地区下拉
+		for(i = index ; i < this.depth; i++) {
+			obj = kj.obj("#id_area_" + i);
+			if(!obj) break;
+			obj.options.length = 0;
+			if(i>index) kj.hide(obj);
+		}
+
+		var key = "id_" + val;
+		if(!(key in this.arealist) || !("length" in this.arealist[key])) {
+			kj.hide("#id_area_" + index);
+			//跳出则刷新当前地区值
+			if((val != '' || index==1) && !isload) {
+				this.refresh_area_val();
+			} else {
+				if(!isload) kj.show("#id_btnselarea");
+			}
+			return;
+		}
+		kj.show("#id_area_" + index);
+		kj.add_option("#id_area_" + index , '' , '');
+		for(i = 0 ; i < this.arealist["id_"+val].length ; i++ ) {
+			obj = kj.obj("#id_area_" + index);
+			ii = this.arealist["id_"+val][i];
+			if( !("id_" + ii in this.areainfo ) ) continue;
+			kj.add_option(obj , this.areainfo["id_" + ii]["area_name"] , ii);
+			//选中默认值
+			if(this.defaultval.length>index && obj.options[i+1].value == this.defaultval[index]) {
+				obj.options[i+1].selected=true;
+			}
+		}
+		this.changearea(obj.value , index , isload);
+	}
+	this.refresh_area_val = function() {
+		var obj = kj.obj(":area_id[]");
+		var arr_id = [];
+		for(var i = 0 ; i < obj.length ; i++) {
+			if(obj[i].value != '') {
+				if( !("id_" + obj[i].value in this.areainfo ) ) continue;
+				arr_id[arr_id.length] = obj[i].value;
+			} else {
+				break;
+			}
+		}
+		var val = arr_id.join(",");
+		kj.ajax.get("common.php?app=config&app_module=user&dir={$app_dir}&app_act=save_var&var=call.area&val=" + val , function(data){
+			//alert(data);
+			location.reload(true);
+		});
+	}
+	this.changetime = function() {
+		var starttime = kj.obj("#id_starttime").value;
+		var endtime = kj.obj("#id_endtime").value;
+		var url = kj.urlencode('{fun_get::url()}',['starttime='+starttime,'endtime='+endtime]);
+		window.open(url,"_self");
+	}
+	this.excel = function() {
+		window.open("{fun_get::url(array('app_act'=>'excel'))}","_blank");
+	}
+}
+kj.onload(function(){
+	thisjs.setinterval();//自动刷新
+	{if(!isset($shopinfo))}
+		//加载默认值选中
+		thisjs.changearea(kj.obj("#id_area_0").value,0,true);
+		{for($i=1;$i<$area_list["depth"];$i++)}
+			thisjs.changearea(kj.obj("#id_area_{$i}").value,{$i},true);
+		{/for}
+	{/if}
+});
+admin.table.list1.sort = function(key) {
+	kj.ajax.get("common.php?app=config&app_module=user&dir={$app_dir}&app_act=sort&key=meal.call&filename=meal&sortby=" + key , function(data){
+			var obj_data=kj.json(data);
+			if(!obj_data.isnull) {
+				location.reload(true);
+			}
+	});
+}
+</script>
+</body></html>

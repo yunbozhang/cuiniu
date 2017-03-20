@@ -1,0 +1,283 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>收货地址-{cfg:(site_title,sys)}</title>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+</head>
+<body>
+{include(header)}
+{include(member_left)}
+<div class="uright">
+	<div class="upath"><font>收货地址</font></div>
+	<div class="cainfo" id="id_cainfo" style="width:100%">
+	{foreach($arr_list as $item)}
+		<ul id="id_address_{$item['address_id']}" style="cursor:default" kjdata="{addprice:'',dispatch:'','id':{$item['address_id']},'name':'{$item['address_name']}','tel':'{$item['address_tel']}','allid':'{$item['address_area_allid']}','address':'{$item['address_address']}'}">
+			<li><font class="xname">{$item['address_name']}</font>&nbsp;&nbsp;&nbsp;<b>Tel：</b><font class="xtel">{$item['address_tel']}</font><span><a href="javascript:thisjs.address_edit({$item['address_id']});" title="修改"><img src="images/edit.png"></a>&nbsp;&nbsp;<a href="javascript:thisjs.address_del({$item['address_id']});" title="删除"><img src="images/del.png"></a></span></li>
+			<li><font class="xarea">{$item['address_area']}</font></li>
+			<li class="xaddress">{$item['address_address']}</li>
+			<li class="xtag"></li>
+		</ul>
+	{/foreach}
+	
+		<ul class="xnew"{if(count($arr_list)>=20)} style="display:none"{/if} onclick="thisjs.address_edit();" style="cursor:pointer" onmouseover="this.style.color='#ff6600';" onmouseout="this.style.color='#000';">
+			+ 添加新地址
+		</ul>
+	</div>
+</div>
+{include(footer)}
+<div id="id_edit_info" style="display:none">
+<form name="frmEditinfo">
+<table class="cinfotab">
+<tr><td class="xcol1">所在区域：</td><td>
+	<input type="hidden" name="area_id" id="id_area_id" value="">
+	<input type="hidden" name="area_allid" id="id_area_allid" value="">
+	<input type="hidden" name="area" id="id_area" value="">
+	<select name="address_area_id[]" onchange="thisjs.changearea(this.value,0);" id="id_area_0">
+		<option value="">选择城市</option>
+	{foreach($areainfo["default"] as $item)}
+		<option value="{$item['id']}">{$item['name']}</option>
+	{/foreach}
+	</select>
+	{for($i=1;$i<$areainfo["depth"];$i++)}
+		<select name="address_area_id[]" onchange="thisjs.changearea(this.value,{$i});" id="id_area_{$i}" style="display:none">
+		<option value="">--请选择--</option>
+		</select>
+	{/foreach}
+	</td></tr>
+<tr><td class="xcol1"></td><td>
+		<input type="text" name="address" placeholder="请填写详细配送地址">
+</td></tr>
+</td></tr>
+<tr><td class="xcol1">联系姓名：</td><td>
+	<input name="name" type="text">
+</td></tr>
+<tr><td class="xcol1">联系电话：</td><td>
+	<input name="tel" type="text" maxlength="11">
+</td></tr>
+<tr><td></td>
+<td valign="top"><input type="button" name="btn_saveinfo" value="保 存" class="btn-1" onclick="thisjs.address_save();">&nbsp;&nbsp;<input type="button" name="btn_saveinfo" value="取 消" class="btn-2" onclick="kj.dialog.close('#wineditinfo');"></td></tr>
+</table>
+</form>
+</div>
+<script src="/common/js/kj.rule.js"></script>
+<script>
+var thisjs = new function() {
+	this.arealist = {fun_format::json($areainfo["list"])};//json格式，指定id包函的子地区
+	this.areainfo = {fun_format::json($areainfo["area"])};//对应id地区详细信息
+	this.depth = {$areainfo["depth"]};//当前地区深度
+
+	//编辑已有收货地址
+	this.address_edit = function(id) {
+		this.address_id = id;
+		if(kj.obj("#id_edit_info")) {
+			this.editaddress_html = kj.obj("#id_edit_info").innerHTML;
+			kj.remove("#id_edit_info");
+		}
+		kj.dialog({'html':this.editaddress_html,'id':'editinfo','type':'html','title':'收货信息','w':600,'showbtnmax':false});
+		var objaddress = kj.obj("#id_address_"+id);
+		var obj = objaddress ? kj.json(kj.getAttribute(kj.obj("#id_address_"+id),'kjdata')) : {'addprice':0,'dispatch':0,'id':0,'name':'','tel':'','allid':'','address':''};
+		document.frmEditinfo.address.value=obj.address;
+		document.frmEditinfo.name.value=obj.name;
+		document.frmEditinfo.tel.value=obj.tel;
+		if(obj.allid!='') {
+			obj.allid += '';
+			var arr = obj.allid.split(",");
+			//加载默认值选中
+			thisjs.select_sel(kj.obj("#id_area_0") , arr[0]);
+			for(var i=0 ; i < thisjs.depth ; i++) {
+				if(arr.length<=i) break;
+				thisjs.changearea(arr[i],i,arr[i+1]);
+			}
+
+		}
+	}
+	this.address_del = function(id) {
+		if(!confirm("确定要删除吗？")) {
+			return;
+		}
+		kj.ajax.get(kj.cfg('baseurl') + "/index.php?app=ajax&app_act=address.del&id="+id , function(data) {
+			var obj_data=kj.json(data);
+			thisjs.submiting = false;
+			if(obj_data.isnull) {
+				alert("操作失败");
+			} else {
+				if('code' in obj_data && obj_data.code=='0') {
+					kj.remove("#id_address_"+id);
+					var arr = kj.obj("#id_cainfo ul");
+					if(arr.length<10) kj.show("#id_cainfo .xnew");
+				}else{
+					if("msg" in obj_data){
+						alert(obj_data.msg);
+					}else{
+						alert("操作失败");
+					}
+				}
+			}
+		});
+	}
+	//提交收货信息
+	this.address_save = function() {
+		var area = kj.obj("#id_area").value;
+		var area_allid = kj.obj("#id_area_allid").value;
+		var area_id = kj.obj("#id_area_id").value;
+		var sex='';
+		if(this.chk_info() == false) return;
+		//手机短信验证
+		var data = {"id":this.address_id,"name":document.frmEditinfo.name.value,"area":area,"area_id":area_id,"area_allid":area_allid,"address":document.frmEditinfo.address.value,"tel":document.frmEditinfo.tel.value};
+		kj.ajax.post(kj.cfg('baseurl') + "/index.php?app=ajax&app_act=address.save" , data ,function(data){
+			var obj_data=kj.json(data);
+			thisjs.saveinfo = false;
+			if(obj_data.isnull) {
+				alert("保存失败");
+			} else {
+				if('code' in obj_data && obj_data.code=='0') {
+					var id = "#id_address_" + thisjs.address_id;
+					if(thisjs.address_id>0) {
+						kj.set(id + " .xname" , "innerHTML" ,document.frmEditinfo.name.value );
+						kj.set(id + " .xtel" , "innerHTML" ,document.frmEditinfo.tel.value );
+						kj.set(id + " .xaddress" , "innerHTML" ,document.frmEditinfo.address.value );
+						kj.set(id + " .xarea" , "innerHTML" ,kj.obj("#id_area").value );
+					} else {
+						kj.delClassName("#id_cainfo ul" , 'xsel');
+						var html = '<div class="xbox">';
+						html += '<li><font class="xname">' + document.frmEditinfo.name.value + '</font>&nbsp;&nbsp;&nbsp;<b>Tel：</b><font class="xtel">' + document.frmEditinfo.tel.value + '</font><span><a href="javascript:thisjs.address_edit('+obj_data.id+');"><img src="'+kj.cfg('basecss')+'/default/images/edit.png"></a> | <a href="javascript:thisjs.address_del('+obj_data.id+');"><img src="'+kj.cfg('basecss')+'/default/images/del.png"></a></span></li>';
+						html += '<li><font class="xarea">' + kj.obj("#id_area").value + '</font></li><li class="xaddress">' + document.frmEditinfo.address.value + '</li>';
+						html += '<li class="xtag"></li>';
+						var obj = document.createElement("ul");
+						obj.id = 'id_address_'+obj_data.id;
+						obj.innerHTML = html;
+						obj.onclick = function() {
+							thisjs.infosel(this);
+						}
+
+						//kj.obj("#id_cainfo").appendChild(obj);
+						var arrul = kj.obj("#id_cainfo ul");
+						kj.insert_before(kj.obj("#id_cainfo") , arrul[arrul.length-1] , obj);
+						var arr = kj.obj("#id_cainfo ul");
+						if(arr.length>20) kj.hide("#id_cainfo .xnew");
+					}
+				}else{
+					if("msg" in obj_data){
+						kj.alert(obj_data.msg);
+					}else{
+						kj.alert("操作失败");
+					}
+				}
+			}
+			kj.dialog.close("#wineditinfo");
+		});
+	}
+	this.select_sel = function(obj,val) {
+		var is_sel = false;
+		for(var i = 0 ; i < obj.length; i++) {
+			if(obj[i].value == val) {
+				obj[i].selected = true;
+				is_sel = true;
+				break;
+			}
+		}
+		if(!is_sel && obj.length>0 ) obj[0].selected = true;
+	}
+	//地区下拉发生改变时触发
+	this.changearea = function(val , index , defautval) {
+		var obj,i,ii;
+		index++;
+		//当index大于深度时跳出
+		if(index > this.depth) {
+			this.refresh_area_val();
+			return;
+		}
+		//发生改变后，重置之后的地区下拉
+		for(i = index ; i < this.depth; i++) {
+			obj = kj.obj("#id_area_" + i);
+			if(!obj) break;
+			obj.options.length = 0;
+			if(i>index) {
+				if(kj.obj("#id_area_" + i)) kj.obj("#id_area_" + i).style.display = 'none';
+			}
+		}
+		var key = "id_" + val;
+		if(!(key in this.arealist) || !("length" in this.arealist[key]) || !kj.obj("#id_area_" + index)) {
+			//跳出则刷新当前地区值
+			if(kj.obj("#id_area_" + index)) kj.obj("#id_area_" + index).style.display = 'none';
+			this.refresh_area_val();
+			return;
+		}
+		kj.add_option("#id_area_" + index , '' , '');
+		for(i = 0 ; i < this.arealist["id_"+val].length ; i++ ) {
+			obj = kj.obj("#id_area_" + index);
+			ii = this.arealist["id_"+val][i];
+			if( !("id_" + ii in this.areainfo ) ) continue;
+			kj.add_option(obj , this.areainfo["id_" + ii]["name"] , ii);
+			//选中默认值
+			if(obj.options[i+1].value == defautval) {
+				obj.options[i+1].selected=true;
+			}
+		}
+		if(kj.obj("#id_area_" + index)) kj.obj("#id_area_" + index).style.display = '';
+		this.changearea(obj.value , index , defautval);
+	}
+	this.refresh_area_val = function() {
+		var obj = kj.obj(":address_area_id[]");
+		var arr_id = [];
+		var arr_val = [];
+		var val = '';
+		var id = 0;
+		for(var i = 0 ; i < obj.length ; i++) {
+			if(obj[i].value != '') {
+				if( !("id_" + obj[i].value in this.areainfo ) ) continue;
+				arr_id[arr_id.length] = obj[i].value;
+				val = ( 'val' in this.areainfo["id_" + obj[i].value] ) ? this.areainfo["id_" + obj[i].value]['val'] : this.areainfo["id_" + obj[i].value]['name'];
+				arr_val[arr_val.length] = val;
+			} else {
+				break;
+			}
+		}
+		if(arr_id.length>0) {
+			kj.obj("#id_area_id").value = arr_id[arr_id.length-1];
+		} else {
+			kj.obj("#id_area_id").value = '';
+		}
+		kj.obj("#id_area_allid").value = arr_id.join(",");
+		kj.obj("#id_area").value = arr_val.join(" ");
+	}
+	//检查用户信息合法性
+	this.chk_info = function() {
+			for(var i = 0 ; i < this.depth ; i++) {
+				x = kj.obj("#id_area_" + i);
+				if(x && x.value=="" && x.style.display=='') {
+					alert("请选择您所在地区范围");
+					x.focus();
+					return false;
+				}
+			}
+			if(document.frmEditinfo.address.value=="") {
+				alert("请填写详细收货地址");
+				document.frmEditinfo.address.focus();
+				return false;
+			}
+			if(document.frmEditinfo.name.value=="") {
+				alert("请填写收货人姓名");
+				document.frmEditinfo.name.focus();
+				return false;
+			}
+
+			if(document.frmEditinfo.tel.value=='') {
+				alert("请填写收货人联系电话");
+				document.frmEditinfo.tel.focus();
+				return false;
+			}
+			if(!kj.rule.types.tel(document.frmEditinfo.tel.value)) {
+				alert("联系电话格式不正确");
+				document.frmEditinfo.tel.focus();
+				return false;
+			}
+			return true;
+	}
+}
+</script>
+</body>
+</html>

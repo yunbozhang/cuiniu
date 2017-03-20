@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>{cfg:(site_title,sys)}</title>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+</head>
+<body>
+{include(header)}
+</div>
+<div class="areadiv" id="id_area_main">
+	<div class="main" style="width:800px">
+		<li class="x1">
+			{foreach($arr_list as $item)}
+			<a href="javascript:void(0);" onclick="pageArea.seltop(this);pageArea.get_area({$item['area_id']},'{$item['area_name']}','{$item['area_childs']}','{$item['area_depth']}' ,true);"><span><img src = "{if(empty($item['area_pic']))}{$temp_url}images/nopic.png{else}{$item['area_pic']}{/if}"></span><font>{$item['area_name']}</font></a>
+			{/foreach}
+		</li>
+		<li class="x2">
+			<input type="text" name="s_key" value="" class="y1" id="id_s_key">
+			<input type="button" value="" class="y2" onclick="pageArea.search(kj.obj('#id_s_key').value);">
+			<font>可以输入地区、商家或商品名快速查找</font>
+		</li>
+	</div>
+</div>
+<div class="main">
+	<div class="areatips" id="id_areatips">
+		<ul class="x1">
+			<li class="y1">
+				<p><font>定位：查看您附近的商圈</font></p>
+				<p>选择您所在的位置 - 快速定位您周边的超市、商店、餐饮丰富商家与商品我们一一为您推荐</p>
+			</li>
+			<li class="y2"><a href="javascript:thisjs.tips(0);" class="z1"></a><a href="javascript:thisjs.tips(1);" class="z2"></a><a href="javascript:thisjs.tips(2);" class="z3"></a></li>
+		</ul>
+		<ul class="x2" style="display:none">
+			<li class="y1">
+				<p><font>逛街：打折、促销、优惠信息早知道</font></p>
+				<p>没有时间、不想排队、买的太多懒得搬 选择我们一站式在线购物轻松为您搞定。</p>
+			</li>
+			<li class="y2"><a href="javascript:thisjs.tips(0);" class="z1"></a><a href="javascript:thisjs.tips(1);" class="z2"></a><a href="javascript:thisjs.tips(2);" class="z3"></a></li>
+		</ul>
+		<ul class="x3" style="display:none">
+			<li class="y1">
+				<p><font>收货：购物达到起送金额，免费送货，时间您指定</font></p>
+				<p>订单提交成功后，商家将按您指定的时间为您准时送达</p>
+			</li>
+			<li class="y2"><a href="javascript:thisjs.tips(0);" class="z1"></a><a href="javascript:thisjs.tips(1);" class="z2"></a><a href="javascript:thisjs.tips(2);" class="z3"></a></li>
+		</ul>
+	</div>
+{include(footer)}
+<div id="id_dialogbox" style="display:none">
+	<div class="div1">
+		<ul class="x2" id="id_area_box">
+			<li id="id_path" class="y2"></li>
+			<li id="id_area_list" class="y1"></li>
+		</ul>
+		<ul class="x2" id="id_search_list">
+			<li id="id_search_path" class="y2"></li>
+			<li class="y1"></li>
+		</ul>
+	</div>
+</div>
+</body>
+</html>
+<script src="page.area.js"></script>
+<script>
+pageArea.city_id = kj.toint('{cfg:(area_city_id,meal)}');
+pageArea.depth = kj.toint('{cfg:(area_depth,meal)}');
+var thisjs = new function() {
+	this.tips = function(id) {
+		var arr = kj.obj("#id_areatips ul");
+		kj.hide(arr);
+		kj.show(arr[id]);
+	}
+}
+</script>

@@ -1,0 +1,37 @@
+{include(header)}
+<script>
+//保存时交验规则
+admin.rule['save'] =[];
+</script>
+<div class="pMenu" id="id_pMenu">
+	<li class="sel">基本信息</li>
+	<li class = "x_btn"><a href="javascript:parent.thisjs.klkkdj_open('语言包-帮助','app=service&app_act=help&key=help.other.ads');" title="帮助"><img src="images/faq.gif"></a></li>
+</div>
+<div class="pMain" id="id_main">
+<table class='pEditTable'>
+<tr class='pTabTitRow'><td class='pTabTitCol' colspan="2"></td></tr>
+<tr>
+	<td class="pTabColName">中文：</td><td class="pTabColVal"><input type="text" name="language_cn" value="{$editinfo['language_val']}" class='pTxt1 pTxtL500' ruletips="内容不能为空" ruletipsmode=1 required></td></tr>
+{foreach($arr_language as $item)}
+{if($item['key']!='cn')}
+<tr>
+	<td class="pTabColName">{$item['name']}：</td><td class="pTabColVal"><input type="text" name="language_{$item['key']}" value="{$editinfo[$item['key']]['version_val']}" class='pTxt1 pTxtL500'><input type="hidden" name="language_{$item['key']}_id" value="{$editinfo[$item['key']]['version_id']}"></td></tr>
+{/if}
+{/foreach}
+<tr>
+	<td class="pTabColName">备注：</td><td class="pTabColVal"><input type="text" name="language_beta" value="{$editinfo['language_beta']}" class='pTxt1 pTxtL500'></td></tr>
+</table>
+</div>
+<div class="pFootAct" id="id_pFootAct">
+	<li>
+	<input type="button" name="dosubmit" value="保存" onclick="admin.frm_ajax('save');" class="pBtn">
+	</li>
+</div>
+<script>
+var thisjs = new function() {
+
+}
+kj.onload(function(){
+});
+</script>
+{include(footer)}

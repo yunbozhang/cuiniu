@@ -1,0 +1,145 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>销售统计-商家管理-{cfg:(site_title,sys)}</title>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+<style>
+.me_div1{float:left;margin:10px 0px 10px 20px}
+.metitle{float:left;width:300px;clear:both;margin:15px 0px 0px 50px;font-weight:bold;text-align:left}
+.metitle font{color:#ff3300;font-weight:200}
+.metable{float:left;width:300px;clear:both;margin-left:50px;border-collapse: collapse;margin-top:10px;}
+.metable td{padding:5px 3px;text-align:left}
+.mebox1{float:left;width:300px;;margin:5px 8px}
+</style>
+</head>
+<body>
+{include(header)}
+{include(shop.header)}
+{include(shop.left)}
+<script src="/common/js/date.js"></script>
+<div class="uright">
+	{if(fun_get::get('opennew')=='')}
+		<div class="pMenu" id="id_pMenu">
+			<li{if(fun_get::get("channel")=='')} class="sel"{/if} onclick="shop.refresh(['channel=']);">销售量</li>
+			<li{if(fun_get::get("channel")=='money')} class="sel"{/if} onclick="shop.refresh(['channel=money']);">销售额</li>
+			<li style="border:0px;padding:5px 0px 0px 0px"><label><input type="checkbox" name="viewmode" value="1" onclick="if(this.checked){shop.refresh(['viewmode=1']);}else{shop.refresh(['viewmode=']);}" {if(fun_get::get('viewmode')=='1')} checked{/if}>列表模式</label></li>
+		</div>
+
+		<div class="me_div1">
+		统计模式：<label><input type="radio" name="mode" value="day" checked onclick="shop.refresh(['mode=']);">按天</label>&nbsp;&nbsp;<label><input type="radio" name="mode" value="month"{if($mode=='month')} checked{/if} onclick="shop.refresh(['mode=month']);">按月</label>&nbsp;&nbsp;<label><input type="radio" name="mode" value="year"{if($mode=='year')} checked{/if} onclick="shop.refresh(['mode=year']);">按年</label>&nbsp;&nbsp;<label><input type="radio" name="mode" value="other"{if($mode=='other')} checked{/if} onclick="shop.refresh(['mode=other']);">指定时间</label>
+		</div>
+		<div class="me_div1">
+			<span id="id_mode_day" style="float:left;padding-left:60px{if($mode=='year' || $mode=='month' || $mode=='other')};display:none{/if}">日期：<input type="text" id="id_day_date" name="date" value="{fun_get::get('date')}" class='pTxtDate' onfocus="new Calendar().show(this,null,function(){shop.refresh(['date='+kj.obj('#id_day_date').value]);});"> </span>
+			<span id="id_mode_other" style="float:left;padding-left:60px{if($mode!='other')};display:none{/if}"><input type="text" id="id_other_date1" name="date1" value="{fun_get::get('date1')}" class='pTxtDate' onfocus="new Calendar().show(this);"> 到 <input type="text" id="id_other_date2" name="date2" value="{fun_get::get('date2')}" class='pTxtDate' onfocus="new Calendar().show(this);"> <input type="button" name="btnok" value="确定" onclick="thisjs.open_other();"></span>
+			<span id="id_mode_month" style="float:left;padding-left:60px{if($mode!='year' && $mode!='month')};display:none{/if}">
+				<select name="year" onchange="shop.refresh('year='+this.value);">
+				{for($i=2012;$i<=date("Y");$i++)}
+				<option value="{$i}"{if(fun_get::get("year")==$i)} selected{/if}>{$i}年</option>
+				{/for}
+				</select>
+			</span>
+			<span id="id_mode_year" style="float:left;padding-left:20px{if($mode!='month')};display:none{/if}">
+				<select name="month" onchange="shop.refresh('month='+this.value);">
+				{for($i=1;$i<13;$i++)}
+				<option value="{$i}"{if(fun_get::get("month")==$i)} selected{/if}>{$i}月</option>
+				{/for}
+				</select>
+			</span>
+		</div>
+	{/if}
+	{if(fun_get::get('viewmode')=='')}
+	<div id="container" style="float:left;width:98%;height:500px">
+	</div>
+	<script src="/components/report/jquery.min.js"></script>
+	<script type="text/javascript">
+	$(function () {
+		$('#container').highcharts({
+			chart: {
+				type: 'column',
+				margin: [ 50, 50, 100, 80]
+			},
+			title: {
+				text: '{$report["datetime"]} 商品{if(fun_get::get("channel")=="money")}成交额({cfg:(coinsign,sys)}){else}订单量(份){/if}'
+			},
+			xAxis: {
+				categories: {$report['sub']},
+				labels: {
+					rotation: -45,
+					align: 'right',
+					style: {
+						fontSize: '12px',
+						fontFamily: 'Verdana, sans-serif'
+					}
+				}
+			},
+			yAxis: {
+				min: 0,
+				title: {
+					text: '{if(fun_get::get("channel")=="money")}成交额({cfg:(coinsign,sys)}){else}订单量(份){/if}'
+				}
+			},
+			legend: {
+				enabled: false
+			},
+			tooltip: {
+				pointFormat: '',
+			},
+			series: [{
+				name: 'Population',
+				data: {$report['data']},
+				dataLabels: {
+					enabled: true,
+					rotation: 1,
+					color: '#FFFFFF',
+					align: 'right',
+					x: 4,
+					y: 10,
+					style: {
+						fontSize: '13px',
+						fontFamily: 'Verdana, sans-serif',
+						textShadow: '0 0 3px black'
+					}
+				}
+			}]
+		});
+	});
+	</script>
+	<script src="/components/report/highcharts.js"></script>
+	<script src="/components/report/modules/exporting.js"></script>
+	{else}
+		{foreach($report as $key=>$item)}
+			<div class="mebox1">
+			<div class="metitle">{$item['shop_name']}<font>共 {$item['num']} 份，合计：{cfg:(coinsign,sys)}{$item['price']}</font></div>
+			<table class="metable" border=1>
+				<tr><td>名称</td><td>数量</td><td>小计</td></tr>
+			{foreach($item['list'] as $list)}
+				<tr><td>{$list['menu_title']}</td><td>{$list['num']}</td><td>{cfg:(coinsign,sys)}{$list['price']}</td></tr>
+			{/foreach}
+			</table>
+			</div>
+		{/foreach}
+	{/if}
+</div>
+{include(shop.footer)}
+{include(footer)}
+</body>
+</html>
+<script src="shop.js"></script>
+<script>
+var thisjs = new function() {
+	this.open_other = function() {
+		if(kj.obj("#id_other_date1").value=='') {
+			alert("请选择开始时间");
+			kj.obj("#id_other_date1").focus();return;
+		}
+		if(kj.obj("#id_other_date2").value=='') {
+			alert("请选择结束时间");
+			kj.obj("#id_other_date2").focus();return;
+		}
+		shop.refresh(['date1='+kj.obj('#id_other_date1').value,'date2='+kj.obj('#id_other_date2').value]);
+	}
+}
+</script>

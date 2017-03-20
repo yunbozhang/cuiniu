@@ -1,0 +1,30 @@
+<div class="uleft">
+	<div class="xinfo">
+		<li class="xpic">{if(cls_obj::get('cls_user')->pic!='')}<img src = "{cls_obj::get('cls_user')->pic}">{else}<img src="images/sir.gif">{/if}</li>
+		<li class="xli">
+			<span class="x1">您好，{cls_obj::get("cls_user")->name}</span>
+			<span class="x1">等级：<img src="images/vip{$memberinfo['level']}.png"></span>
+			<span class="x1">积分：{cls_obj::get("cls_user")->get_score()}</span>
+			<span class="x1">经验：{$memberinfo['experience']}</span>
+		</li>
+		<li class="xlevel">
+			<span>成长值：</span>
+			<span class="xprocess"><font style="width:{$memberinfo['process']}%;white-space:nowrap">&nbsp;{$memberinfo['experience']} / {$memberinfo['experience_next']}</font></span>
+		</li>
+		<li class="xbeta">仅需<font> {$memberinfo['experience_poor']} </font>点经验值, 晋升为<font> V{$memberinfo['level_next']} </font>会员。</li>
+	</div>
+	<div class="xmenu">
+		<li class="xtit">会员中心</li>
+		<li>
+		<a href="?app=member"{if($app_act=='' || $app_act=='default')} class="xsel"{/if}>我的订单</a>
+		<a href="?app=member&app_act=myvip"{if($app_act=='myvip')} class="xsel"{/if}>经验等级</a>
+		<a href="?app=member&app_act=myintegral"{if($app_act=='myintegral')} class="xsel"{/if}>我的积分</a>
+		<a href="?app=member&app_act=repayment"{if($app_act=='repayment')} class="xsel"{/if}>我的存款</a>
+		<a href="?app=member&app_act=address"{if($app_act=='address')} class="xsel"{/if}>收货地址</a>
+		<a href="?app=act.gift&app_act=mygift"{if($app_act=='mygift')}  class="xsel"{/if}>我的礼品</a>
+		<a href="?app=member&app_act=msg"{if($app_act=='msg')}  class="xsel"{/if}>我的留言</a>
+		<a href="?app=member&app_act=anquan"{if($app_act=='anquan')}  class="xsel"{/if}>账户安全</a>
+		</li>
+		<li class="xtit"><a href="{cfg:(dirpath,base)}/common.php?app=sys&app_act=login.out&jump_url={fun_format::url_encode(cls_config::get('dirpath').'/')}">安全退出</a></li>
+	</div>
+</div>

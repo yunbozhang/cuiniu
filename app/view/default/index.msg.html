@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>留言反馈-{cfg:(site_title,sys)}</title>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+</head>
+<body>
+{include(header)}
+<div class="msg">
+	<div class="xtit">我们的发展，需要您真诚的建议</div>
+	<form name="frm_2" action="{cfg:(dirpath,base)}/index.php?app=ajax&app_act=msg.save" method="post">
+	<div class="xli">
+		<li>
+			<font>留言内容：</font><span><textarea name="cont" class="xcont" ruletips='留言内容不能为空' required></textarea></span>
+		</li>
+		<li>
+			<font>您的姓名：</font><span><input type="text" name="name" value="" {if(in_array('name',$options))} ruletips='请填写您的姓名' required{/if}>
+				{if(in_array('name',$options))}&nbsp;*{else}&nbsp;(选填){/if}</span>
+		</li>
+		<li>
+			<font>联系电话：</font><span><input type="text" name="tel" value="" ruletips='联系电话填写不正确' rule='tel' {if(in_array('tel',$options))} required{/if}>
+				{if(in_array('tel',$options))}&nbsp;*{else}&nbsp;(选填){/if}</span>
+		</li>
+		<li>
+			<font>电子邮箱：</font><span><input type="text" name="email" value="" ruletips='电子邮箱填写不正确' rule='email' {if(in_array('email',$options))} required{/if}>
+				{if(in_array('email',$options))}&nbsp;*{else}&nbsp;(选填){/if}</span>
+		</li>
+		<li><font></font><span><input type="button" name="btn1" value="提 交" class="btn-3" onclick="thisjs.save();" id="id_btnok"></span>
+	</div>
+	</form>
+</div>
+{include(footer)}
+<script src="/common/js/kj.alert.js"></script>
+<script>
+var thisjs = new function() {
+	this.save = function() {
+		if(kj.rule.form(document.frm_2) == false) {
+			return false;
+		}
+		kj.obj("#id_btnok").disabled = true;
+		kj.obj("#id_btnok").value="正在提交..";
+		kj.ajax.post(document.frm_2 , function(data) {
+			var obj_data = kj.json(data);
+			if(obj_data.isnull || !('code' in obj_data)) {
+				alert("操作失败");
+			} else if(obj_data.code!='0') {
+				if('msg' in obj_data) {
+					alert(obj_data.msg);
+				} else {
+					alert('操作失败');
+				}
+			} else {
+				kj.alert.show('留言成功',function(){window.location='{cfg:(dirpath,base)}/';});	
+			}
+			kj.obj("#id_btnok").disabled = false;
+			kj.obj("#id_btnok").value="提 交";
+
+		});
+	}
+}
+</script>
+</body>
+</html>

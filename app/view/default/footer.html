@@ -1,0 +1,20 @@
+</div>
+<div class="footer">
+<a href="./index.php?app_act=help">关于我们</a>{if(!isset($site) || $site['customview']==0)}&nbsp;&nbsp;&nbsp;&nbsp;<a href="./index.php?app_act=reg.shop">诚邀加盟</a>{/if}&nbsp;&nbsp;&nbsp;&nbsp;<a href="./index.php?app_act=msg">意见反馈</a><br>
+CopyRight &copy 2015 <a href="http://www.kjcms.com" target="_blank">网上订餐系统</a> 版权所有
+</div>
+<div style="position:fixed;display:none;bottom:100px" id="id_kjcms_logo">
+<img src="images/kjcms.png">
+</div>
+<script>
+kj.onload(function(){
+	var w = kj.w();
+	if(w<1150) return;
+	var left = 1010+(w - 1000)/2;
+	kj.set("#id_kjcms_logo" , "style.left" , left+"px");
+	kj.show("#id_kjcms_logo");
+	var h = document.documentElement.clientHeight || document.body.clientHeight;
+	h = h/2-kj.h("#id_kjcms_logo")/2;
+	kj.set("#id_kjcms_logo" , "style.top" , h+"px");
+});
+</script>

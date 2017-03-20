@@ -1,0 +1,60 @@
+{include(header)}
+<style>
+.mtable{float:left;margin:10px;width:700px;border-collapse: collapse}
+.mtable td{text-align:center;border-bottom:1px #ccc solid}
+.mtable td img{width:55px;height:70px}
+.mtable .xsel{}
+.mtable .xsel td{background:#f8f8f8}
+.mdiv{float:left;width:100%;padding:8px 0px 0px 0px;}
+.mdiv ul{float:left;margin:0px 0px 0px 20px}
+</style>
+<div class="mdiv">
+<ul>
+<iframe name="frm_pic_url" src="common.php?app=other&app_act=upload&callback=upload_return&ext={$allowext}&size={$allowsize}" width="300px" height="30px" frameborder=0 scrolling="no"></iframe>
+</ul>
+</div>
+<table class="mtable">
+{if($type=='image')}
+{foreach($arr_list as $item)}
+<tr onmouseover="this.className='xsel';" onmouseout="this.className=''" onclick="select_media({'id':'{$item['media_id']}','file':'{$item['url']}'})"><td><img src="{$item['url']}"><br>{$item['name']}</td><td>{$item['size']}</td><td>{$item['addtime']}</td></tr>
+{/foreach}
+{else if($type=='voice')}
+{foreach($arr_list as $item)}
+<tr onmouseover="this.className='xsel';" onmouseout="this.className=''" onclick="select_media({'id':'{$item['media_id']}','file':'{$item['url']}'})"><td><img src="images/mp3.png"><br>{$item['name']}</td><td>{$item['size']}</td><td>{$item['addtime']}</td></tr>
+{/foreach}
+{else}
+{foreach($arr_list as $item)}
+<tr onmouseover="this.className='xsel';" onmouseout="this.className=''" onclick="select_media({'id':'{$item['media_id']}','file':'{$item['url']}'})"><td><img src="images/video.png"><br>{$item['name']}</td><td>{$item['size']}</td><td>{$item['addtime']}</td></tr>
+{/foreach}
+{/if}
+</table>
+<script>
+function upload_return(val) {
+	if(val=='') return;
+	obj = kj.json(val);
+	if('url' in obj) {
+		kj.ajax.post("{fun_get::url(array('app_act'=>'upload'))}" , {'file':obj.url} , function(data) {
+			var obj = kj.json(data);
+			if(!('code' in obj)) {
+				alert("系统繁忙");return;
+			}
+			if(obj.code == '0') {
+				location.reload(true);
+			} else {
+				if('msg' in obj) {
+					alert(obj.msg);
+				} else {
+					alert("上传失败");
+				}
+			}
+		});
+	}
+}
+function select_media(obj) {
+	var str = obj.file.replace(/\\/,'/');
+	var arr = str.split('/');
+	var name = arr[arr.length-1];
+	parent.thisjs.media_select('{$type}' , obj.id , obj.file , name);
+}
+</script>
+{include(footer)}

@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>我的礼品-{cfg:(site_title,sys)}</title>
+<meta name="keywords" content="我的礼品,{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+</head>
+<body>
+{include(header)}
+{include(member_left)}
+<div class="uright">
+	<div class="upath"><font>我的礼品</font></div>
+	<div class="utable">
+	<ul class="xtit">
+		<li class="x1"><font>时间</font></li>
+		<li class="x5" style="width:210px"><font>礼品</font></li>
+		<li class="x3"><font>数量</font></li>
+		<li class="x4"><font>消耗积分</font></li>
+		<li class="x2"><font>状态</font></li>
+	</ul>
+	{foreach($record_list['list'] as $item)}
+	<ul class="xli">
+		<li class="x1">{$item['record_datetime']}</li>
+		<li class="x5">{$item['gift_name']}</li>
+		<li class="x3">{$item['record_num']}</li>
+		<li class="x4">{$item['record_score']}</li>
+		<li class="x2" id="id_state_{$item['record_id']}">{$item["state"]}
+		{if(!empty($item['record_send_time']) && empty($item['record_receive_time']) )}
+		【<a href="javascript:thisjs.receive('{$item['record_id']}');">领取</a>】
+		{/if}
+		</li>
+	</ul>
+	{/foreach}
+	</div>
+	<div class="page" style="margin-top:20px">
+		<li{if($record_list['pagebtns']['pre']<1)} class="xnone"{/if}><a href="{if($record_list['pagebtns']['pre']<1)}javascript:void(0);{else}{fun_get::url(array('page'=>''))}&page={$record_list['pagebtns']['pre']}{/if}">上一页</a></li>
+		{if($record_list['pagebtns']['start']!=1)}<li><a href="{fun_get::url(array('page'=>''))}&page=1">1</a></li>{/if}
+		{if($record_list['pagebtns']['start']>2)}
+			<li class="xnone"><font>...</font></li>
+		{/if}
+		{foreach($record_list['pagebtns']['list'] as $item)}
+		<li{if(fun_get::get('page',1)==$item)} class="xsel"{/if}><a href="{fun_get::url(array('page'=>''))}&page={$item}">{$item}</a></li>
+		{/foreach}
+		{if($record_list['pagebtns']['end']<$record_list['pageinfo']['pages']-1)}
+			<li class="xnone"><font>...</font></li>
+		{/if}
+		{if($record_list['pagebtns']['end']<$record_list['pageinfo']['pages'])}
+		<li><a href="{fun_get::url(array('page'=>''))}&page={$record_list['pageinfo']['pages']}">{$record_list['pageinfo']['pages']}</a></li>
+		{/if}
+		<li{if($record_list['pagebtns']['next']<1)} class="xnone"{/if}><a href="{if($record_list['pagebtns']['next']<1)}javascript:void(0);{else}{fun_get::url(array('page'=>''))}&page={$record_list['pagebtns']['next']}{/if}">下一页</a></li>
+	</div>
+</div>
+{include(footer)}
+</body>
+</html>
+<script src="/common/js/kj.alert.js"></script>
+<script>
+var thisjs = new function() {
+	this.receive = function(id) {
+		kj.ajax.get("{cfg:(dirpath,base)}/index.php?app=act.gift&app_act=receive&id="+id,function(data) {
+			var obj = kj.json(data);
+			if(obj.isnull) {alert("系统繁忙");return;}
+			if(obj.code != '0') {
+				('msg' in obj)? alert(obj.msg) : alert("系统繁忙");
+				return;
+			}
+			var objstate = kj.obj("#id_state_"+obj.id);
+			if(objstate) objstate.innerHTML = "已领取";
+			('msg' in obj) ? kj.alert(obj.msg) : kj.alert("已成功设置为领取状态");
+		});
+	}
+}
+</script>

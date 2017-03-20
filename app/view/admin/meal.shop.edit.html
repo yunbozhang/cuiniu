@@ -1,0 +1,500 @@
+{include(header)}
+<style>
+.beta{float:left;width:400px;padding:10px 0px 0px 10px;line-height:25px};
+.me_div{float:left;margin:10px 0px 0px 10px}
+.me_div li{float:left;margin:5px 0px 5px 10px;border:1px #cccccc solid;padding:5px;background:#efefef}
+.me_opentime{float:left;width:100%}
+.me_opentime li{float:left;width:90%;margin:5px 0px 3px 0px}
+</style>
+<script>
+//保存时效验规则
+admin.rule['save'] =[
+];
+
+</script>
+<div class="pMenu" id="id_pMenu">
+	<li class="sel" onclick="admin.edittabel(0);">基本信息</li>
+	<li onclick="admin.edittabel(1);">运营配置</li>
+	<li onclick="admin.edittabel(2);">店铺介绍</li>
+	<li onclick="admin.edittabel(3);">运营信息</li>
+	<li onclick="admin.edittabel(4);">地理位置</li>
+	<li onclick="admin.edittabel(5);">打印信息</li>
+	<li class = "x_btn"><a href="javascript:parent.thisjs.klkkdj_open('店铺管理-帮助','app=service&app_act=help&key=help.meal.shop');" title="帮助"><img src="images/faq.gif"></a></li>
+</div>
+<div class="pMain" id="id_main">
+<table class='pEditTable'>
+<tr class='pTabTitRow'><td class='pTabTitCol' colspan="2"></td></tr>
+<tr>
+	<td class="pTabColName">所属用户：</td><td class="pTabColVal">
+		<input type="hidden" name="shop_user_id" value="{$editinfo['shop_user_id']}" id="id_shop_user_id">
+		<div class="more1" onmouseover="kj.windiv({'id':'shop_user_windiv','fid':this,'src':'common.php?app=sys&app_act=user.dialog1'});" id="id_shop_user"onmouseout="kj.hide('#windivshop_user_windiv');">{if(empty($editinfo["user_name"]))}选择{else}{$editinfo["user_name"]}{/if}</div>
+		<div style="float:left;padding-left:20px"><a href="javascript:master_open({id:'add_user',title:'添加用户',url:'?app_module=sys&app=user&app_act=edit',w:500});" style="color:#ff8800">[创建]</a></div>
+	</td>
+	</tr>
+<tr>
+	<td class="pTabColName">分类：</td>
+	<td class="pTabColVal">
+		<select name="shop_type">
+		<option value=""></option>
+		{foreach($arr_type as $item)}
+			<option value="{$item}"{if($item==$editinfo['shop_type'])} selected{/if}>{$item}</option>
+		{/foreach}
+		</select>
+	</td></tr>
+<tr>
+	<td class="pTabColName">名称：</td><td class="pTabColVal"><input type="text" name="shop_name" value="{$editinfo['shop_name']}" class='pTxt1 pTxtL300' ruletips="店名不能为空" ruletipsmode=1 required> <span style="color:#ff0000">*</span></td>
+	</tr>
+<tr>
+	<td class="pTabColName">联系人：</td><td class="pTabColVal"><input type="text" name="shop_linkname" value="{$editinfo['shop_linkname']}" class='pTxt1 pTxtL150' ruletips="联系人不能为空" ruletipsmode=1 required> <span style="color:#ff0000">*</span></td>
+	</tr>
+<tr>
+	<td class="pTabColName">联系人电话：</td><td class="pTabColVal"><input type="text" name="shop_linktel" value="{$editinfo['shop_linktel']}" class='pTxt1 pTxtL150' rule='tel' ruletips="联系人电话不能为空或格式不正确" ruletipsmode=1 required> <span style="color:#ff0000">*</span></td>
+	</tr>
+<tr>
+	<td class="pTabColName">订餐电话：</td><td class="pTabColVal"><input type="text" name="shop_tel" value="{$editinfo['shop_tel']}" class='pTxt1 pTxtL150' rule='tel' ruletips="订餐电话格式不正确" ruletipsmode=1></td>
+	</tr>
+<tr>
+	<td class="pTabColName">地&nbsp;&nbsp;区：</td><td class="pTabColVal">
+	<input type="hidden" name="shop_area_id" id="id_shop_area_id" value="{$editinfo['shop_area_id']}">
+	<input type="hidden" name="shop_area_allid" id="id_shop_area_allid" value="{$editinfo['shop_area_allid']}">
+	<input type="hidden" name="shop_area" id="id_shop_area" value="{$editinfo['shop_area']}">
+	<select name="area_id[]" onchange="thisjs.changearea(this.value,0);" id="id_area_0">
+		<option value=""></option>
+	{foreach($editinfo["area"]["default"] as $item)}
+		<option value="{$item['area_id']}"{if(in_array($item['area_id'] , explode("," , $editinfo['shop_area_allid']) ) )} selected{/if}>{$item['area_name']}</option>
+	{/foreach}
+	</select>
+	{for($i=1;$i<$editinfo["area"]["depth"];$i++)}
+		<select name="area_id[]" onchange="thisjs.changearea(this.value,{$i});" id="id_area_{$i}">
+		</select>
+	{/foreach}
+	</td>
+	</tr>
+<tr>
+	<td class="pTabColName">店铺地址：</td><td class="pTabColVal"><input type="text" name="shop_address" value="{$editinfo['shop_address']}" class='pTxt1 pTxtL250'></td>
+	</tr>
+<tr>
+	<td class="pTabColName">店面logo：</td><td class="pTabColVal"><span style="float:left"><input type="text" name="shop_pic" id="id_shop_pic" value="{$editinfo['shop_pic']}" class='pTxt1 pTxtL300' onchange="kj.obj('#id_img_shop_pic').src=kj.url_view(this.value);">&nbsp;<a href="javascript:kj.dialog({id:'dialog_attatch',title:'选择图片',url:'common.php?app=other&app_act=attatch&url_objid=id_shop_pic',w:600,showbtnhide:false,type:'iframe'});">选择</a><br><iframe name="frm_article_pic_big" src="common.php?app=other&app_act=upload&small=1" width="300px" height="30px" frameborder=0 scrolling="no"></iframe></span><span style="float:left;margin-left:5px"><img src="{$editinfo['shop_pic']}" width="60px" height="60px" id="id_img_shop_pic" onclick="kj.pic.preview(this.src);" onerror="this.src='{$temp_baseurl}common/images/no_pic.jpg'"></span></td>
+	</tr>
+<tr>
+	<td class="pTabColName">小图：</td><td class="pTabColVal"><span style="float:left"><input type="text" name="shop_pic_small" id="id_shop_pic_small" value="{$editinfo['shop_pic_small']}" class='pTxt1 pTxtL300' onchange="kj.obj('#id_img_shop_pic_small').src=kj.url_view(this.value);">&nbsp;<a href="javascript:kj.dialog({id:'dialog_attatch',title:'选择图片',url:'common.php?app=other&app_act=attatch&url_objid=id_shop_pic_small',w:600,showbtnhide:false,type:'iframe'});">选择</a><br><iframe name="frm_article_pic" src="common.php?app=other&app_act=upload&callback=upload_callback_small" width="300px" height="30px" frameborder=0 scrolling="no"></iframe></span><span style="float:left;margin-left:5px"><img src="{$editinfo['shop_pic_small']}" width="60px" height="60px" id="id_img_shop_pic_small" onclick="kj.pic.preview(this.src);"  onerror="this.src='{$temp_baseurl}common/images/no_pic.jpg'"></span></td>
+	</tr>
+<tr>
+	<td class="pTabColName">显示样式：</td>
+	<td class="pTabColVal">
+		<select name="shop_mode">
+			<option value="0">默认</option>
+			<option value="1"{if($editinfo['shop_mode']==1)} selected{/if}>文字</option>
+			<option value="2"{if($editinfo['shop_mode']==2)} selected{/if}>图片</option>
+		</select>
+	</td></tr>
+<tr>
+	<td class="pTabColName">状 态：</td>
+	<td class="pTabColVal">
+		<select name="shop_state">
+		{foreach($arr_state as $item=>$key)}
+			<option value="{$key}"{if($key==$editinfo['shop_state'])} selected{/if}>{$item}</option>
+		{/foreach}
+		</select>
+	</td></tr>
+<tr>
+	<td class="pTabColName">停业公告：</td><td class="pTabColVal"><input type="text" name="shop_close_tips" value="{$editinfo['shop_close_tips']}" class='pTxt1 pTxtL500'>&nbsp;<span class="pBeta">支持html代码</span></td>
+	</tr>
+<tr>
+	<td class="pTabColName">推 荐：</td>
+	<td class="pTabColVal">
+		<input type="text" name="shop_tj" value="{$editinfo['shop_tj']}" class='pTxt1 pTxtL60'> <span class="pBeta">填写大于零的数字表示推荐，首页推荐按此值排序</span>
+	</td></tr>
+</table>
+<!--label 1 end-->
+<table class='pEditTable' style="display:none">
+<tr class='pTabTitRow'><td class='pTabTitCol' colspan="2"></td></tr>
+<tr>
+	<td class="pTabColName">提供服务 ：</td><td class="pTabColVal">
+		<select name="shop_service" onchange="thisjs.shop_service(this.value);">
+			<option value="0">只做外送</option>
+			<option value="1"{if($editinfo['shop_service']==1)} selected{/if}>只做订位</option>
+			<option value="3"{if($editinfo['shop_service']==3)} selected{/if}>外送优先</option>
+			<option value="4"{if($editinfo['shop_service']==4)} selected{/if}>订位优先</option>
+		</select>
+	</td></tr>
+{if(cls_config::get('score_mode','meal')==2)}
+<tr>
+	<td class="pTabColName">开通积分兑换 ：</td><td class="pTabColVal">
+	<label><input type="checkbox" name="shop_support_score" value="1"{if(!empty($editinfo['shop_support_score']))} checked{/if}>是</label>
+	<span class="pBeta"><a href="javascript:parent.thisjs.klkkdj_open('店铺管理-经验积分-帮助','app=service&app_act=help&key=help.sys.user.action');" target="_blank" title="详细解释"><img src="images/faq.gif"></a></span>
+	</td></tr>
+{/if}
+<tr>
+	<td class="pTabColName">营业时间 ：</td><td class="pTabColVal">
+	<div class="me_opentime" id="id_opentime">
+		<li>
+		<label><input type="checkbox" name="shop_weekday[]" value="1"{if(in_array('1',$editinfo['weekday']))} checked{/if}>周一</label>&nbsp;&nbsp;<label><input type="checkbox" name="shop_weekday[]" value="2"{if(in_array('2',$editinfo['weekday']))} checked{/if}>周二</label>&nbsp;&nbsp;<label><input type="checkbox" name="shop_weekday[]" value="3"{if(in_array('3',$editinfo['weekday']))} checked{/if}>周三</label>&nbsp;&nbsp;<label><input type="checkbox" name="shop_weekday[]" value="4"{if(in_array('4',$editinfo['weekday']))} checked{/if}>周四</label>&nbsp;&nbsp;<label><input type="checkbox" name="shop_weekday[]" value="5"{if(in_array('5',$editinfo['weekday']))} checked{/if}>周五</label>&nbsp;&nbsp;<label><input type="checkbox" name="shop_weekday[]" value="6"{if(in_array('6',$editinfo['weekday']))} checked{/if}>周六</label>&nbsp;&nbsp;<label><input type="checkbox" name="shop_weekday[]" value="0"{if(in_array('0',$editinfo['weekday']))} checked{/if}>周天</label>
+		</li>
+		{foreach($editinfo['opentime'] as $opentime)}
+		<li><select name="opentime_hour1[]">{for($i=0;$i<24;$i++)}<option value="{$i}"{if($i==$opentime['hour1'])} selected{/if}>{$i}点</option>{/for}</select><select name="opentime_minu1[]">{for($i=0;$i<59;$i++)}<option value="{$i}"{if($i==$opentime['minu1'])} selected{/if}>{$i}分</option>{/for}</select> 到 <select name="opentime_hour2[]">{for($i=0;$i<24;$i++)}<option value="{$i}"{if($i==$opentime['hour2'])} selected{/if}>{$i}点</option>{/for}</select><select name="opentime_minu2[]">{for($i=0;$i<59;$i++)}<option value="{$i}"{if($i==$opentime['minu2'])} selected{/if}>{$i}分</option>{/for}</select> 别称：<input type="text" name="opentime_name[]" value="{$opentime['name']}">&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" onclick="kj.remove(kj.parent(this,'li'));">移除</a></li>
+		{/foreach}
+	</div>
+	<a href="javascript:thisjs.opentime_add();"><img src="images/add.gif"> 添加</a>
+	</td></tr>
+<tr class="pTabTitRow Ttable"><td colspan="2" style="border-top:1px #ddd solid;text-align:left;font-weight:bold">&nbsp;&nbsp;订位设置</td></tr>
+<tr class="Ttable">
+	<td class="pTabColName">短信验证 ：</td><td class="pTabColVal">
+	<select name="shop_reserve_sms"><option value="">不需要</option><option value="1"{if($editinfo['shop_reserve_sms']==1)} selected{/if}>会员不需要</option><option value="2"{if($editinfo['shop_reserve_sms']==2)} selected{/if}>首次使用验证一次</option><option value="3"{if($editinfo['shop_reserve_sms']==3)} selected{/if}>每次都验证</option></select>&nbsp;<span class="pBeta">当用户扫描桌位二维码进入点餐时是否需要短信验证，更详细介绍请点：<a href="javascript:parent.thisjs.klkkdj_open('店铺管理-短信验证-帮助','app=service&app_act=help&key=help.x.meal.table');" target="_blank" title="详细解释"><img src="images/faq.gif"></a></span>
+	</td></tr>
+<tr class="Ttable">
+	<td class="pTabColName">预付订金 ：</td><td class="pTabColVal">
+	<input type="text" name="shop_reserve_money" value="{$editinfo['shop_reserve_money']}" class='pTxt1 pTxtL60'>&nbsp;<span class="pBeta">预订桌位时，需要付多少订金，为0，则无需要付订金</span>
+	</td></tr>
+<tr class="Ttable">
+	<td class="pTabColName">用餐时间 ：</td><td class="pTabColVal">
+	<input type="text" name="shop_reserve_time" value="{$editinfo['shop_reserve_time']}" class='pTxt1 pTxtL60' ruletips="订位间隔不能为空" ruletipsmode=1 required>&nbsp;<span class="pBeta">分钟，用于自动更新桌位状态，如：设置为60分钟，12:00某桌位已被预订了，那么只有13:00后该桌位才可继续被预订</span>
+	</td></tr>
+<tr class="Ttable">
+	<td class="pTabColName">上菜时间 ：</td><td class="pTabColVal">
+	<input type="text" name="shop_menutime" value="{$editinfo['shop_menutime']}" class='pTxt1 pTxtL60'>&nbsp;<span class="pBeta">分钟，值表示多少分钟后订单状态由“上菜中”切换到“用餐中”</span>
+	</td></tr>
+<tr class="Ttable">
+	<td class="pTabColName">人均消费 ：</td><td class="pTabColVal">
+	<input type="text" name="shop_capitaprice" value="{$editinfo['shop_capitaprice']}" class='pTxt1 pTxtL60'>&nbsp;<span class="pBeta"></span>
+	</td></tr>
+<tr class="pTabTitRow Twaimai"><td colspan="2" style="border-top:1px #ddd solid;text-align:left;font-weight:bold">&nbsp;&nbsp;配送设置</td></tr>
+<tr class="Twaimai">
+	<td class="pTabColName">配送时间 ：</td><td class="pTabColVal">
+	<div class="me_opentime" id="id_arrivetime">
+		{foreach($editinfo['arrivetime'] as $arrivetime)}
+		<li><select name="arrivetime_hour[]">{for($i=0;$i<24;$i++)}<option value="{$i}"{if($i==$arrivetime['hour'])} selected{/if}>{$i}点</option>{/for}</select><select name="arrivetime_minu[]">{for($i=0;$i<60;$i++)}<option value="{$i}"{if($i==$arrivetime['minu'])} selected{/if}>{$i}分</option>{/for}</select> 别称：<input type="text" name="arrivetime_name[]" value="{$arrivetime['name']}">&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" onclick="kj.remove(kj.parent(this,'li'));">移除</a></li>
+		{/foreach}
+	</div>
+	<a href="javascript:thisjs.arrivetime_add();"><img src="images/add.gif"> 添加</a>
+	</td></tr>
+<tr class="Twaimai">
+	<td class="pTabColName">多少分钟送达 ：</td><td class="pTabColVal" valign="top" style="line-height:30px">
+	<input type="text" name="arrivedelay" value="{$editinfo['extend']['arrivedelay']}" class='pTxt1 pTxtL150' ruletips="送达时间不能为空" ruletipsmode=1 required>&nbsp;<span class="pBeta">分钟<br>“下单时间与要求送餐时间要隔分钟数，如10点下单，这里如果是30分钟，那么表示送餐时间显示从10:30起”&nbsp;&nbsp;<a href="http://www.kjcms.com/common.php?app=article&app_act=view&id=118" target="_blank" title="详细解释"><img src="images/faq.gif"></a></span>
+	</td></tr>
+<tr class="Twaimai">
+	<td class="pTabColName">每天销量限制 ：</td><td class="pTabColVal" valign="top" style="line-height:30px">
+	<input type="text" name="shop_day_limit" value="{$editinfo['shop_day_limit']}" class='pTxt1 pTxtL150'>&nbsp;<span class="pBeta">0表示不限</span>
+	</td></tr>
+<!-- tr>
+	<td class="pTabColName">单份订单最低金额 ：</td><td class="pTabColVal" valign="top" style="line-height:30px">
+	<input type="text" name="shop_oneminleast" value="{$editinfo['shop_oneminleast']}" class='pTxt1 pTxtL150'>&nbsp;<span class="pBeta">元<br>0表示不限，用于中式自选模式中用户自已搭配菜品时，每份必须达到的价格，主要限制用户只点一元钱的饭与一元钱的菜就提交订单</span>
+	</td></tr -->
+<tr class="Twaimai">
+	<td class="pTabColName">起送价 ：</td><td class="pTabColVal" valign="top" style="line-height:30px">
+	<input type="text" name="shop_dispatch_price" value="{$editinfo['shop_dispatch_price']}" class='pTxt1 pTxtL150'>&nbsp;<span class="pBeta">元<br>0表示不限 ,当设置此值时，如果派送范围里没有限制最低价，则按此价算</span>
+	</td></tr>
+<tr class="Twaimai">
+	<td class="pTabColName">配送费 ：</td><td class="pTabColVal" valign="top" style="line-height:30px">
+	<input type="text" name="shop_addprice" value="{$editinfo['shop_addprice']}" class='pTxt1 pTxtL150'>&nbsp;<span class="pBeta">元<br>0表示免费配送，可以通过活动，添加满多少，然后减去配送费，以实现达到多少免配送费的功能</span>
+	</td></tr>
+<!-- tr>
+	<td class="pTabColName">提供发票：</td>
+	<td class="pTabColVal">
+		<input type="checkbox" name="shop_ticket" value=1{if($editinfo['shop_ticket'])} checked{/if}>
+	</td></tr -->
+</table>
+<!--label 3 start-->
+<table class='pEditTable' style='display:none'>
+<tr class='pTabTitRow'><td class='pTabTitCol' colspan="2"></td></tr>
+<tr>
+	<td class="pTabColName">简介：<br><span class='pBeta'>不超过500字</span></td><td class="pTabColVal"><textarea name="shop_desc" id="shop_desc" cols="90" rows="5">{$editinfo['shop_desc']}</textarea></td></tr>
+<tr>
+	<td class="pTabColName">详细介绍：</td><td class="pTabColVal"><textarea name="shop_intro" id="shop_intro" cols="60" rows="5" style="display:none">{$editinfo['shop_intro']}</textarea>{fun_get::editor('shop_intro','admin')}</td></tr>
+</table>
+<!--label 1 end-->
+<table class='pEditTable' style="display:none">
+<tr class='pTabTitRow'><td class='pTabTitCol' colspan="2"></td></tr>
+<tr>
+	<td class="pTabColName">返点比例 ：</td><td class="pTabColVal"><input type="text" name="shop_rebate" value="{$editinfo['shop_rebate']}" class='pTxt1 pTxtL60'> %<br><span class="pBeta">直接填写比例值，如：8% 填写 8 就行了，主要用于记录站长与商家的提成制，暂时功能不大</span>
+	</td></tr>
+<tr>
+	<td class="pTabColName">最低结款 ：</td><td class="pTabColVal">
+	<input type="text" name="shop_checkout_money" value="{$editinfo['shop_checkout_money']}" class='pTxt1 pTxtL60'><br><span class="pBeta">当到了结款日时如果未达到此营业额，将累计到下月结款</span>
+	</td></tr>
+<tr>
+	<td class="pTabColName">手机短信验证 ：</td><td class="pTabColVal">
+	<select name="shop_verifytel">
+		<option value="0">不验证</option>
+		<option value="1"{if($editinfo['shop_verifytel']==1)} selected{/if}>换号码时验证</option>
+		<option value="2"{if($editinfo['shop_verifytel']==2)} selected{/if}>每次都验证</option>
+	</select>
+	</td></tr>
+<tr>
+	<td class="pTabColName">短信模式：</td>
+	<td class="pTabColVal">
+		{if(fun_is::com('sms'))}
+			<select name="shop_sms">
+			{foreach($arr_sms as $item=>$key)}
+				<option value="{$key}"{if($key==$editinfo['shop_sms'])} selected{/if}>{$item}</option>
+			{/foreach}
+			</select>
+			&nbsp;<span class="pBeta">【订单提醒】紧紧发一条“您有新的订单”这样的提醒信息，【订单详情】则可以发送订单详细信息</span>
+		{else}
+			<input type="hidden" name="shop_sms" value="{$editinfo['shop_sms']}"><span style="color:#ff0000">未安装短信组件</span>
+		{/if}
+	</td></tr>
+<tr>
+	<td class="pTabColName">接收手机：</td>
+	<td class="pTabColVal">
+		<input type="text" name="shop_sms_tel" value="{$editinfo['shop_sms_tel']}" class='pTxt1 pTxtL200'>&nbsp;<span class="pBeta">可以是多个，以小逗号(英文时的逗号)分隔，每次会随机发送到一个手机，主要是为了减轻单个手机的工作量，不会同时向多个发送</span>
+	</td></tr>
+<tr>
+	<td class="pTabColName">邮件提醒：</td>
+	<td class="pTabColVal">
+		<input type="text" name="shop_email" value="{$editinfo['shop_email']}" class='pTxt1 pTxtL200'>&nbsp;<span class="pBeta">短信模式为订单详情时才提醒 ，空则表示不邮件提醒</span>
+	</td></tr>
+<tr>
+	<td class="pTabColName">微信提醒：</td>
+	<td class="pTabColVal">
+		<input type="text" name="shop_weixin_id" value="{$editinfo['shop_weixin_id']}" class='pTxt1 pTxtL200'>&nbsp;<span class="pBeta">绑定微信Id，此Id为后台管理微信关注者中的微信Id，短信模式为订单详情时才提醒 ，为空则表示不提醒</span>
+	</td></tr>
+<tr>
+	<td class="pTabColName">通知通告：</td><td class="pTabColVal"><input type="text" name="shop_tips" value="{$editinfo['shop_tips']}" class='pTxt1 pTxtL500'>&nbsp;<span class="pBeta">商家首页顶部滚动显示</span></td>
+	</tr>
+</table>
+<!--label 1 end-->
+<table class='pEditTable' style="display:none">
+<tr class='pTabTitRow'><td class='pTabTitCol' colspan="2"></td></tr>
+<tr>
+	<td class="pTabColName">经度 ：</td><td class="pTabColVal">
+	<input type="text" name="shop_position_lng" value="{$editinfo['shop_position_lng']}" class='pTxt1 pTxtL150'>&nbsp;<span class="pBeta"><a href="http://api.map.baidu.com/lbsapi/getpoint/" target="_blank">获取坐标</a></span>
+	</td></tr>
+<tr>
+	<td class="pTabColName">纬度 ：</td><td class="pTabColVal">
+	<input type="text" name="shop_position_lat" value="{$editinfo['shop_position_lat']}" class='pTxt1 pTxtL150'></span>
+	</td></tr>
+</table>
+<!--label 5 start-->
+<table class='pEditTable' style='display:none'>
+<tr class='pTabTitRow'><td class='pTabTitCol' colspan="2"></td></tr>
+<tr>
+	<td class="pTabColName">小票内容：</td><td class="pTabColVal"><div style="float:left"><textarea name="shop_printinfo" id="shop_printinfo" cols="60" rows="22">{$editinfo['shop_printinfo']}</textarea></div></td><td class="pTabColVal" valign="top">
+	<div style="float:left;width:90%;color:#888888;line-height:25px">格式如：{店铺名称} 这样的文字在这里称为变量，系统预先设置好的，在打印时会根据相关信息自动替换过来,目前支持以下变量，请点击插入</div>
+	<div class="me_div">
+	<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{订单id}');" title="点击插入变量">订单ID</a></li>
+	<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{餐厅名称}');" title="点击插入变量">餐厅名称</a></li>
+	<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{订餐电话}');" title="点击插入变量">订餐电话</a></li>
+	<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{餐厅地址}');" title="点击插入变量">餐厅地址</a></li>
+	<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{订单号}');" title="点击插入变量">订单号</a></li>
+	<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{所在区域}');" title="点击插入变量">所在区域</a></li>
+	<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{具体地址}');" title="点击插入变量">具体地址</a></li>
+	<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{公司}');" title="点击插入变量">公司</a></li>
+	<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{部门}');" title="点击插入变量">部门</a></li>
+	<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{客户称呼}');" title="点击插入变量">客户称呼</a></li>
+	<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{送餐地址}');" title="等于所在区域加上具体地址">送餐地址</a></li>
+	<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{客户电话}');" title="等于固话加上手机">客户电话</a></li>
+	<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{固话}');" title="点击插入变量">固话</a></li>
+	<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{手机}');" title="点击插入变量">手机</a></li>
+	<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{下单时间}');" title="点击插入变量">下单时间</a></li>
+	<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{指定时间信息}');" title="点击插入变量">指定时间信息</a></li>
+	<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{打印时间}');" title="点击插入变量">打印时间</a></li>
+	<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{应收金额}');" title="点击插入变量">应收金额</a></li>
+	<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{菜品列表}');" title="点击插入变量">菜品列表</a></li>
+	<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{优惠活动}');" title="点击插入变量">优惠活动</a></li>
+	<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{价格明细}');" title="点击插入变量">价格明细</a></li>
+	<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{备注}');" title="点击插入变量">备注</a></li>
+	</div>
+	</div>
+	</td></tr>
+<tr>
+	<td class="pTabColName">无线打印机ID：</td>
+	<td class="pTabColVal">
+		<input type="text" name="shop_print_id" value="{$editinfo['shop_print_id']}" class='pTxt1 pTxtL200'>&nbsp;<span class="pBeta">当开通无线打印时，为空即用默认打印机，-1 表示无打印机，购买打印机时会有相关ID</span>
+	</td></tr>
+<tr>
+	<td class="pTabColName">打印联数：</td>
+	<td class="pTabColVal">
+		<input type="text" name="shop_print_pages" value="{if(empty($editinfo['shop_print_pages']))}1{else}{$editinfo['shop_print_pages']}{/if}" class='pTxt1 pTxtL200'>&nbsp;<span class="pBeta">默认为1</span>
+	</td></tr>
+<tr>
+	<td class="pTabColName">新单自动打印：</td>
+	<td class="pTabColVal">
+		<input type="checkbox" name="shop_print_auto" value="1"{if($editinfo['shop_print_auto']==1)} checked{/if}>&nbsp;<span class="pBeta">当开通无线打印时有效</span>
+	</td></tr>
+<tr>
+	<td class="pTabColName">取消时自动打印：</td>
+	<td class="pTabColVal">
+		<input type="checkbox" name="shop_print_cancel" value="1"{if($editinfo['shop_print_cancel']==1)} checked{/if}>&nbsp;<span class="pBeta">当开通无线打印时，订单被取消时是否打印</span>
+	</td></tr>
+<tr>
+	<td class="pTabColName">打印机控制店铺状态：</td>
+	<td class="pTabColVal">
+		<input type="checkbox" name="shop_print_tongbu" value="1"{if($editinfo['shop_print_tongbu']==1)} checked{/if}>&nbsp;<span class="pBeta">当开关打印机时，同步店铺状态，即打印机开，店铺营状态正常，关则暂停营业</span>
+	</td></tr>
+<tr>
+	<td class="pTabColName"></td>
+	<td class="pTabColVal"><input type="button" name="print_test" value="测试打印" onclick="thisjs.print();" class="pBtn">
+	</td></tr>
+</table>
+</div>
+<div class="pFootAct" id="id_pFootAct">
+	<li>
+	<input type="button" name="dosubmit" value="保存" onclick="thisjs.get_cont();admin.frm_ajax('save' , function(){thisjs.clear_cont();});" class="pBtn">
+	</li>
+</div>
+<div id="id_print_html" style="display:none">
+<iframe src="javascript:void(0);" width="100%" height="400px" frameborder=0 id="id_frame_print"></iframe>
+</div>
+<div id="id_new_opentime">
+<select name="opentime_hour1[]">{for($i=0;$i<24;$i++)}<option value="{$i}">{$i}点</option>{/for}</select><select name="opentime_minu1[]">{for($i=0;$i<60;$i++)}<option value="{$i}">{$i}分</option>{/for}</select> 到 <select name="opentime_hour2[]">{for($i=0;$i<24;$i++)}<option value="{$i}">{$i}点</option>{/for}</select><select name="opentime_minu2[]">{for($i=0;$i<60;$i++)}<option value="{$i}">{$i}分</option>{/for}</select> 别称：<input type="text" name="opentime_name[]" value="">&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" onclick="kj.remove(kj.parent(this,'li'));">移除</a>
+</div>
+<div id="id_new_arrivetime">
+<select name="arrivetime_hour[]">{for($i=0;$i<24;$i++)}<option value="{$i}">{$i}点</option>{/for}</select><select name="arrivetime_minu[]">{for($i=0;$i<60;$i++)}<option value="{$i}">{$i}分</option>{/for}</select> 别称：<input type="text" name="arrivetime_name[]" value="">&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" onclick="kj.remove(kj.parent(this,'li'));">移除</a>
+</div>
+<script>
+//选择图片回调函数
+function attatch_callback(o) {
+	if('objid' in o) {
+		if(o.objid == 'id_shop_pic') {
+			kj.obj("#id_img_shop_pic").src = kj.url_view(kj.obj("#id_shop_pic").value);
+		} else {
+			kj.obj("#id_img_shop_pic_small").src = kj.url_view(kj.obj("#id_shop_pic_small").value);
+		}
+	}
+	kj.dialog.close("#windialog_attatch");
+}
+function upload_callback_small(info){
+	var obj = kj.json(info);
+	if('url' in obj) {
+		kj.obj("#id_shop_pic_small").value = obj.url;
+		kj.obj("#id_img_shop_pic_small").src = kj.url_view(obj.url);
+	}
+}
+function upload_callback(info){
+	var obj = kj.json(info);
+	if('url' in obj) {
+		kj.obj("#id_shop_pic").value=obj.url;
+		kj.obj("#id_img_shop_pic").src = kj.url_view(obj.url);
+	}
+	if('url_small' in obj) {
+		kj.obj("#id_shop_pic_small").value = obj.url_small;
+		kj.obj("#id_img_shop_pic_small").src = kj.url_view(obj.url_small);
+	}
+}
+//用户选择回调函数
+function user1_callback(o) {
+	if("id" in o) kj.obj("#id_shop_user_id").value=o.id;
+	if("name" in o) kj.obj("#id_shop_user").innerHTML = o.name;
+	kj.hide("#windivshop_user_windiv");
+}
+var thisjs = new function() {
+	this.arealist = {$editinfo["area"]["list"]};//json格式，指定id包函的子地区
+	this.areainfo = {$editinfo["area"]["area"]};//对应id地区详细信息
+	this.depth = {$editinfo["area"]["depth"]};//当前地区深度
+	this.defaultval = "{$editinfo['shop_area_allid']}"//当前选择值
+	this.defaultval = this.defaultval.split(",");//格式化成数组
+	//地区下拉发生改变时触发
+	this.changearea = function(val , index) {
+		var obj,i,ii;
+		index++;
+		//当index大于深度时跳出
+		if(index>this.depth) return;
+		//发生改变后，重置之后的地区下拉
+		for(i = index ; i < this.depth; i++) {
+			obj = kj.obj("#id_area_" + i);
+			if(!obj) break;
+			obj.options.length = 0;
+			if(i>index) kj.hide(obj);
+		}
+
+		var key = "id_" + val;
+		if(!(key in this.arealist) || !("length" in this.arealist[key])) {
+			kj.hide("#id_area_" + index);
+			//跳出则刷新当前地区值
+			this.refresh_area_val();
+			return;
+		}
+		kj.show("#id_area_" + index);
+		kj.add_option("#id_area_" + index , '' , '');
+		for(i = 0 ; i < this.arealist["id_"+val].length ; i++ ) {
+			obj = kj.obj("#id_area_" + index);
+			ii = this.arealist["id_"+val][i];
+			if( !("id_" + ii in this.areainfo ) ) continue;
+			kj.add_option(obj , this.areainfo["id_" + ii]["area_name"] , ii);
+			//选中默认值
+			if(this.defaultval.length>index && obj.options[i+1].value == this.defaultval[index]) {
+				obj.options[i+1].selected=true;
+			}
+		}
+		this.changearea(obj.value , index);
+		this.refresh_area_val();
+	}
+	this.refresh_area_val = function() {
+		var obj = kj.obj(":area_id[]");
+		var arr_id = [];
+		var arr_val = [];
+		var id = 0;
+		for(var i = 0 ; i < obj.length ; i++) {
+			if(obj[i].value != '') {
+				if( !("id_" + obj[i].value in this.areainfo ) ) continue;
+				arr_id[arr_id.length] = obj[i].value;
+				arr_val[arr_val.length] = ('area_val' in this.areainfo["id_" + obj[i].value]) ? this.areainfo["id_" + obj[i].value]["area_val"] : this.areainfo["id_" + obj[i].value]["area_name"];
+			} else {
+				break;
+			}
+		}
+		if(arr_id.length>0) {
+			kj.obj("#id_shop_area_id").value = arr_id[arr_id.length-1];
+		} else {
+			kj.obj("#id_shop_area_id").value = '';
+		}
+		kj.obj("#id_shop_area_allid").value = arr_id.join(",");
+		kj.obj("#id_shop_area").value = arr_val.join(" ");
+	}
+	//因为这里用ajax，fckeditor不会取到内容，所以自己取
+	this.get_cont = function() {
+		kj.obj("#shop_intro").value = objEditor.getContent(); //这就是内容
+	}
+	//ajax 提交后，还得清空内容
+	this.clear_cont = function() {
+		//只有当添加时才要清空
+		{if(empty($editinfo['shop_id']))}
+			objEditor.setContent('');
+		{/if}
+	}
+	this.print = function() {
+		var action = document.frm_main.action;
+		document.frm_main.action = "./common.php?app_module=meal&app=call&app_act=print.test";
+		document.frm_main.target = "_blank";
+		document.frm_main.submit();
+		document.frm_main.action = action;
+		document.frm_main.target = '_self';
+	}
+	this.opentime_add = function() {
+		var objli = document.createElement("li");
+		objli.innerHTML = this.opentime_html;
+		kj.obj("#id_opentime").appendChild(objli);
+	}
+	this.arrivetime_add = function() {
+		var objli = document.createElement("li");
+		objli.innerHTML = this.arrivetime_html;
+		kj.obj("#id_arrivetime").appendChild(objli);
+	}
+	this.shop_service = function(val) {
+		if(val == 0) {
+			kj.hide(".Ttable");
+			kj.show(".Twaimai");
+		} else if(val == 1) {
+			kj.hide(".Twaimai");
+			kj.show(".Ttable");
+		} else {
+			kj.show(".Ttable");
+			kj.show(".Twaimai");
+		}
+	}
+}
+kj.onload(function() {
+	//加载默认值选中
+	thisjs.changearea(kj.obj("#id_area_0").value,0);
+	{for($i=1;$i<$editinfo["area"]["depth"];$i++)}
+		thisjs.changearea(kj.obj("#id_area_{$i}").value,{$i});
+	{/for}
+	thisjs.shop_service(document.frm_main.shop_service.value);
+});
+thisjs.opentime_html = kj.obj("#id_new_opentime").innerHTML;
+thisjs.arrivetime_html = kj.obj("#id_new_arrivetime").innerHTML;
+kj.remove("#id_new_opentime");
+kj.remove("#id_new_arrivetime");
+</script>
+{include(footer)}

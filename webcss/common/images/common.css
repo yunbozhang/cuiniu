@@ -1,0 +1,45 @@
+/*文本框通用样式*/
+input[type="text"]{border:1px #ccc solid;padding:3px 2px}
+input[type="password"]{border:1px #ccc solid;padding:3px 2px}
+select,textarea,input{outline:0px}
+
+.pTxtDate {width:120px;border:1px #ccc solid;padding:3px 2px}
+/*文本框统一长度*/
+.pTxtL150{width:150px;height:23px;line-height:23px}
+.pTxtL200{width:200px;height:23px;line-height:23px}
+.pTxtL250{width:250px;height:23px;line-height:23px}
+.pTxtL300{width:300px;height:23px;line-height:23px;font-size:14px}
+.pTxtL400{width:400px;height:23px;line-height:23px}
+.pTxtL500{width:500px;height:23px;line-height:23px}
+.pTxtL20 {width:20px;height:23px;line-height:23px}
+.pTxtL60 {width:60px;height:23px;line-height:23px}
+.pTxtL100 {width:100px;height:23px;line-height:23px}
+textarea{border:1px #ccc solid}
+/*按钮统一样式*/
+.pBtn{border:0px;height:24px;background:#438eb9;border-radius: 2px;color:#fff;cursor:pointer}
+.pBtn2{border:0px;height:24px;background:#aaa;border-radius: 2px;color:#fff;cursor:pointer}
+.pSubmit{}
+/*备注统一样式*/
+.pBeta {color:#888888}
+
+.pPage{float:left;height:30px;line-height:30px}
+.pPage li{float:left;padding:0px 8px 0px 8px;margin-right:5px;color:#aaaaaa;overflow:hidden;vertical-align:bottom;font-size:14px}
+.pPage .info{margin-right:20px}
+.pPage .x_txt{height:12px;width:30px}
+.pPage .xli{float:left;margin-top:3px}
+.pPage .xli a{float:left;border:1px #ccc solid;margin:0px 5px;padding:3px 6px;height:16px;line-height:14px}
+.alert_down {
+	position:fixed;
+	word-wrap:break-all;
+	white-space:nowrap;
+	overflow:hidden;
+	background:#ffac00;
+	float:left;
+	padding:10px 20px;
+	width:auto;
+	color:#fff;
+	font-size:14px;
+	letter-spacing:5px;
+	FILTER:alpha(opacity=50);
+	opacity:0.6;
+}

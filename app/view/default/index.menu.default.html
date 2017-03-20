@@ -1,0 +1,299 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>{$menu_info['menu_title']}-{cfg:(site_title,sys)}</title>
+<meta name="keywords" content="{$menu_info['menu_title']},{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+<style>
+.shop_comment{width:730px}
+.shop_comment .xtotal{width:730px}
+.shop_comment .xtit{width:710px}
+.shop_comment .xlist{width:710px}
+.shop_comment .xlist ul{width:704px}
+.shop_comment .xlist ul li{width:704px}
+</style>
+</head>
+<body>
+{include(header)}
+{include(label.shop.top)}
+<div class="shopext" id="id_shopext" onmouseover="jsshop.showext();" onmouseout="jsshop.hideext();" style="display:none;cursor:pointer" onclick="window.open('?app_act=shop&id={$shopinfo['shop_id']}','_self');">
+	<ul>
+	<li>
+	<p><b>商家电话：</b><font>{$shopinfo['shop_tel']}</font></p>
+	<p><b>商家地址：</b><font>{$shopinfo['shop_address']}</font></p>
+	<p><b>营业时间：</b><font>
+		{foreach($shopinfo['extend']['arr_opentime'] as $item=>$key)}
+		{$key}<br>
+		{/foreach}</font>
+	</p>
+	</li>
+	</ul>
+</div>
+<script src="shop.default.js"></script>
+<div class="shopinfo" style="float:right">
+	{include(label.shop.right)}
+</div>
+<div style="background:#fff;float:left;padding:8px 4px;border:1px #ebebeb solid;margin-top:17px">
+<div class="gpic">
+	<div class="xpic">
+		<li><img src = "{$menu_info['menu_pic']}" id="id_menu_pic"></li>
+	</div>
+	<div class="xli">
+		<li class="xleft xleft1" id="id_btn_left"></li>
+		<li class="xmid" id="id_gpic_list">
+			<div class="xpicli" id="id_gpic_cont">
+			<span class="xsel"><img src = "{$menu_info['menu_pic']}"></span>
+			{foreach($menu_info['pics'] as $pic)}
+			<span><img src = "{$pic}"></span>
+			{/foreach}
+			</div>
+		</li>
+		<li class="xright xright1" id="id_btn_right"></li>
+	</div>
+</div>
+<div class="ginfo" id="id_menu_list">
+	<li class="xtit"><h1>{$menu_info['menu_title']}</h1>{if(!empty($menu_info['menu_intro']))}<font>{$menu_info['menu_intro']}</font>{/if}</li>
+	{if(!isset($arr_menu['abount_menu']['id_'.$menu_info['menu_id']]))}
+	<li class="xprice">价格：<h1 class="Tprice">{fun_kj::get_price($menu_info['menu_price'])}</h1>&nbsp;&nbsp;&nbsp;<span></li>
+	<li class="xsold">已售：<font>{$menu_info['menu_sold']}</font></li>
+	<li class="xact">
+		<span class="btn-s1">
+		<input type="button" name="btnjian" class="xbtnjian" onclick="jsshop.change_num({$menu_info['menu_id']},-1)">
+		<input type="text" name="num" value="" class="xnum Tnum{$menu_info['menu_id']}" onkeyup="jsshop.change_num({$menu_info['menu_id']},this.value,1);">
+		<input type="button" name="btnjia" class="xbtnjia" onclick="jsshop.cartin(kj.obj('#id_menu_pic'),'img');jsshop.cart_add({id:'{$menu_info['menu_id']}',name:'{$menu_info['menu_title']}',pic:'{$menu_info['menu_pic_small']}',price:'{$menu_info['menu_price']}',type:'{$menu_info['menu_type']}'});" class="Tmenu1">
+		</span>
+		<span style="float:left;width:100%;margin-top:30px">
+			<input type="button" name="btngo" value="立即结算" class="btn-3" onclick="jsshop.cart_submit();">
+			&nbsp;&nbsp;<input type="button" name="btngo" value="返回店铺" class="btn-4" onclick="window.open('?app_act=shop&id={$menu_info['menu_shop_id']}','_self');">
+		</span>
+	</li>
+	{else}
+	<li class="xguige"><label>规格：</label><span id="id_guige_list">{foreach($arr_menu['abount_menu']['id_'.$menu_info['menu_id']] as $ii=>$about)}<font{if($ii==0)} class="xsel"{/if} kjdata="{'name':'{$about['menu_title']}','price':'{$about['menu_price']}','id':{$about['menu_id']}}">{$about['menu_about_name']}</font>{/if}</span></li>
+	<li class="xprice"><label>单价：</label><span>{cfg:(coinsign,sys)}<i class="Tprice" id="id_guige_price">{$arr_menu['abount_menu']['id_'.$menu_info['menu_id']][0]['menu_price']}</i></span></li>
+	<li class="xact">
+		<span class="btn-s1">
+		<input type="button" name="btnjian" class="xbtnjian" onclick="thisjs.guige_num(-1)">
+		<font class="ynum" id="id_guige_num">1</font>
+		<input type="button" name="btnjia" class="xbtnjia" onclick="thisjs.guige_num(1);">
+		</span>
+		<span style="float:left;width:100%;margin-top:30px">
+			<input type="button" name="btngo" value="立即结算" class="btn-3" onclick="thisjs.guige_add();">
+			&nbsp;&nbsp;<input type="button" name="btngo" value="返回店铺" class="btn-4" onclick="window.open('?app_act=shop&id={$menu_info['menu_shop_id']}','_self');">
+		</span>
+	</li>
+
+	{/if}
+</div>
+</div>
+<div class="gmenu" id="id_show_menu">
+	<li class="xsel" onclick="thisjs.show(0);">商品介绍</li>
+	<li onclick="thisjs.show(1);">用户评价</li>
+</div>
+<div class="gcont Tshow" id="id_cont">
+{if(!empty($menu_info['menu_cont']))}
+{$menu_info['menu_cont']}
+{else}
+暂无介绍
+{/if}
+</div>
+<div class="shop_comment Tshow" style="display:none">
+	<table class="xtotal">
+		<tr><td class="x1"><h1>{$menucomment['menu_comment']}<font>分</font></h1><p><span class="starbg"><font style="width:<?php echo $menucomment['menu_comment']/5*100;?>%"></font></span></p><p>共有 <font class='xnum' id="id_comment_num"></font> 人评价</p></td>
+		<td class="x3">
+			{foreach($menucomment['commentval'] as $item=>$key)}
+			<p><font>{$item}分</font><span><font style="width:<?php echo number_format($key/$menucomment['commenttotalren']*100,2);?>%"></font></span><font>{$key}人</font></p>
+			{/foreach}
+		</td>
+		</tr>
+	</table>
+	<div class="xtit">全部评价</div>
+	<div class="xlist" id="id_comment_list">
+	</div>
+	<div class="page" id="id_comment_page">
+	</div>
+</div>
+<div class='cart_menu' id="id_cart_menu" style="display:none">
+	<div class="x_list" id="id_cart_box"></div>
+</div>
+<div class='cart_menu' id="id_cart_menutit" style="z-index:10">
+	<div class="x_top">
+		<li class="x_3" onclick="jsshop.showcart_fixed(kj.obj('#id_btn_fixed'));">￥0</li>
+		<li class="x_2" onclick="jsshop.showcart_fixed(kj.obj('#id_btn_fixed'));"></li>
+		<li class="x_6" onclick="jsshop.showcart_fixed(this);" id="id_btn_fixed"></li>
+		<li class="x_5" onclick="jsshop.cart_submit();">立即结算</li>
+	</div>
+</div>
+{include(footer)}
+<div style="float:left;width:100%;height:20px;">&nbsp;</div>
+</body>
+</html>
+<script src="/common/js/kj.picscale.js"></script>
+<script src="/common/js/kj.pic.js"></script>
+<script>
+var thisjs = new function() {
+	this.obj_guige = {};
+	this.guige_num = function(val) {
+		var num = kj.toint(kj.obj("#id_guige_num").innerHTML);
+		num=num+val;
+		if(num<1) num = 1;
+		kj.set("#id_guige_num","innerHTML",num);
+	}
+	this.guige_add = function() {
+		jsshop.cartin(kj.obj('#id_menu_pic'),'img');
+		var num = kj.toint(kj.obj("#id_guige_num").innerHTML);
+		jsshop.cart_add({'id':this.obj_guige.id,'name':this.obj_guige.name,'pic':'','price':this.obj_guige.price,'type':'','num':num});
+		jsshop.cart_submit();
+	}
+	this.load = function() {
+		kj.handler("#id_gpic_list span","mouseover",function(e){
+			kj.delClassName("#id_gpic_list span" , "xsel");
+			kj.addClassName(this,"xsel");
+			var arr = kj.obj("img" , this);
+			kj.set("#id_menu_pic" , "src" , arr[0].src);
+		});
+		var arr = kj.obj("#id_gpic_list span");
+		if(arr.length > 4) kj.delClassName("#id_btn_right" , "xright1");
+		kj.handler("#id_btn_right","click",function(e){
+			var arr = kj.obj("#id_gpic_cont span");
+			if(arr.length<5) return;
+			var offset = kj.offset(arr[0]);
+			offset.width += 4;
+			var margin = -1 * kj.toint(kj.obj("#id_gpic_cont").style.marginLeft);
+			var len = offset.width*(arr.length-4);
+			if(margin < len) {
+				margin += offset.width;
+				kj.set("#id_gpic_cont" , "style.marginLeft" , -margin + 'px');
+				kj.delClassName("#id_btn_left" , "xleft1");
+			}
+			if(margin >= len) kj.addClassName("#id_btn_right" , "xright1");
+		});
+		kj.handler("#id_btn_left","click",function(e){
+			var arr = kj.obj("#id_gpic_cont span");
+			if(arr.length<5) return;
+			var offset = kj.offset(arr[0]);
+			offset.width += 4;
+			var margin = kj.toint(kj.obj("#id_gpic_cont").style.marginLeft);
+			var len = offset.width*(arr.length-4);
+			if(margin < 0 ) {
+				margin += offset.width;
+				kj.set("#id_gpic_cont" , "style.marginLeft" , margin + 'px');
+				kj.delClassName("#id_btn_right" , "xright1");
+			}
+			if(margin >= 0) kj.addClassName("#id_btn_left" , "xleft1");
+		});
+	}
+
+	this.comment = function(page) {
+		kj.ajax.get("index.php?app=ajax&app_act=menu.comment&id={$menu_info['menu_id']}" , function(data) {
+			var objdata = kj.json(data);
+			var i,html = '',arr;
+			var objcomment = kj.obj("#id_comment_list"),obj_ul,obj_div;
+			for(i = 0 ; i < objdata.list.length ; i++) {
+				html = '';
+				html += '<li class="xxtit"><span>' + objdata.list[i]['user_name'] + '</span><span><img src="images/vip' + objdata.list[i]['level'] + '.png"></span><span>' + objdata.list[i]['addtime'] + '</span><span class="xstar"><font style="width:' + objdata.list[i]['val'] + '%"></font></span></li>';
+				html += '<li class="xcont">' + objdata.list[i]['comment_beta'] + '</li>';
+				if(objdata.list[i].pic.length>0) {
+					html += '<li class="xpic">';
+					for(j = 0 ; j < objdata.list[i].pic.length ; j++) {
+						html += '<img src = "' + objdata.list[i].pic[j] + '" onclick="kj.pic.preview(\'' + objdata.list[i].pic[j] + '\')">';
+					}
+					html += '</li>';
+				}
+				if(objdata.list[i].comment_recont != '') {
+					html += '<li class="xrecont">';
+					html += objdata.list[i].comment_recont;
+					html += '</li>';
+				}
+				obj_ul=document.createElement("ul");
+				obj_ul.innerHTML = html;
+				objcomment.appendChild(obj_ul);
+			}
+			return;
+			obj_div=kj.obj("#id_comment_page");
+			objdata.pagebtns.pre = kj.toint(objdata.pagebtns.pre);
+			objdata.pagebtns.start = kj.toint(objdata.pagebtns.start);
+			objdata.pagebtns.end = kj.toint(objdata.pagebtns.end);
+			objdata.pagebtns.pages = kj.toint(objdata.pagebtns.pages);
+			objdata.pagebtns.page = kj.toint(objdata.pagebtns.page);
+			objdata.pagebtns.next = kj.toint(objdata.pagebtns.next);
+			var htmlpage = '';
+			htmlpage += '<li';
+			if(objdata.pagebtns.pre<1) htmlpage += ' class="xnone"';
+			htmlpage += '><a href="';
+			if(objdata.pagebtns.pre<1) {
+				htmlpage += 'javascript:void(0);'
+			}else{
+				htmlpage += 'javascript:thisjs.comment('+objdata.pagebtns.pre+');'
+			}
+			htmlpage += '">&lt;</a></li>';
+			if(objdata.pagebtns.start!=1) htmlpage += '<li><a href="javascript:thisjs.comment(1);">1</a></li>';
+			if(objdata.pagebtns.start>2) htmlpage += '<li class="xnone"><font>...</font></li>';
+			for(i = 0 ; i < objdata.pagebtns.list.length ; i++) {
+				htmlpage += '<li';
+				if(objdata.pageinfo.page==kj.toint(objdata.pagebtns.list[i])) htmlpage +=' class="xsel"';
+				htmlpage += '><a href="javascript:thisjs.comment('+objdata.pagebtns.list[i]+');">'+objdata.pagebtns.list[i]+'</a></li>';
+			}
+			if(objdata.pagebtns.end<objdata.pageinfo.pages-1) {
+				htmlpage += '<li class="xnone"><font>...</font></li>';
+			}
+			if(objdata.pagebtns.end<objdata.pageinfo.pages) {
+				htmlpage += '<li><a href="javascript:thisjs.comment('+objdata.pageinfo.pages+');">'+objdata.pageinfo.pages+'</a></li>';
+			}
+			htmlpage += '<li';
+			if(objdata.pagebtns.next<1) htmlpage +=' class="xnone"';
+			htmlpage += '><a href="';
+			if(objdata.pagebtns.next<1) {
+				htmlpage += 'javascript:void(0);';
+			}else{
+				htmlpage += 'javascript:thisjs.comment('+objdata.pagebtns.next+');'
+			}
+			htmlpage += '">&gt;</a></li>';
+			obj_div.innerHTML = htmlpage;
+			kj.obj("#id_comment_num").innerHTML = objdata.pageinfo.total;
+		});
+	}
+	this.show = function(val) {
+		var arr = kj.obj(".Tshow");
+		kj.hide(arr);
+		kj.show(arr[val]);
+		var arr1 = kj.obj("#id_show_menu li");
+		kj.delClassName(arr1 , "xsel");
+		kj.addClassName(arr1[val] , "xsel");
+		if(val == 1 && !this.first_comment) {
+			this.comment(0);
+			this.first_comment = 1;
+		}
+	}
+}
+thisjs.load();
+{if(isset($arr_menu['abount_menu']['id_'.$menu_info['menu_id']]))}
+kj.handler("#id_guige_list font","click",function(){
+	var obj = kj.getAttribute(this,'kjdata');
+	obj = kj.json(obj);
+	kj.set("#id_guige_price","innerHTML",obj.price);
+	kj.delClassName("#id_guige_list font","xsel");
+	kj.addClassName(this,"xsel");
+	thisjs.obj_guige = obj;
+});
+	var arr = kj.obj("#id_guige_list font");
+	kj.event(arr[0],'click');
+{/if}
+kj.picscale.load("#id_menu_pic");
+jsshop.mintotal = kj.toint('{$shopinfo["shop_dispatch_price"]}');//最低起送价
+jsshop.tempurl = "{$temp_url}";
+jsshop.shopid =  kj.toint('{$shopinfo["shop_id"]}');
+jsshop.cart_init = function() {
+	{foreach($arr_menu['cart'] as $cart)}
+		{foreach($cart as $menu)}
+			{if(isset($arr_menu["cart_menu"]["id_".$menu]))}
+			this.cart_add({id:'{$arr_menu["cart_menu"]["id_".$menu]['menu_id']}',name:'{$arr_menu["cart_menu"]["id_".$menu]['menu_title']}',pic:'{$arr_menu["cart_menu"]["id_".$menu]['menu_pic_small']}',price:'{$arr_menu["cart_menu"]["id_".$menu]['menu_price']}',type:'{$arr_menu["cart_menu"]["id_".$menu]['menu_type']}'});
+			{/if}
+		{/foreach}
+	{/foreach}
+}
+jsshop.cart_init();
+jsshop.resize();
+kj.show("#id_cart_menu");
+</script>

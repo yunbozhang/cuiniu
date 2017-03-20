@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>{cfg:(site_title,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+{if(cls_obj::get('cls_user')->is_login())}
+<script>
+window.open('wap.php?app=member&app_act=main','_self');
+</script>
+{/if}
+</head>
+<body>
+{include(label.header)}
+<div class="top">
+	<h1>会员登录</h1>
+	<a href="?" class="x1"><img src="images/home.png"></a>
+	<a href="javascript:history.back();" id="id_top_back" class="x2"><img src="images/back.png"></a>
+</div>
+<form name="frmlogin" method="post" action="{cfg:(dirpath,base)}/common.php?app=sys&app_act=login.verify" onsubmit="return thisjs.on_login();">
+<div class="main">
+	<div class="login">
+		<li class="xtit"><a href="javascript:void(0);" class="xsel">登录</a><a href="?app_act=reg">注册</a></li>
+		<li class="xli">
+			<p class="xname"><i></i><input type="text" name="uname" value="" placeholder="{if(cls_config::get('rule_uname','user')=='email')}邮箱{else if(cls_config::get('rule_uname','user')=='mobile')}手机{else}用户名{/if}"></p>
+			<p class="xpwd"><i></i><input type="password" name="pwd" value="" placeholder="密码"></p>
+			<p class="xtel Tverifypic"{if(cls_obj::get("cls_user")->is_verifycode()==false)} style="display:none"{/if}><i></i><input type="text" name="verifycode" value="" placeholder="验证码"></p>
+		</li>
+		<li class="xcode Tverifypic"{if(cls_obj::get("cls_user")->is_verifycode()==false)} style="display:none"{/if}>
+			<span>&nbsp;</span>
+			<font>不区分大小写，<a href="">看不清换一张</a></font>
+		<img src="{cfg:(dirpath,base)}/common.php?app=sys&app_act=verifycode&app_contenttype=img" id="id_verify_pic" onclick="this.src='{cfg:(dirpath,base)}/common.php?app=sys&app_act=verifycode&app_contenttype=img&app_rnd='+Math.random();">
+		</li>
+	</div>
+	<div class="loginf"><div class="Actcheck"><input type="hidden" name="autologin" value="1"><span class="xon"><i></i></span><font kjdata="{'on':'下次自动登录','off':'不保存登录信息'}">下次自动登录</font></div></div>
+	<a href="javascript:void(0);" onclick="thisjs.on_login();" class="btn-a1 Tlogin" style="margin-top:15px"><font>登录</font></a>
+	<div class="loginf">
+		<a href="?app_act=reg" style="float:left">快速注册</a>
+		<a href="?app=index&app_act=findpwd">忘记密码?</a>
+	</div>
+	{if(cls_config::get("qq_key","userapi")!="" || cls_config::get("weibo_key","userapi")!="")}
+	<div style="width:100%;float:left;text-align:center;font-weight:bold;margin-top:15px">其它方式登录</div>
+	<div style="float:left;width:100%;margin-top:8px">
+	{if(cls_config::get("qq_key","userapi")!="")}
+	<a class="btn_ red w_full" href="{cfg:(dirpath,base)}/common.php?app=api.login&plat=qq" style="float:left"><img src="images/btn_qq.png"></a>
+	{/if}
+	{if(cls_config::get("weibo_key","userapi")!="")}
+	<a class="btn_ red w_full" href="{cfg:(dirpath,base)}/common.php?app=api.login&plat=weibo" style="float:right"><img src="images/btn_sina.png"></a>
+	{/if}
+	</div>
+	{/if}
+</div>
+<input type="hidden" name="jump_fromurl" value="{$jump_fromurl}" id="id_jump_fromurl">
+</form>
+{include(label.footer)}
+</body>
+</html>
+<script>
+var thisjs = new function() {
+	this.on_login = function() {
+		kj.ajax.post(document.frmlogin , function(data) {
+			var obj_data=kj.json(data);
+			if(obj_data.isnull) {
+				kj.alert("系统繁忙，请稍后再来试试");
+			} else {
+				if(obj_data.code == 0) {
+					var url = kj.obj("#id_jump_fromurl").value;
+					if(url) {
+						window.open(url , "_self");
+					} else {
+						window.open("?" , "_self");
+					}
+				} else {
+					if(thisjs.is_verify) {
+						thisjs.verify_refresh();
+					}
+					if('msg' in obj_data && obj_data.msg) {
+						alert(obj_data.msg);
+					} else {
+						alert("系统繁忙，请稍后再来试试");
+					}
+					if(thisjs.is_verify) {
+						thisjs.verify_refresh();
+						document.frmlogin.verifycode.value='';
+					}
+					if('show_code' in obj_data && obj_data.show_code == '1') {
+						thisjs.is_verify = true;
+						kj.show(".Tverifypic");
+					}
+					if(obj_data.code == '4') document.frmlogin.uname.focus();
+					if(obj_data.code == '3') document.frmlogin.pwd.focus();
+					if(obj_data.code == '11') document.frmlogin.verifycode.focus();
+				}
+			}
+		});
+		return false;
+	}
+	this.verify_refresh = function() {
+		kj.obj("#id_verify_pic").src = kj.cfg('dirpath') + '/common.php?app=sys&app_act=verifycode&app_contenttype=img&app_rnd='+Math.random();
+	}
+}
+</script>

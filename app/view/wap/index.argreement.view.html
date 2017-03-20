@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>{$article['article_title']}-{cfg:(site_title,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+</head>
+<body>
+{include(label.header)}
+<script src="index.js"></script>
+<div class="top">
+	<h1>{$article['article_title']}</h1>
+	<a href="?" class="x1"><img src="images/home.png"></a>
+	<a href="javascript:history.back()" id="id_top_back" class="x2"><img src="images/back.png"></a>
+</div>
+<div class="main">
+<div class="newsc" style="margin-top:10px">
+	{$article['article_content']}
+</div>
+</div>
+{include(label.footer)}
+</body>
+</html>

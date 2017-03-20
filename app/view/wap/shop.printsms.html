@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>打印与短信-{cfg:(site_title,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+<style>
+#id_pic_view img{max-width:100px;max-height:100px}
+.meselect select{width:260px;float:left;margin:5px 0px 3px 0px;clear:both}
+</style>
+</head>
+<body>
+{include(label.header)}
+<div class="top">
+	<h1>打印与短信</h1>
+	<a href="?" class="x1"><img src="images/home.png"></a>
+	<a href="?app=shop" id="id_top_back" class="x2"><img src="images/back.png"></a>
+</div>
+<div class="main">
+<form name="frm_main" action="{fun_get::url(array('app_act'=>'info.save.printsms'))}" method="post">
+	<table class="cmsg">
+	<tr><td>
+		<div class="Actcheck"><input type="hidden" name="shop_verifytel" value="{$editinfo['shop_verifytel']}"><span{if($editinfo['shop_verifytel']==1)} class="xon"{/if}><i></i></span><font kjdata="{'on':'开启订单短信验证','off':'关闭订单短信验证'}">{if($editinfo['shop_verifytel']==1)}开启订单短信验证{else}关闭订单短信验证{/if}</font></div>
+	</td></tr>
+	<tr><td>
+		<select name="shop_sms">
+			{foreach($arr_sms as $item=>$key)}
+				<option value="{$key}"{if($key==$editinfo['shop_sms'])} selected{/if}>{$item}</option>
+			{/foreach}
+		</select>
+	</td></tr>
+	<tr><td>
+		<input type="text" class="xtxt" placeholder="接收手机,多个以逗号分隔" name="shop_sms_tel" value="{$editinfo['shop_sms_tel']}">
+	</td></tr>
+	<tr><td>
+		<input type="text" class="xtxt" placeholder="为空则不发送邮件提醒" name="shop_email" value="{$editinfo['shop_email']}">
+	</td></tr>
+	<tr><td>
+		<input type="text" class="xtxt" placeholder="无线打印机ID，空为默认，-1为无" name="shop_email" value="{$editinfo['shop_email']}">
+	</td></tr>
+	<tr><td>
+		<div class="Actcheck"><input type="hidden" name="shop_print_auto" value="{$editinfo['shop_print_auto']}"><span{if($editinfo['shop_print_auto']==1)} class="xon"{/if}><i></i></span><font kjdata="{'on':'开启新单自动打印','off':'关闭新单自动打印'}">{if($editinfo['shop_print_auto']==1)}开启新单自动打印{else}关闭新单自动打印{/if}</font></div>
+	</td></tr>
+	<tr><td>
+		<div class="Actcheck"><input type="hidden" name="shop_print_cancel" value="{$editinfo['shop_print_cancel']}"><span{if($editinfo['shop_print_cancel']==1)} class="xon"{/if}><i></i></span><font kjdata="{'on':'开启取消订单打印提醒功能','off':'关闭取消订单打印提醒功能'}">{if($editinfo['shop_print_cancel']==1)}开启取消订单打印提醒功能{else}关闭取消订单打印提醒功能{/if}</font></div>
+	</td></tr>
+	<tr><td>
+		<div class="Actcheck"><input type="hidden" name="shop_print_tongbu" value="{$editinfo['shop_print_tongbu']}"><span{if($editinfo['shop_print_tongbu']==1)} class="xon"{/if}><i></i></span><font kjdata="{'on':'开启打印机状态同步到店铺','off':'关闭打印机状态同步到店铺'}">{if($editinfo['shop_print_tongbu']==1)}开启打印机状态同步到店铺{else}关闭打印机状态同步到店铺{/if}</font></div>
+	</td></tr>
+	<tr>
+	<td valign="top"><input type="button" name="btn_saveinfo" value="保存" class="xbtn1" onclick="thisjs.on_save();"></td></tr>
+	</table>
+	</form>
+</div>
+{include(label.footer)}
+</body>
+</html>
+<script>
+var thisjs = new function() {
+	this.on_save = function() {
+		kj.ajax.post(document.frm_main , function(data) {
+			var objdata = kj.json(data);
+			if(objdata.isnull) {
+				alert("系统繁忙");
+				return;
+			}
+			if(objdata.code == '0') {
+				kj.alert.show("保存成功");
+			} else {
+				alert(objdata.msg);
+			}
+		});
+	}
+}
+</script>

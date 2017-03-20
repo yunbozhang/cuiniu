@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>{$shopinfo['shop_name']}-{cfg:(site_title,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{fun_format::len($shopinfo['shop_desc'],50)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+</head>
+<body>
+{include(label.header)}
+<div class="top">
+	<h1>{$shopinfo['shop_name']}</h1>
+	<a href="?" class="x1"><img src="images/home.png"></a>
+	<a href="javascript:history.back();" id="id_top_back" class="x2"><img src="images/back.png"></a>
+</div>
+{set $arr=fun_kj::get_ads('B1-wap-shop'.$shopinfo['shop_id'],1)}
+{if(isset($arr['list']))}
+<div class="kj_slider" style="{if(!empty($arr['h']))}height:{$arr['h']};{/if}">
+	<div class="xli" style="{if(!empty($arr['h']))}height:{$arr['h']};{/if}">
+		{foreach($arr['list'] as $item)}
+		<li><a href="{$item['link']}"><img src = "{$item['url']}" style="{if(!empty($arr['h']))}height:{$arr['h']};{/if}"></a></li>
+		{/foreach}
+	</div>
+	<div class="xbtn Tslider_btn" style="display:none">{foreach($arr['list'] as $item)}<a href="javascript:void(0);">&nbsp;</a>{/foreach}</div>
+</div>
+{else if(isset($arr['html']))}
+<div style="float:left;{if(!empty($arr['w']))}width:{$arr['w']};{else}width:100%;{/if}">
+	{$arr['html']}
+</div>
+{/if}
+{if($shopinfo['shop_tips']!='')}
+<div class="shop_toptips" onmouseover="clearInterval(txtmar_timer)" onmouseout="txtmar_timer=setInterval(fun_txtmar,30)" title="{$shopinfo['shop_tips']}"><i>通知：</i><span id="txtmar1"><font id="txtmar2">{$shopinfo['shop_tips']}</font><font id="txtmar3"></font></span></div>
+<script>
+var txtmar_s,txtmar_s2,txtmar_s3,txtmar_timer;
+kj.onload(function() {
+	txtmar_s=kj.obj("#txtmar1");
+	txtmar_s2=kj.obj("#txtmar2");
+	txtmar_s3=kj.obj("#txtmar3");
+	var offset = kj.offset(txtmar_s);
+	if(offset.width>920) {
+		txtmar_s.scrollLeft=txtmar_s.scrollLeft+20;
+		txtmar_s3.innerHTML=txtmar_s2.innerHTML;
+		txtmar_timer=setInterval(fun_txtmar,30)
+	}
+});
+function fun_txtmar(){
+	if(txtmar_s2.offsetWidth<=txtmar_s.scrollLeft){
+		txtmar_s.scrollLeft-=txtmar_s2.offsetWidth;
+	} else {
+		txtmar_s.scrollLeft++;
+	}
+}
+</script>
+{/if}
+{if($shopinfo['shop_service']==0 || $shopinfo['shop_service']==1)}
+<table class="box4">
+	<tr><td><li>{if($shopinfo['shop_service']==0)}商品列表{else}在线选座{/if}<i></i></li></td><td class="xmid xsel"><li>商家介绍<i></i></li></td><td><li onclick="window.open('?app_act=comment.shop&shop_id={$shopinfo['shop_id']}','_self');">用户评价<i></i></li></td></tr>
+</table>
+{else}
+<table class="box5">
+	{if($shopinfo['shop_service']==3)}
+	<tr><td onclick="window.open('?app_act=shop&id={$shopinfo['shop_id']}&type=1','_self');"><li>外卖<i></i></li></td><td><li onclick="window.open('?app_act=shop&id={$shopinfo['shop_id']}&type=2','_self');">选座<i></i></li></td><td class="xsel"><li>商家<i></i></li></td><td><li onclick="window.open('?app_act=comment.shop&shop_id={$shopinfo['shop_id']}','_self');">评价<i></i></li></td></tr>
+	{else}
+	<tr><td><li onclick="window.open('?app_act=shop&id={$shopinfo['shop_id']}&type=2','_self');">选座<i></i></li></td><td><li onclick="window.open('?app_act=shop&id={$shopinfo['shop_id']}&type=1','_self');">外卖<i></i></li></td><td class="xsel"><li>商家<i></i></li></td><td><li onclick="window.open('?app_act=comment.shop&shop_id={$shopinfo['shop_id']}','_self');">评价<i></i></li></td></tr>
+	{/if}
+</table>
+{/if}
+
+<div class="main">
+	<div class="shoph">
+		<li class="ximg"><img src = "{$shopinfo['shop_pic']}"></li>
+		<li class="xinfo">
+			<p class="xtit"><h2>{$shopinfo['shop_name']}</h2>{if($shopinfo['iscollect'])}<font class="collect2 id_collect_{$shopinfo['shop_id']}" onclick="jsmeal.collect_cancel({$shopinfo['shop_id']},this);" title="点击取消收藏"></font>{else}<font class="collect1 id_collect_{$shopinfo['shop_id']}" onclick="jsmeal.collect({$shopinfo['shop_id']},this);"></font>{/if}</p>
+			<p><label class="starbg"><font style="width:{$shopinfo['commentrate']}%"></font></label><i>{$shopinfo['shop_comment']}分</i></p>
+			<p>商品数：{$shopinfo['menunum']}</p>
+		</li>
+		{if($shopinfo['shop_state']>0)}
+			{if($cfg_opentime['nowindex']>0)}
+				<li class="xstate">营业</li>
+			{else if($cfg_opentime['havenext']==1)}
+				<li class="xstate1">即将开始</li>
+			{else}
+				<li class="xstate1">明天继续</li>
+			{/if}
+		{else}
+			<li class="xstate1">休息</span>
+		{/if}
+	</div>
+	<div class="shoptit"><i></i><font>餐厅公告</font></div>
+	<div class="shopli">
+		{foreach($arr_activitie as $item)}
+		<p><a href="{cfg:(dirpath,base)}/{cfg:(basename,base)}?app_act=shop.view&id={$item['article_id']}">{$item['article_title']}</a></p>
+		{/foreach}
+	</div>
+	<div class="shoptit"><i></i><font>商家信息</font></div>
+	<div class="shopli">
+		<p><span>营业时间：</span><span>
+		{foreach($shopinfo['extend']['arr_opentime'] as $item=>$key)}
+		{$key}<br>
+		{/foreach}
+		</span></p>
+		<p><span>配&nbsp;&nbsp;送&nbsp;&nbsp;费：</span><span>{if(empty($shopinfo['shop_addprice']))}免费{else}{$shopinfo['shop_addprice']} 元/每次{/if}</span></p>
+		<p><span>起&nbsp;&nbsp;送&nbsp;&nbsp;价：</span><span>￥{$shopinfo['shop_dispatch_price']}</span></p>
+		<p><span>配送时间：</span><span>{$shopinfo['extend']['arrivedelay']}分钟</span></p>
+		{if(!empty($shopinfo['shop_tel']))}<p><span>订餐电话：</span><span><a href="tel:{$shopinfo['shop_tel']}">{$shopinfo['shop_tel']}</a></span></p>{/if}
+		{if(!empty($shopinfo['shop_address']))}<p><span>餐厅地址：</span><span>{$shopinfo['shop_address']}</span></p>{/if}
+	</div>
+	<div class="shoptit"><i></i><font>商家简介</font></div>
+	<div class="shopcont">
+	{$shopinfo['shop_desc']}...<a href="{cfg:(dirpath,base)}/{cfg:(basename,base)}?app_act=shop.info&shop_id={$shopinfo['shop_id']}" style="color:#ff8800">[查看详细]</a>
+	</div>
+</div>
+<script src="/common/js/kj.ajax.js"></script>
+{include(label.footer)}
+</body>
+</html>

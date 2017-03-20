@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>我的积分-{cfg:(site_title,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+<link rel="stylesheet" type="text/css" href="/common/images/emoji.css"/>
+<style>
+.mevoucher{float:left;width:100%;padding:10px 0px}
+.mevoucher li{float:left;width:100%;margin:5px 0px 0px 0px}
+</style>
+
+</head>
+<body>
+{include(label.header)}
+<script src="/common/js/kj.dialog.js"></script>
+<div class="top">
+	<h1>我的积分</h1>
+	<a href="?" class="x1"><img src="images/home.png"></a>
+	<a href="?app=member&app_act=main" id="id_top_back" class="x2"><img src="images/back.png"></a>
+</div>
+<div class="uexpertit" style="margin-top:5px">
+	&nbsp;&nbsp;<input type="text" name="voucher_pwd" value="" style="width:200px;height:24px;border:1px #ccc solid" placeholder="请输入优惠券领取码" id="id_voucher_pwd">
+	<input type="button" name="btn_ok" value="领取" class="btn1" onclick="thisjs.showvoucher()">
+</div>
+<div class="uexper">
+	{set $score=0}
+	{foreach($voucher_list['list'] as $item)}
+	<li>
+		<p>领取时间：<b>{$item["voucher_usetime"]}</b></p>
+		<p>面值：<b class="xred">{$item["voucher_val"]}</b></p>
+	</li>
+	{/foreach}
+</div>
+<div class="page">
+	{if($voucher_list['pagebtns']['start']!=1)}<li><a href="{fun_get::url(array('page'=>''))}&page=1">1</a></li>{/if}
+	{if($voucher_list['pagebtns']['start']>2)}
+		<li class="xnone"><font>...</font></li>
+	{/if}
+	{foreach($voucher_list['pagebtns']['list'] as $item)}
+	<li{if(fun_get::get('page',1)==$item)} class="xsel"{/if}><a href="{fun_get::url(array('page'=>''))}&page={$item}">{$item}</a></li>
+	{/foreach}
+	{if($voucher_list['pagebtns']['end']<$voucher_list['pageinfo']['pages']-1)}
+		<li class="xnone"><font>...</font></li>
+	{/if}
+	{if($voucher_list['pagebtns']['end']<$voucher_list['pageinfo']['pages'])}
+	<li><a href="{fun_get::url(array('page'=>''))}&page={$voucher_list['pageinfo']['pages']}">{$voucher_list['pageinfo']['pages']}</a></li>
+	{/if}
+	</li>
+</div>
+<div id="id_voucher_box" style="display:none">
+	<div class="mevoucher">
+	<li><img src="" id="id_code_verify" onclick="this.src='{cfg:(dirpath,base)}/common.php?app=sys&app_act=verifycode&app_contenttype=img&name=voucher&app_rnd='+Math.random();"></li>
+	<li><input type="text" name="verifycode" value="" style="border:1px #ccc solid;width:80px" id="id_verifycode_val"></li>
+	<li><input type="button" name="btnok" value="确定" class="btn1" onclick="thisjs.getvoucher();"></li>
+	</div>
+</div>
+<script>
+var thisjs = new function() {
+	this.showvoucher = function() {
+		if(kj.obj("#id_voucher_pwd").value=='') {
+			alert("请输入正确的领取密码");
+			kj.obj("#id_voucher_pwd").focus();
+			return;
+		}
+		if(!this.voucherhtml) {
+			this.voucherhtml = kj.obj("#id_voucher_box").innerHTML;
+			kj.remove("#id_voucher_box");
+		}
+		kj.dialog({'html':this.voucherhtml,'id':'voucher','type':'html','title':'请输入验证码','w':300,'showbtnmax':false,'showbtnhide':false});
+		kj.obj("#id_code_verify").src = "{cfg:(dirpath,base)}/common.php?app=sys&app_act=verifycode&name=voucher&app_contenttype=img&app_rnd="+Math.random();
+	}
+	this.getvoucher = function() {
+		var pwd = kj.obj("#id_voucher_pwd").value;
+		var code = kj.obj("#id_verifycode_val").value;
+		kj.ajax.get("{cfg:(dirpath,base)}/common.php?app=act&app_act=voucher.get&pwd=" + pwd + "&verifycode="+code , function(data) {
+			var objdata = kj.json(data);
+			if(!objdata || objdata.isnull) {
+				alert("系统繁忙,请稍后再试.");
+				return;
+			}
+			if(objdata.code == '0') {
+				kj.alert.show("领取成功" , function(){
+					location.reload(true);
+				});
+			} else{
+				alert(objdata.msg);
+			}
+		});
+	}
+}
+</script>
+{include(label.footer)}
+</body>
+</html>

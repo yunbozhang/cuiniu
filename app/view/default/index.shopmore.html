@@ -1,0 +1,56 @@
+<input type="hidden" id="id_pages" value="{$shop_list['pageinfo']['pages']}">
+<?php $weekday = date("w");?>
+{foreach($shop_list["list"]  as $item)}
+		{set $arr_opentime=tab_meal_shop::get_opentime($item['shop_id'],$item['shop_extend'])}
+		{if($item['shop_state']==-1 || $arr_opentime['nowindex']<1 || (!empty($item['extend']['weekday']) && !in_array($weekday,$item['extend']['weekday'])) || ($item['shop_day_limit']>0 && $item['shop_day_sold']>=$item['shop_day_limit']))}
+		<li class="Tclose" onmouseover="kj.show(kj.obj('.collect1',this));" onmouseout="kj.hide(kj.obj('.collect1',this));">
+			<a href="?app_act=shop&id={$item['shop_id']}">
+				<span class="xpic"><img src = "{if(empty($item['shop_pic_small']))}{$temp_url}images/nopic.png{else}{$item['shop_pic_small']}{/if}"></span>
+				<span class="x1"><font>{$item['shop_name']}</font></span>
+				<span><label class="starbg"><font style="width:{$item['commentrate']}%"></font></label><font class="xfen">{if($item['shop_comment']>0)}{$item['shop_comment']}分{else}暂无{/if}</font><font class="xsold">销量:{$item['shop_sold']}单</font></span>
+				<span><font>{if(empty($item['shop_addprice']))}免费配送{else}配送：{$item['shop_addprice']}元/次{/if} | {$item['shop_dispatch_price']}元起</font><font class="xtime">{$item['extend']['arrivedelay']}分钟</font></span>
+				<span>
+				{if(isset($act_info['method']['id_'.$item['shop_id']]))}
+					{foreach($act_info['method']['id_'.$item['shop_id']] as $act_item=>$act)}
+						{if($act['id']==1)}
+						<img src="images/act_3.png" title="{$act['title']}">&nbsp;
+						{else if($act['id']==2)}
+						<img src="images/act_1.png" title="{$act['title']}">&nbsp;
+						{else if($act['id']==3 || $act['id']==4)}
+						<img src="images/act_5.png" title="{$act['title']}">&nbsp;
+						{else if($act['id']==5 || $act['id']==6)}
+						<img src="images/act_4.png" title="{$act['title']}">&nbsp;
+						{/if}
+					{/foreach}
+				{/if}				
+				</span>
+				<span class="xclose"></span>
+				<span class="xtips">{if($item['shop_day_limit']>0 && $item['shop_day_sold']>=$item['shop_day_limit'])}今日售完{else if($item['shop_state']==-1)}休息中{else if($arr_opentime['havenext']==1)}即将开始{else}明天继续{/if}</span>
+			</a>
+		{else}
+		<li class="Topen" onmouseover="kj.show(kj.obj('.collect1',this));" onmouseout="kj.hide(kj.obj('.collect1',this));">
+			<a href="?app_act=shop&id={$item['shop_id']}">
+				<span class="xpic"><img src = "{if(empty($item['shop_pic_small']))}{$temp_url}images/nopic.png{else}{$item['shop_pic_small']}{/if}"></span>
+				<span class="x1"><font class="xtit">{$item['shop_name']}</font></span>
+				<span><label class="starbg"><font style="width:{$item['commentrate']}%"></font></label><font class="xfen">{if($item['shop_comment']>0)}{$item['shop_comment']}分{else}暂无{/if}</font><font class="xsold">销量:{$item['shop_sold']}单</font></span>
+				<span><font>{if(empty($item['shop_addprice']))}免费配送{else}配送:{$item['shop_addprice']}元/次{/if} | {$item['shop_dispatch_price']}元起</font><font class="xtime">{$item['extend']['arrivedelay']}分钟</font></span>
+				<span>
+				{if(isset($act_info['method']['id_'.$item['shop_id']]))}
+					{foreach($act_info['method']['id_'.$item['shop_id']] as $act_item=>$act)}
+						{if($act['id']==1)}
+						<img src="images/act_3.png" title="{$act['title']}">&nbsp;
+						{else if($act['id']==2)}
+						<img src="images/act_1.png" title="{$act['title']}">&nbsp;
+						{else if($act['id']==3 || $act['id']==4)}
+						<img src="images/act_5.png" title="{$act['title']}">&nbsp;
+						{else if($act['id']==5 || $act['id']==6)}
+						<img src="images/act_4.png" title="{$act['title']}">&nbsp;
+						{/if}
+					{/foreach}
+				{/if}
+				</span>
+			</a>
+		{/if}
+			{if($item['iscollect'])}<i class="collect2 id_collect_{$item['shop_id']}" onclick="jsheader.collect_cancel({$item['shop_id']},this);" title="点击取消收藏"></i>{else}<i class="collect1 id_collect_{$item['shop_id']}" onclick="jsheader.collect({$item['shop_id']},this);" title="点击收藏" style="display:none"></i>{/if}
+		</li>
+{/foreach}

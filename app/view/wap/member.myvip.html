@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>我的经验-{cfg:(site_title,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+<link rel="stylesheet" type="text/css" href="/common/images/emoji.css"/>
+</head>
+<body>
+{include(label.header)}
+<div class="top">
+	<h1>我的经验</h1>
+	<a href="?" class="x1"><img src="images/home.png"></a>
+	<a href="?app=member&app_act=main" id="id_top_back" class="x2"><img src="images/back.png"></a>
+</div>
+<div class="uexpertit">
+	<p>尊敬的 <b class="xorange">{fun_format::toemoji(cls_obj::get("cls_user")->name,1)}</b>，您当前的等级：<b class="xorange">Lv{$memberinfo['level']}</b>，
+	累计经验值:<b class="xorange">{$memberinfo['experience']}</b> 点，仅需 <b class="xorange">{$memberinfo['experience_poor']}</b> 点，即可晋升为 <b class="xorange">Lv{$memberinfo['level_next']}</b> 会员。</p>
+</div>
+<div class="uexper">
+	{set $experience=0}
+	{foreach($action_list['list'] as $item)}
+	<li>
+		<p><b>{$item["action_addtime"]}</b></p>
+		<p>收入：<b class="xred">+{$item["action_experience"]}</b></p>
+		<p>累积：<b class="xorange">{$action_list["experience"]-$experience}</b></p>
+		<p>详情：<b class="xblue">{$item["beta"]}</b></p>
+	</li>
+	{set $experience+=$item["action_experience"]}
+	{/foreach}
+</div>
+<div class="page">
+	{if($action_list['pagebtns']['start']!=1)}<li><a href="{fun_get::url(array('page'=>''))}&page=1">1</a></li>{/if}
+	{if($action_list['pagebtns']['start']>2)}
+		<li class="xnone"><font>...</font></li>
+	{/if}
+	{foreach($action_list['pagebtns']['list'] as $item)}
+	<li{if(fun_get::get('page',1)==$item)} class="xsel"{/if}><a href="{fun_get::url(array('page'=>''))}&page={$item}">{$item}</a></li>
+	{/foreach}
+	{if($action_list['pagebtns']['end']<$action_list['pageinfo']['pages']-1)}
+		<li class="xnone"><font>...</font></li>
+	{/if}
+	{if($action_list['pagebtns']['end']<$action_list['pageinfo']['pages'])}
+	<li><a href="{fun_get::url(array('page'=>''))}&page={$action_list['pageinfo']['pages']}">{$action_list['pageinfo']['pages']}</a></li>
+	{/if}
+	</li>
+</div>
+{include(label.footer)}
+</body>
+</html>

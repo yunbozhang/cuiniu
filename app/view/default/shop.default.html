@@ -1,0 +1,163 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>商家管理-{cfg:(site_title,sys)}</title>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+</head>
+<body>
+{include(header)}
+{include(shop.header)}
+{include(shop.left)}
+<div class="uright">
+	<div class="upath"><font>店铺首页</font></div>
+	<div class="uspro">
+		<li{if(!in_array(1,$shop_info['progress']))} class="xsel"{/if}><a href="./index.php?app=shop&app_act=info">店铺资料</a></li>
+		<li{if(!in_array(2,$shop_info['progress']))} class="xsel"{/if}><a href="./index.php?app=shop&app_act=extend">运营配置</a></li>
+		<li{if(!in_array(3,$shop_info['progress']))} class="xsel"{/if}><a href="./index.php?app_module=shop&app=dispatch">配送范围</a></li>
+		<li{if(!in_array(4,$shop_info['progress']))} class="xsel"{/if}><a href="./index.php?app_module=shop&app=menu">添加餐品</a></li>
+		<li class="x1"><a href="javascript:thisjs.show_state();">运营中</a></li>
+	</div>
+	<div class="ustj">
+		<li>
+		<p>今日订单：<font>{$count_info['order_today']}</font></p>
+		<p>今日金额：<font>{$count_info['order_today_money']}</font></p>
+		<p>还未处理：<font>{$count_info['order_noconfirm']}</font></p>
+		</li>
+		<li>
+		<p>订单总量：<font>{$count_info['order_total']}</font></p>
+		<p>订单总额：<font>{$count_info['order_total_money']}</font></p>
+		<p>商品总数：<font>{$count_info['menu_num']}</font></p>
+		</li>
+	</div>
+	<div style="float:left;width:100%;margin:20px 0px 10px 0px;text-align:center">
+		{if(empty($shop_info['site_id']))}
+			<input type="button" name="btnwx" value="申请绑定微信公众号" class="button1" onclick="thisjs.editsite();">
+		{else}
+			<input type="button" name="btnwx" value="编辑微信公众号信息" class="button1" onclick="thisjs.editsite();">
+		{/if}
+	</div>
+	<div class="ucontainer">
+		<div id="container">
+		</div>
+	</div>
+</div>
+<div id="id_state_box" style="display:none">
+	<div class="usstate">
+		<p style="width:auto;margin-left:50px"><label><input type="radio" name="shop_state" value="1"{if($shop_info['shop_state']==1)} checked{/if}>营业</label><label><input type="radio" name="shop_state" value="-1"{if($shop_info['shop_state']==-1)} checked{/if}>休息</label></p>
+		<p>
+		<input type="button" name="btn_state_ok" value="设置" onclick="thisjs.state_save();" class="btn-1">&nbsp;&nbsp;<input type="button" name="btn_state_cancel" value="取消" onclick="kj.dialog.close('#winstate_show');" class="btn-2">
+		</p>
+	</div>
+</div>
+{include(shop.footer)}
+{include(footer)}
+<script src="/components/report/jquery.min.js"></script>
+<script type="text/javascript">
+$(function () {
+    var chart;
+    $(document).ready(function() {
+        chart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'container',
+                type: 'line'
+            },
+            title: {
+                text: ''
+            },
+            subtitle: {
+                text: ''
+            },
+            xAxis: {
+                categories: {$report['sub']}
+            },
+            yAxis: {
+                title: {
+                    text: '订单量'
+                }
+            },
+            tooltip: {
+                enabled: false,
+                formatter: function() {
+                    return '<b>'+ this.series.name +'</b><br/>'+
+                        this.x +': '+ this.y;
+                }
+            },
+            plotOptions: {
+                line: {
+                    dataLabels: {
+                        enabled: true
+                    },
+                    enableMouseTracking: false
+                }
+            },
+            series: [{
+                name: '今日订单量统计',
+                data: {$report['data']}
+            }]
+        });
+    });
+    
+});
+</script>
+<script src="/components/report/highcharts.js"></script>
+<script>
+var thisjs = new function() {
+	//状态显示框
+	this.state_html = '';
+	//显示状态框
+	this.show_state = function() {
+		var obj = kj.obj('#id_state_box');
+		if(obj) {
+			this.state_html = obj.innerHTML;
+			kj.remove(obj);
+		}
+		kj.dialog({'html':this.state_html,'id':'state_show','type':'html','title':'店铺运营状态','w':300,'h':200,'showbtnmax':false});
+	}
+	//修改密码
+	this.state_save = function() {
+		var val = '';
+		var obj = kj.obj(":shop_state");
+		for(var i = 0 ; i < obj.length; i++) {
+			if(obj[i].checked) {
+				val = obj[i].value;
+			}
+		}
+		this.stateval = val;
+		kj.ajax("?app_module={$app_module}&app={$app}&app_act=state_save&val=" + val , function(data) {
+			var obj = kj.json(data);
+			if('isnull' in obj) {
+				alert("设置状态失败");return;
+			}
+			if(obj.code=='0') {
+				kj.dialog.close("#winupdate_pwd");
+				kj.alert.show('设置成功' , function(){thisjs.set_state();});
+			} else {
+				if('msg' in obj) {
+					alert(obj.msg);
+				} else {
+					alert("设置状态失败");
+				}
+			}
+		});
+	}
+	this.set_state = function() {
+		if(this.stateval=='1') {
+			kj.obj("#id_state_val").innerHTML = "运营中";
+			kj.delClassName("#id_state_val" , "txt_red");
+		} else {
+			kj.obj("#id_state_val").innerHTML = "暂停运营";
+			kj.addClassName("#id_state_val" , "txt_red");
+		}
+		kj.dialog.close("#winstate_show");
+	}
+	this.editsite = function() {
+		parent.kj.dialog({id:'field',title:'{if(empty($shop_info['site_id']))}申请绑定微信公众号{else}编辑微信公众号信息{/if}',url:'{fun_get::url(array('app_act'=>'site','app'=>'weixin','app_module'=>'shop'))}',w:800,max_h:650,showbtnhide:false,type:'iframe'});
+	}
+}
+</script>
+</body>
+</html>
+<script src="js.js"></script>

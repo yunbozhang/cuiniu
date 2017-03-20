@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>商品分组-商家管理-{cfg:(site_title,sys)}</title>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+</head>
+<body>
+{include(header)}
+{include(shop.header)}
+{include(shop.left)}
+<div class="uright">
+	<div class="pMenu" id="id_pMenu">
+		<li class="sel">管理</li>
+		<li onclick="shop.table.row_insert()" class="x_btn">添加</li>
+	</div>
+	<div class="pTableMain " id="id_main">
+		<div class="pTableBox" id="id_table_box">
+			<div class='pTableTit' id="id_table_title">
+				<li><span class="x_tit" style="width:25px">&nbsp;</span></li>
+				{foreach($arr_list["tabtit"] as $item)}
+					<li><span class="x_tit"{if($item["w"]>0)} style="width:{$item["w"]}px"{/if} onclick="shop.table.list1.sort('{$item['key']}')">{$item["name"]}
+					{if(isset($arr_list['sort'][$item['key']]))}<img src="images/sort_{$arr_list['sort'][$item['key']]}.png">{/if}</span><span class="x_split"></span></li>
+				{/if}
+				<li><span class="x_tit" style="cursor:none;width:120px"></span></li>
+			</div>
+			<div class="pTableList" id="id_table_list">
+				<div class='pTable' id="id_table">
+					<div class='pTabRow' style="display:none">
+						<li><input type="hidden" name="group_id[]" value=""></li>
+						{foreach($arr_list["tabtd"] as $field)}
+							<li><input type="text" name="{$field}[]" value="" class="autosize"></li>
+						{/foreach}
+						<li>
+						<input type="button" name="btnExe" value="删除" onclick="kj.remove('#THISID');" class="btn-2">
+						</li>
+					</div>
+					{foreach($arr_list['list'] as $item)}
+					<div class='pTabRow'>
+						<li><input type='hidden' name='group_id[]' value="{$item['group_id']}"></li>
+						{foreach($arr_list["tabtd"] as $field)}
+							<li><input type="text" name="{$field}[]" value="{$item[$field]}" class="autosize"></li>
+						{/foreach}
+						<li>
+						{if($this_limit->chk_act("delete"))}
+						<input type="button" name="btnExe" value="删除" onclick="shop.ajax_delete({$item['group_id']});" class="btn-2">
+						{/if}
+						</li>
+					</div>
+					{/foreach}
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="pFootAct" id="id_pFootAct">
+	<li><input type="button" name="btn_submit" class="btn-3" value="保 存" onclick="shop.frm_ajax('save');"></li>
+	</div>	
+</div>
+{include(shop.footer)}
+{include(footer)}
+</body>
+</html>
+<script src="shop.js"></script>
+<script src="shop.table.js"></script>
+<script>
+//初始化表格控件
+kj.onload(function(){
+	shop.table.list1.init('#id_table_title' , '#id_table');
+});
+//自动保存
+shop.table.list1.save_resize = function() {
+	var lng_w = (kj.w(this.field));
+	kj.ajax.get("common.php?app=config&app_module=user&dir={$app_dir}&app_act=save_resize&filename=meal&key=meal.menu.group&index=" + this.fieldsindex + "&w=" + lng_w , function(data){
+		//alert(data);
+	});
+}
+shop.table.list1.sort = function(key) {
+	kj.ajax.get("common.php?app=config&app_module=user&dir={$app_dir}&app_act=sort&key=meal.menu.group&filename=meal&sortby=" + key , function(data){
+			var obj_data=kj.json(data);
+			if(!obj_data.isnull) {
+				shop.refresh();
+			}
+	});
+}
+//当前页面js对象
+var thisjs = new function() {
+}
+</script>

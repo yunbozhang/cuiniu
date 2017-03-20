@@ -1,0 +1,26 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>{$shopinfo['shop_name']}-{cfg:(site_name,sys)}</title>
+<meta name="keywords" content="{$shopinfo['shop_name']},{cfg:(keywords,sys)}"/>
+<meta name="description" content="{fun_format::len($shopinfo['shop_desc'],50)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+<style>
+.newscont{width:700px}
+</style>
+</head>
+<body>
+{include(header)}
+<script src="shop.default.js"></script>
+{include(label.shop.top)}
+<div class="shopinfo" style="margin-top:10px">
+	{include(label.shop.right)}
+</div>
+<div class="newscont">
+	<div class="xtit">{$thisinfo['article_title']}</div>
+	<div class="xcont">{$thisinfo['article_content']}</div>
+</div>
+{include(footer)}
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>商品评价-{cfg:(site_title,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+</head>
+<body>
+{include(label.header)}
+<div class="top">
+	<h1>商品评价</h1>
+	<a href="?" class="x1"><img src="images/home.png"></a>
+	<a href="?app_act=shop&id={$shopid}" id="id_top_back" class="x2"><img src="images/back.png"></a>
+</div>
+{set $arr=fun_kj::get_ads('B1-wap-shop'.$shopinfo['shop_id'],1)}
+{if(isset($arr['list']))}
+<div class="kj_slider" style="{if(!empty($arr['h']))}height:{$arr['h']};{/if}">
+	<div class="xli" style="{if(!empty($arr['h']))}height:{$arr['h']};{/if}">
+		{foreach($arr['list'] as $item)}
+		<li><a href="{$item['link']}"><img src = "{$item['url']}" style="{if(!empty($arr['h']))}height:{$arr['h']};{/if}"></a></li>
+		{/foreach}
+	</div>
+	<div class="xbtn Tslider_btn" style="display:none">{foreach($arr['list'] as $item)}<a href="javascript:void(0);">&nbsp;</a>{/foreach}</div>
+</div>
+{else if(isset($arr['html']))}
+<div style="float:left;{if(!empty($arr['w']))}width:{$arr['w']};{else}width:100%;{/if}">
+	{$arr['html']}
+</div>
+{/if}
+{if($shopinfo['shop_tips']!='')}
+<div class="shop_toptips" onmouseover="clearInterval(txtmar_timer)" onmouseout="txtmar_timer=setInterval(fun_txtmar,30)" title="{$shopinfo['shop_tips']}"><i>通知：</i><span id="txtmar1"><font id="txtmar2">{$shopinfo['shop_tips']}</font><font id="txtmar3"></font></span></div>
+<script>
+var txtmar_s,txtmar_s2,txtmar_s3,txtmar_timer;
+kj.onload(function() {
+	txtmar_s=kj.obj("#txtmar1");
+	txtmar_s2=kj.obj("#txtmar2");
+	txtmar_s3=kj.obj("#txtmar3");
+	var offset = kj.offset(txtmar_s);
+	if(offset.width>920) {
+		txtmar_s.scrollLeft=txtmar_s.scrollLeft+20;
+		txtmar_s3.innerHTML=txtmar_s2.innerHTML;
+		txtmar_timer=setInterval(fun_txtmar,30)
+	}
+});
+function fun_txtmar(){
+	if(txtmar_s2.offsetWidth<=txtmar_s.scrollLeft){
+		txtmar_s.scrollLeft-=txtmar_s2.offsetWidth;
+	} else {
+		txtmar_s.scrollLeft++;
+	}
+}
+</script>
+{/if}
+{if($shopinfo['shop_service']==0 || $shopinfo['shop_service']==1)}
+<table class="box4">
+	<tr><td><li>{if($shopinfo['shop_service']==0)}商品列表{else}在线选座{/if}<i></i></li></td><td class="xmid"><li onclick="window.open('?app_act=shop.detail&shop_id={$shopinfo['shop_id']}','_self');">商家介绍<i></i></li></td><td class="xsel"><li>用户评价<i></i></li></td></tr>
+</table>
+{else}
+<table class="box5">
+	{if($shopinfo['shop_service']==3)}
+	<tr><td onclick="window.open('?app_act=shop&id={$shopinfo['shop_id']}&type=1','_self');"><li>外卖<i></i></li></td><td><li onclick="window.open('?app_act=shop&id={$shopinfo['shop_id']}&type=2','_self');">选座<i></i></li></td><td><li onclick="window.open('?app_act=shop.detail&shop_id={$shopinfo['shop_id']}','_self');">商家<i></i></li></td><td class="xsel"><li>评价<i></i></li></td></tr>
+	{else}
+	<tr><td><li onclick="window.open('?app_act=shop&id={$shopinfo['shop_id']}&type=2','_self');">选座<i></i></li></td><td><li onclick="window.open('?app_act=shop&id={$shopinfo['shop_id']}&type=1','_self');">外卖<i></i></li></td><td><li onclick="window.open('?app_act=shop.detail&shop_id={$shopinfo['shop_id']}','_self');">商家<i></i></li></td><td class="xsel"><li>评价<i></i></li></td></tr>
+	{/if}
+</table>
+{/if}
+<div class="shop_comment">
+	<table class="xtotal">
+		<tr><td class="x1"><h1>{$shopcomment['commenttotal']}<font>分</font></h1><p><span class="starbg"><font style="width:<?php echo $shopcomment['commenttotal']/5*100;?>%"></font></span></p><p>共有 <font class='xnum' id="id_comment_num">{$arr_list['pageinfo']['total']}</font> 人评价</p></td>
+		<td class="x2">
+			{foreach($shopcomment['commentlist'] as $item=>$key)}
+			<p><font>{$item}</font><span class="starbg"><font style="width:<?php echo number_format($key/5*100,2);?>%;margin-top:0px"></font></span><font>{$key}分</font></p>
+			{/foreach}
+		</td></tr>
+		<tr>
+		<td class="x4" colspan=2>
+			{foreach($shopcomment['commentval'] as $item=>$key)}
+			<p><font>{$item}分</font><span><font style="width:<?php echo number_format($key/$shopcomment['commenttotalren']*100,2);?>%"></font></span><font>{$key}人</font></p>
+			{/foreach}
+		</td>
+		</tr>
+	</table>
+	<div class="xtit">全部评价</div>
+	<div class="xlist" id="id_comment_list">
+		{foreach($arr_list['list'] as $item)}
+			<ul>
+				<li class="xxtit"><span>{$item['user_name']}</span><span><img src="images/vip{$item['level']}.png"></span><span>{$item['addtime']}</span><span class="xstar"><font style="width:{$item['val']}%"></font></span></li>
+				<li class="xcont">{$item['comment_beta']}</li>
+				{if(!empty($item['pic']))}
+				<li class="xpic">
+				{foreach($item['pic'] as $pic)}
+				<img src = "{fun_get::html_url($pic)}" onclick="kj.pic.preview('{$pic}')">
+				{/foreach}
+				</li>
+				{/if}
+				{if(!empty($item['comment_recont']))}
+				<li class="xrecont">
+				{$item['comment_recont']}
+				</li>
+				{/if}
+			</ul>
+		{/foreach}
+	</div>
+</div>
+<div class="page">
+	<li{if($arr_list['pagebtns']['pre']<1)} class="xnone"{/if}><a href="{if($arr_list['pagebtns']['pre']<1)}javascript:void(0);{else}{fun_get::url(array('page'=>''))}&page={$arr_list['pagebtns']['pre']}{/if}">上一页</a></li>
+	{if($arr_list['pagebtns']['start']!=1)}<li><a href="{fun_get::url(array('page'=>''))}&page=1">1</a></li>{/if}
+	{if($arr_list['pagebtns']['start']>2)}
+		<li class="xnone"><font>...</font></li>
+	{/if}
+	{foreach($arr_list['pagebtns']['list'] as $item)}
+	<li{if(fun_get::get('page',1)==$item)} class="xsel"{/if}><a href="{fun_get::url(array('page'=>''))}&page={$item}">{$item}</a></li>
+	{/foreach}
+	{if($arr_list['pagebtns']['end']<$arr_list['pageinfo']['pages']-1)}
+		<li class="xnone"><font>...</font></li>
+	{/if}
+	{if($arr_list['pagebtns']['end']<$arr_list['pageinfo']['pages'])}
+	<li><a href="{fun_get::url(array('page'=>''))}&page={$arr_list['pageinfo']['pages']}">{$arr_list['pageinfo']['pages']}</a></li>
+	{/if}
+	<li{if($arr_list['pagebtns']['next']<1)} class="xnone"{/if}><a href="{if($arr_list['pagebtns']['next']<1)}javascript:void(0);{else}{fun_get::url(array('page'=>''))}&page={$arr_list['pagebtns']['next']}{/if}">下一页</a></li>
+	</li>
+</div>
+{include(label.footer)}
+</body>
+</html>

@@ -1,0 +1,103 @@
+{include(header)}
+<style>
+.mepic{margin-top:20px;float:left;width:100%}
+.mepic .ylist{float:left;height:70px;overflow:visible}
+.mepic .xupload{float:left;height:62px;margin-left:10px}
+.mepic span{float:left;width:60px;height:60px;padding:0px;border:0px;overflow:visible;margin:0px 10px}
+.mepic span .ximg{width:60px;height:60px;float:left}
+.mepic span .xdiv{float:right;margin:-10px -7px 0px 0px}
+
+.mebox1{float:left;margin:5px 0px 2px 0px;clear:both;width:100%;margin:0px}
+.mebox1 .x1{float:left;}
+.mebox1 .x2{float:right}
+
+</style>
+<div class="pMenu" id="id_pMenu">
+	<li class="sel" onclick="admin.edittabel(0);">基本信息</li>
+</div>
+<div class="pMain" id="id_main">
+<table class='pEditTable'>
+<tr class='pTabTitRow'><td class='pTabTitCol' colspan="2"></td></tr>
+<tr>
+	<td class="pTabColName">签&nbsp;&nbsp;名：</td><td class="pTabColVal"><input type="text" name="user_sign" value="{$editinfo['user_sign']}" class='pTxt1 pTxtL150'></td></tr>
+<tr>
+	<td class="pTabColName">简&nbsp;&nbsp;介：</td><td class="pTabColVal"><textcategory cols="50" rows="8" name="user_intro">{$editinfo['user_intro']}</textcategory></td></tr>
+<tr>
+	<td class="pTabColName">图片列表：</td><td class="pTabColVal">
+		<div class="mepic">
+			<div class="ylist" id="id_listpic">
+				{foreach($editinfo['user_pics'] as $pic)}
+					<span class="xx1">
+					<input type="hidden" name="pic[]" value = "{fun_get::html_url($pic)}"><img src = "{$pic}" class="ximg" onclick="kj.pic.preview(this.src);"><div class="xdiv transparent"><img src="images/close.png" onclick="thisjs.removepic(this);" title="删除"></div>
+					</span>
+				{/foreach}
+			</div>
+			<div class="xupload" id="id_selpic"><iframe name="frm_upload" id="frm_upload" src = "/common.php?app=other&app_act=upload&hidebtn=2" width="62px" height="62px" frameborder=0 scrolling="no"></iframe></div>
+		</div>
+	</td>
+	</tr>
+<tr>
+	<td class="pTabColName">权&nbsp;&nbsp;限：</td><td class="pTabColVal">
+	<label><input type="checkbox" id="user_pub_state" name="user_pub_state" value="1"{if($editinfo["user_pub_state"]==1)} checked{/if}>发言</label>
+		  &nbsp;&nbsp;<label><input type="checkbox" id="user_zan_state" name="user_zan_state" value="1"{if($editinfo["user_zan_state"]==1)} checked{/if}>点赞</label>
+		  &nbsp;&nbsp;<label><input type="checkbox" id="user_ping_state" name="user_ping_state" value="1"{if($editinfo["user_ping_state"]==1)} checked{/if}>评论</label>
+	</td></tr>
+<tr>
+	<td class="pTabColName">浏览分类：</td><td class="pTabColVal mebox1" id="user_view_ids">
+	<span class="x1"><input type="hidden" name="user_view_ids[]" value="{$editinfo['user_view_ids']}" class="Tids"><input type="text" name="view_names[]" value="{$editinfo['view_names']}" readonly=true class="pTxtL150 Tnames">&nbsp;<a href="javascript:thisjs.sel_category('user_view_ids');">选择</a></span>
+	</td></tr>
+<tr>
+	<td class="pTabColName">发布分类：</td><td class="pTabColVal mebox1" id="user_pub_ids">
+	<span class="x1"><input type="hidden" name="user_pub_ids[]" value="{$editinfo['user_pub_ids']}" class="Tids"><input type="text" name="pub_names[]" value="{$editinfo['pub_names']}" readonly=true class="pTxtL150 Tnames">&nbsp;<a href="javascript:thisjs.sel_category('user_pub_ids');">选择</a></span>
+	</td></tr>
+</table>
+</div>
+<div class="pFootAct" id="id_pFootAct">
+	<li>
+	<input type="button" name="dosubmit" value="保存" onclick="admin.frm_ajax('save');" class="pBtn">
+	</li>
+</div>
+<script>
+var thisjs = new function() {
+	this.removepic = function(o) {
+		var objp = kj.parent(o , 'span');
+		kj.remove(objp);
+	}
+	this.sel_category = function(id) {
+		var arr = kj.obj("#" + id + " .Tids");
+		var ids = '';
+		if(arr && arr.length>0) ids = arr[0].value;
+		kj.dialog({'url':'common.php?app=quan&app_act=category&callback=callback_category&objid='+id + "&ids="+ids,'id':'dialog_category_sel','type':'iframe','title':'选择配送地区'});
+	}
+
+	this.remove = function(o) {
+		var obj = kj.parent(o,"ul");
+		kj.remove(obj);
+	}
+}
+function callback_category(o) {
+	if(!o) return;
+	var obj = kj.obj("#" + o.objid);
+	if(!obj) return;
+	var arr = kj.obj(".Tids" , obj);
+	var obj_ids = arr[0];
+	arr = kj.obj(".Tnames" , obj);
+	obj_names = arr[0];
+	obj_ids.value = o.ids;
+	obj_names.value = o.names;
+	kj.dialog.close("#windialog_category_sel");
+}
+function upload_callback(data) {
+	var obj = kj.json(data);
+	if(obj.isnull || !('url' in obj)) return;
+	var obj_div=document.createElement("span");
+	obj_div.className = 'xx1';
+	obj_div.innerHTML = '<input type="hidden" name="pic[]" value="'+obj.url+'"><img src = "' + kj.url_view(obj.url) + '" class="ximg" onclick="kj.pic.preview(this.src);"><div class="xdiv transparent"><img src="images/close.png" onclick="thisjs.removepic(this);" title="删除"></div>';
+	kj.obj("#id_listpic").appendChild(obj_div);
+	var objpic = kj.obj(":pic[]");
+	if(objpic.length>=9) {
+		kj.hide("#id_selpic");
+	}
+}
+</script>
+{include(footer)}

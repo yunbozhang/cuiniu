@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>{$article['article_title']}-{cfg:(site_title,sys)}</title>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/main.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+<script src="{cfg:(dirpath,base)}/common.php?app=sys&app_act=web.config&app_ajax=1"></script>
+<script src="/common/js/kj.js"></script>
+<script src="/common/js/kj.ajax.js"></script>
+<script src="/common/js/kj.dialog.js"></script>
+<style>
+.mebox2{float:left;width:968px;background:#fff;margin:10px 0px 10px 0px;border:1px #ccc solid;padding:0px 15px 20px 15px}
+.mebox2 .xtitle{float:left;width:100%;border-bottom:1px #ccc dotted;font-size:18px;font-weight:bold;padding:5px 0px 5px 0px}
+.mebox2 .xcont{float:left;width:100%;line-height:22px;margin:10px 0px 10px 0px;font-size:14px;color:#333}
+.mebox1 ul{float:left;width:240px}
+</style>
+</head>
+<body>
+{include(header)}
+<div class="mebox2">
+	<div class="xtitle">{$article['article_title']}</div>
+	<div class="xcont" id="id_xcont">
+	 {$article['article_content']}
+	</div>
+</div>
+<script>
+if(kj.h("#id_xcont") < 500) {
+	kj.set("#id_xcont" , "style.height" , "500px");
+}
+
+</script>
+{include(footer)}
+</body>
+</html>

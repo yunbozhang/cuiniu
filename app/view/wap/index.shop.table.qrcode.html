@@ -1,0 +1,440 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>{$shopinfo['shop_name']}-{cfg:(site_title,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="{$shopinfo['shop_name']},{cfg:(keywords,sys)}"/>
+<meta name="description" content="{fun_format::len($shopinfo['shop_desc'],50)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css?rand=<?php echo rand();?>"/>
+</head>
+<body>
+{include(label.header)}
+<div class="top">
+	<h1>{$shopinfo['shop_name']}</h1>
+	<a href="?" class="x1"><img src="images/home.png"></a>
+	<a href="?" id="id_top_back" class="x2"><img src="images/back.png"></a>
+</div>
+{set $arr=fun_kj::get_ads('B1-wap-shop'.$shopinfo['shop_id'],1)}
+{if(isset($arr['list']))}
+<div class="kj_slider" style="{if(!empty($arr['h']))}height:{$arr['h']};{/if}">
+	<div class="xli" style="{if(!empty($arr['h']))}height:{$arr['h']};{/if}">
+		{foreach($arr['list'] as $item)}
+		<li><a href="{$item['link']}"><img src = "{$item['url']}" style="{if(!empty($arr['h']))}height:{$arr['h']};{/if}"></a></li>
+		{/foreach}
+	</div>
+	<div class="xbtn Tslider_btn" style="display:none">{foreach($arr['list'] as $item)}<a href="javascript:void(0);">&nbsp;</a>{/foreach}</div>
+</div>
+{else if(isset($arr['html']))}
+<div style="float:left;{if(!empty($arr['w']))}width:{$arr['w']};{else}width:100%;{/if}">
+	{$arr['html']}
+</div>
+{/if}
+{if($shopinfo['shop_tips']!='')}
+<div class="shop_toptips" onmouseover="clearInterval(txtmar_timer)" onmouseout="txtmar_timer=setInterval(fun_txtmar,30)" title="{$shopinfo['shop_tips']}"><i>通知：</i><span id="txtmar1"><font id="txtmar2">{$shopinfo['shop_tips']}</font><font id="txtmar3"></font></span></div>
+<script>
+var txtmar_s,txtmar_s2,txtmar_s3,txtmar_timer;
+kj.onload(function() {
+	txtmar_s=kj.obj("#txtmar1");
+	txtmar_s2=kj.obj("#txtmar2");
+	txtmar_s3=kj.obj("#txtmar3");
+	var offset = kj.offset(txtmar_s);
+	if(offset.width>920) {
+		txtmar_s.scrollLeft=txtmar_s.scrollLeft+20;
+		txtmar_s3.innerHTML=txtmar_s2.innerHTML;
+		txtmar_timer=setInterval(fun_txtmar,30)
+	}
+});
+function fun_txtmar(){
+	if(txtmar_s2.offsetWidth<=txtmar_s.scrollLeft){
+		txtmar_s.scrollLeft-=txtmar_s2.offsetWidth;
+	} else {
+		txtmar_s.scrollLeft++;
+	}
+}
+</script>
+{/if}
+{if($shopinfo['shop_service']==0 || $shopinfo['shop_service']==1)}
+<table class="box4">
+	<tr><td class="xsel"><li>{if($shopinfo['shop_service']==0)}商品列表{else}在线选座{/if}<i></i></li></td><td class="xmid"><li onclick="window.open('?app_act=shop.detail&shop_id={$shopinfo['shop_id']}','_self');">商家介绍<i></i></li></td><td><li onclick="window.open('?app_act=comment.shop&shop_id={$shopinfo['shop_id']}','_self');">用户评价<i></i></li></td></tr>
+</table>
+{else}
+<table class="box5">
+	{if($shopinfo['shop_service']==3)}
+	<tr><td><li onclick="window.open('{fun_get::url(array('type'=>'1'))}','_self');">外卖<i></i></li></td><td class="xsel"><li>选座<i></i></li></td><td><li onclick="window.open('?app_act=shop.detail&shop_id={$shopinfo['shop_id']}','_self');">商家<i></i></li></td><td><li onclick="window.open('?app_act=comment.shop&shop_id={$shopinfo['shop_id']}','_self');">评价<i></i></li></td></tr>
+	{else}
+	<tr><td class="xsel"><li>选座<i></i></li></td><td><li onclick="window.open('{fun_get::url(array('type'=>'1'))}','_self');">外卖<i></i></li></td><td><li onclick="window.open('?app_act=shop.detail&shop_id={$shopinfo['shop_id']}','_self');">商家<i></i></li></td><td><li onclick="window.open('?app_act=comment.shop&shop_id={$shopinfo['shop_id']}','_self');">评价<i></i></li></td></tr>
+	{/if}
+</table>
+{/if}
+<div class="tabletips" id="id_timetips" style="display:">
+	<label>用餐时间：</label><font id="id_usetimetips">今天-{fun_format::len($reserve_time,5)}</font><a href="javascript:jsshop.getlist();">刷新</a>
+</div>
+<div class="shoptable2" id="id_tablelist">
+{foreach($arr_group as $group)}
+	<li class="xtit">{$group["group_name"]}</li>
+	{foreach($arr_table['id_'.$group['group_id']] as $table)}
+	 <li kjdata="{'id':{$table['table_id']},'name':'{$table['table_name']}','num':'{$table['table_num']}','oid':'{$table['oid']}','rid':'{$table['rid']}'}"{if(!empty($mytable) && $mytable['reserve_table_id']==$table['table_id'])} class="xmyyu" onclick="window.open('?app=member&app_act=order.detail&id={$mytable['order_id']}','_self');" {else if($table["state"] == 1)} class="xuse"{else if($table["state"] == 2)} class="xyu"{else} onclick="jsshop.table_click(this);" class="xnew"{/if} id="id_table_{$table['table_number']}">
+	 <div class="y1"><span></span></div><div class="y2"><label>{$table["table_name"]}<i>({$table["table_num"]})</i></label><font>{if(!empty($mytable) && $mytable['reserve_table_id']==$table['table_id'])}我的预约{else if($table["state"] == 1)}用餐中{else if($table["state"] == 2)}已预订{else}可以预订{/if}</font></div>
+	 </li>
+	 {/foreach}
+{/foreach}
+</div>
+<div class="reserve" id="id_reserve_box" style="display:none">
+	<img src="images/close.png" class="xclose" onclick="kj.remove('#id_bglayer');kj.hide('#id_reserve_box');">
+	<form name="frmMain" method="post" action="return false">
+	<li class="xtit">请确认您的桌位信息</li>
+	<li>
+		<label>桌位：</label><span class="Ttable"></span>
+	</li>
+	<li><label>人数：</label><span><select name="num">
+									<option value=""></option>
+									<option value="1">1位</option>
+									<option value="2">2位</option>
+									<option value="3">3位</option>
+									<option value="4">4位</option>
+									<option value="5">5位</option>
+									<option value="6">6位</option>
+									<option value="7">7位</option>
+									<option value="8">8位</option>
+									<option value="9">9位</option>
+									<option value="10">10位</option>
+									<option value="">不确定</option>
+									</select></span></li>
+	<li><label>电话：</label><span><input type="text" name="tel" value="" class="xtxt"{if(!$needsms)} placeholder="(选填)"{/if} id="id_tel"></span></li>
+	<li><label>称呼：</label><span><input type="text" name="name" value="" class="xtxt" placeholder="(选填)"></span></li>
+	<li class="xbtn"><input type="button" name="btnok" value="确认，并开始点菜" onclick="{if($needsms)}jsshop.show_sms();{else}jsshop.yuding();{/if}" id="id_btn_yuding"></li>
+	</form>
+</div>
+<div class="reserve" id="id_reserve_sms" style="display:none">
+	<img src="images/close.png" class="xclose" onclick="kj.remove('#id_bglayer');kj.hide('#id_reserve_sms');">
+	<li class="xtit">请输入您收到的短信</li>
+	<li>
+		<label>手机号：</label><span><font id="id_tel_number"></font>&nbsp;&nbsp;<a href="javascript:jsshop.reback();" style="color:#76AC25">修改<a></span>
+	</li>
+	<li class="xcode"><input type="text" name="sms" value="" placeholder="验证码" class="ybtn1" id="id_sms"><input type="button" name="btntime" value="重新发送" class="ybtn2x" id="id_btntime" onclick="jsshop.send_sms();"></li>
+	<li class="xbtn"><input type="button" name="btnok" value="确认" onclick="jsshop.verify_sms();" id="id_btn_sms"></li>
+</div>
+<div class="reserve" id="id_reserve_pwd" style="display:none">
+	<img src="images/close.png" class="xclose" onclick="kj.remove('#id_bglayer');kj.hide('#id_reserve_pwd');">
+	<li class="xtit" id="id_reserve_pwd_tit">桌位已被占用，进入请输密码</li>
+	<li class="xpwd">
+		<input type="text" name="pwd1" value="" id="id_pwd1" maxlength=1 onkeyup="jsshop.txtnext();" autofocus="autofocus">
+		<input type="text" name="pwd2" value="" id="id_pwd2" maxlength=1 onkeyup="jsshop.txtnext();">
+		<input type="text" name="pwd3" value="" id="id_pwd3" maxlength=1 onkeyup="jsshop.txtnext();">
+		<input type="text" name="pwd4" value="" id="id_pwd4" maxlength=1 onkeyup="jsshop.verify_pwd();">
+	</li>
+</div>
+{include(label.footer)}
+<script>
+var jsshop = new function() {
+	this.obj_reserve = {};
+	this.reserve_date = '{$reserve_date}';
+	this.reserve_time = '{$reserve_time}';
+	this.verify_tel = [];
+	this.txtnext = function() {
+		var obj = kj.obj("#id_reserve_pwd input");
+		for(var i = 0 ; i < obj.length ; i++) {
+			if(obj[i].value=='') {
+				if(i==1) {
+					kj.set("#id_reserve_pwd_tit","innerHTML","请输入桌位密码");
+					kj.delClassName("#id_reserve_pwd_tit","xtit2");
+					kj.addClassName("#id_reserve_pwd_tit","xtit");
+				}
+				obj[i].focus();break;
+			}
+		}
+	}
+	this.verify_pwd = function() {
+		var obj = kj.obj("#id_reserve_pwd input");
+		var val = '';
+		for(var i = 0 ; i < obj.length ; i++) {
+			val = val + "" + obj[i].value;
+		}
+		var obj = kj.obj("#id_table_{fun_get::get('table_number')}");
+		var attribute = kj.getAttribute(obj,"kjdata");
+		var objattribute = kj.json(attribute);
+		kj.ajax.get("{fun_get::url(array('app_act'=>'shop.table.qrcode.pwd','id'=>'','pwd'=>''))}&id="+objattribute.rid+"&pwd="+val , function(data) {
+			var obj = kj.json(data);
+			if(obj.isnull) {
+				jsshop.pwderr("系统繁忙，请稍后再试");
+				return;
+			}
+			if(obj.code == '0') {
+				window.open("?app=member&app_act=order.detail&id="+obj.oid,"_self");
+			} else {
+				jsshop.pwderr(obj.msg);
+			}
+		});
+	}
+	this.pwderr = function(msg) {
+		kj.addClassName("#id_reserve_pwd_tit","xtit2");
+		kj.delClassName("#id_reserve_pwd_tit","xtit");
+		kj.set("#id_reserve_pwd_tit","innerHTML",msg);
+		var arr = kj.obj("#id_reserve_pwd input");
+		kj.set(arr,"value","");
+		arr[0].focus();
+
+	}
+	this.show_pwd = function() {
+		if(!kj.obj("#id_bglayer")) kj.bglayer("","#000",0.5,'{"click":"hide"}');
+		var w = kj.w();
+		kj.show("#id_reserve_pwd");
+		var w2 = kj.w("#id_reserve_pwd");
+		var left = (w-w2)/2;
+		kj.set("#id_reserve_pwd","style.left",left+'px');
+		var h = document.body.clientHeight;
+		if(!h || (document.documentElement.clientHeight && document.documentElement.clientHeight>h)) h = document.documentElement.clientHeight;
+		var h2 = kj.h("#id_reserve_pwd");
+		var top = (h-h2)/2;
+		if(h<800 && top>150) top = 150;
+		kj.set("#id_reserve_pwd","style.top",top+'px');
+	}
+	this.show_sms = function() {
+		var tel = kj.obj("#id_tel").value;
+		if(tel == '') {
+			alert("请填写手机号码");
+			return;
+		}
+		if(this.verify_tel.indexOf(tel)>=0) {
+			this.yuding();return;
+		}
+		kj.set("#id_tel_number","innerHTML",tel);
+		kj.remove('#id_bglayer');kj.hide('#id_reserve_box');
+		if(!kj.obj("#id_bglayer")) kj.bglayer("","#000",0.5,'{"click":"hide"}');
+		var w = kj.w();
+		kj.show("#id_reserve_sms");
+		var w2 = kj.w("#id_reserve_sms");
+		var left = (w-w2)/2;
+		kj.set("#id_reserve_sms","style.left",left+'px');
+		var h = document.body.clientHeight;
+		if(!h || (document.documentElement.clientHeight && document.documentElement.clientHeight>h)) h = document.documentElement.clientHeight;
+		var h2 = kj.h("#id_reserve_sms");
+		var top = (h-h2)/2;
+		kj.set("#id_reserve_sms","style.top",top+'px');
+		this.send_sms();
+	}
+	this.reback = function() {
+		kj.remove('#id_bglayer');kj.hide('#id_reserve_sms');
+		this.show_reserve();
+	}
+	this.verify_sms = function() {
+		var val = kj.obj("#id_sms").value;
+		if(val=='') {
+			alert("请输入短信验证码");
+			kj.obj("#id_sms").focus();
+			return;
+		}
+		kj.obj("#id_btn_sms").disabled = true;
+		kj.obj("#id_btn_sms").value = "验证中...";
+		var tel = kj.obj("#id_tel").value;
+		kj.ajax.get("common.php?app=sys&app_act=verify.sms&tel="+tel+"&type=4&key="+val,function(data) {
+			var obj = kj.json(data);
+			if(obj.isnull) {
+				alert("系统繁忙，请稍后再试");
+				kj.obj("#id_btn_sms").disabled = false;
+				kj.obj("#id_btn_sms").value = "重新验证";
+				return;
+			}
+			if(obj.code == '0') {
+				kj.obj("#id_btn_sms").disabled = false;
+				kj.obj("#id_btn_sms").value = "验证";
+				kj.remove('#id_bglayer');kj.hide('#id_reserve_sms');
+				jsshop.verify_tel[jsshop.verify_tel.length] = kj.obj("#id_tel").value;
+				jsshop.show_reserve();
+				jsshop.yuding();
+			} else {
+				alert(obj.msg);
+				kj.obj("#id_btn_sms").disabled = false;
+				kj.obj("#id_btn_sms").value = "重新验证";
+			}
+		});
+	}
+	this.send_sms = function() {
+		var tel = kj.obj("#id_tel").value;
+		if(tel == '') {
+			alert("请填写手机号码");
+			kj.remove('#id_bglayer');kj.hide('#id_reserve_sms');
+			this.show_reserve();
+		}
+		if(kj.obj("#id_btntime").className=="ybtn2") return;
+		kj.obj("#id_btntime").disabled = true;
+		kj.obj("#id_btntime").value = "发送中...";
+		kj.ajax.get("common.php?app=sys&app_act=send.sms&tel="+tel+"&type=4",function(data) {
+			var obj = kj.json(data);
+			kj.obj("#id_btntime").disabled = false;
+			if(obj.isnull) {
+				alert("系统繁忙");
+				kj.obj("#id_btntime").value = "重新发送";
+				return;
+			}
+			if(obj.code == '0') {
+				kj.obj("#id_btntime").value = "120秒";
+				kj.addClassName("#id_btntime",'ybtn2');
+				kj.delClassName("#id_btntime",'ybtn2x');
+				jsshop.time_start();
+			} else {
+				kj.obj("#id_btntime").value = "重新发送";
+				alert(obj.msg);
+			}
+		});
+	}
+	this.time_start = function() {
+		var val = kj.obj("#id_btntime").value;
+		val = val.replace('秒','');
+		val = kj.toint(val);
+		val--;
+		if(val <= 0) {
+			kj.obj("#id_btntime").value = "重新发送";
+			kj.addClassName("#id_btntime",'ybtn2x');
+			kj.delClassName("#id_btntime",'ybtn2');
+		} else {
+			kj.obj("#id_btntime").value = val+'秒';
+			setTimeout("jsshop.time_start();",1000);
+		}
+	}
+	this.yuding = function() {
+		var obj = {};
+		obj.table_id = this.table_id;
+		obj.date = this.reserve_date;
+		obj.time = this.reserve_time;
+		obj.tel = document.frmMain.tel.value;
+		obj.name = document.frmMain.name.value;
+		obj.num = document.frmMain.num.value;
+		kj.obj("#id_btn_yuding").value="处理中...";
+		kj.obj("#id_btn_yuding").disabled=true;
+		kj.ajax.post("{fun_get::url(array('app_act'=>'shop.table.save','date'=>'','time'=>'','qrcode' => 1))}",obj,function(data) {
+			var obj = kj.json(data);
+			if(obj.isnull) {
+				alert("系统繁忙");
+				kj.obj("#id_btn_yuding").value="再试试";
+				kj.obj("#id_btn_yuding").disabled=false;
+				return;
+			}
+			if(obj.code == '0') {
+				window.open("?app_act=shop&id={$shopinfo['shop_id']}&type=2&reserve_id="+obj.number,"_self");
+			} else {
+				alert(obj.msg);
+				kj.obj("#id_btn_yuding").value="再试试";
+				kj.obj("#id_btn_yuding").disabled=false;
+			}
+		});
+		return false;
+	}
+	this.show_reserve = function(obj) {
+		if(!obj && this.reserve_obj) obj = this.reserve_obj;
+		this.reserve_obj = obj;
+		kj.set("#id_reserve_box .Ttable","innerHTML",obj.name+'('+obj.num+')');
+		if(!kj.obj("#id_bglayer")) kj.bglayer("","#000",0.5,'{"click":"hide"}');
+		var w = kj.w();
+		kj.show("#id_reserve_box");
+		var w2 = kj.w("#id_reserve_box");
+		var left = (w-w2)/2;
+		kj.set("#id_reserve_box","style.left",left+'px');
+		var h = document.body.clientHeight;
+		if(!h || (document.documentElement.clientHeight && document.documentElement.clientHeight>h)) h = document.documentElement.clientHeight;
+		var h2 = kj.h("#id_reserve_box");
+		var top = (h-h2)/2;
+		kj.set("#id_reserve_box","style.top",top+'px');
+
+	}
+	this.getlist = function(date ,time) {
+		kj.ajax.get("{fun_get::url(array('app_act'=>'shop.tablelist','date'=>'','time'=>''))}",function(data) {
+			var objdata = kj.json(data);
+			kj.obj("#id_tablelist").innerHTML = '';
+			var i,j;
+			for(i = 0 ; i < objdata.group.length ; i++) {
+				obj = document.createElement("li");
+				obj.innerHTML = objdata.group[i].group_name;
+				obj.className = 'xtit';
+				kj.obj("#id_tablelist").appendChild(obj);
+				for(j = 0 ; j < objdata.table['id_'+objdata.group[i].group_id].length ; j++) {
+					obj = document.createElement("li");
+					if(objdata.table['id_'+objdata.group[i].group_id][j].state == 1) {
+						obj.className = 'xuse';
+						statename = "用餐中";
+					} else if(objdata.table['id_'+objdata.group[i].group_id][j].state == 2) {
+						obj.className = 'xyu';
+						statename = "已预订";
+					} else {
+						obj.className = 'xnew';
+						statename = '可以预订';
+					}
+					obj.id = "id_table_"+objdata.table['id_'+objdata.group[i].group_id][j].table_id;
+					obj.innerHTML = "<div class='y1'><span></span></div><div class='y2'><label>"+objdata.table['id_'+objdata.group[i].group_id][j].table_name+"<i>("+objdata.table['id_'+objdata.group[i].group_id][j].table_num+")</i></label><font>"+statename+"</font></div>";
+					kj.obj("#id_tablelist").appendChild(obj);
+					kj.setAttribute("#"+obj.id,"kjdata","{'id':"+objdata.table['id_'+objdata.group[i].group_id][j].table_id+",'name':'"+objdata.table['id_'+objdata.group[i].group_id][j].table_name+"','num':'" + objdata.table['id_'+objdata.group[i].group_id][j].table_num + "'}");
+					if(statename=="可以预订") {
+						kj.handler("#"+obj.id,"click",function() {
+							jsshop.table_click(this);
+						});
+					}
+				}
+			}
+			var str = "今天-"+objdata.time;
+			kj.set("#id_usetimetips","innerHTML",str);
+			kj.remove("#id_bglayer");
+		});
+	}
+	this.table_click = function(o) {
+		var kjdata = kj.getAttribute(o,"kjdata");
+		var obj = kj.json(kjdata);
+		jsshop.table_id = obj.id;
+		jsshop.show_reserve(obj);
+	}
+	{if(cls_obj::get("cls_session")->get("weixin")==1)}
+	this.wxpay = function() {
+		if (typeof WeixinJSBridge == "undefined"){
+		   if( document.addEventListener ){
+			   document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+		   }else if (document.attachEvent){
+			   document.attachEvent('WeixinJSBridgeReady', onBridgeReady); 
+			   document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+		   }
+		}else{
+		   onBridgeReady();
+		}
+	}
+	{/if}
+}
+{if(cls_obj::get("cls_session")->get("weixin")==1)}
+function onBridgeReady(){
+   WeixinJSBridge.invoke(
+	   'getBrandWCPayRequest', {
+		   "appId" : jsshop.appId,     //公众号名称，由商户传入     
+		   "timeStamp": jsshop.timeStamp,         //时间戳，自1970年以来的秒数     
+		   "nonceStr" : jsshop.nonceStr, //随机串     
+		   "package" : jsshop.package,     
+		   "signType" : "MD5",         //微信签名方式:     
+		   "paySign" : jsshop.paySign, //微信签名 
+		   "debug": true
+	   },
+	   function(res){     
+		   if(res.err_msg == "get_brand_wcpay_request:ok" ) {
+				window.open('?app=member&app_act=order.detail&id='+jsshop.obj_reserve.oid,'_self');
+		   }
+	   }
+   ); 
+}
+{/if}
+kj.onload(function() {
+	var obj = kj.obj("#id_table_{fun_get::get('table_number')}");
+	if(obj) {
+		var attribute = kj.getAttribute(obj,"kjdata");
+		var objattribute = kj.json(attribute);
+		if(obj.className.indexOf("xmyyu")>=0) {
+			window.open("?app=member&app_act=order.detail&id="+objattribute.oid,"_self");
+		} else if(obj.className.indexOf("xyu")>=0 || obj.className.indexOf("xuse")>=0) {
+			jsshop.show_pwd();
+			var arr = kj.obj("#id_reserve_pwd input");
+			arr[0].focus();
+		} else {
+			jsshop.table_click(obj);
+		}
+	}
+});
+</script>
+<script src="/common/js/kj.slider.js"></script>
+</body>
+</html>

@@ -1,0 +1,306 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>收货地址-{cfg:(site_title,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+</head>
+<body>
+{include(label.header)}
+<div class="top">
+	<h1>收货地址</h1>
+	<a href="?" class="x1"><img src="images/home.png"></a>
+	<a href="?app=member&app_act=main" id="id_top_back" class="x2"><img src="images/back.png"></a>
+</div>
+<div class="main">
+	<div class="uinfo" id="id_cainfo">
+	{foreach($arr_list as $item)}
+		<ul id="id_address_{$item['address_id']}" kjdata="{'id':{$item['address_id']},'name':'{$item['address_name']}','tel':'{$item['address_tel']}','allid':'{$item['address_area_allid']}','address':'{$item['address_address']}'}">
+			<div class="xbox">
+			<li><font class="xtit">{$item['address_name']}</font><font class="xtel">{$item['address_tel']}</font></li>
+			<li><font class="xarea">{$item['address_area']}</font><font class="xlou">{$item['address_address']}</font></li>
+			<li class="xico"><i></i></li>
+			</div>
+			<div class="xbtn"><a href="javascript:thisjs.address_edit({$item['address_id']});" title="修改"><img src="images/edit.png"></a>&nbsp;&nbsp;<a href="javascript:thisjs.address_del({$item['address_id']});" title="删除"><img src="images/del.png"></a></div>
+		</ul>
+	{/foreach}
+	{if(count($arr_list)<4)}
+		<ul class="xnew" onclick="thisjs.address_edit(0);">
+			<div class="xbox">+ 添加新地址</div>
+		</ul>
+	{/if}
+	</div>
+</div>
+<div id="id_edit_info" style="display:none">
+<div class="main">
+<form name="frmEditinfo">
+<table class="cinfotab">
+<tr><td class="x1"><span>联系人：</span></td><td>
+	<input name="name" type="text" class="xtxt">
+</td></tr>
+<tr><td class="x1"><span>联系电话：</span></td><td>
+	<input name="tel" type="text" maxlength="11" class="xtxt">
+</td></tr>
+</table>
+<div class="xtit">配送地址</div>
+<div class="xselect">
+	<input type="hidden" name="area_id" id="id_area_id" value="">
+	<input type="hidden" name="area_allid" id="id_area_allid" value="">
+	<input type="hidden" name="area" id="id_area" value="">
+	<select name="address_area_id[]" onchange="thisjs.changearea(this.value,0);" id="id_area_0">
+		<option value="">选择城市</option>
+	{foreach($areainfo["default"] as $item)}
+		<option value="{$item['id']}">{$item['name']}</option>
+	{/foreach}
+	</select>
+	{for($i=1;$i<$areainfo["depth"];$i++)}
+		<select name="address_area_id[]" onchange="thisjs.changearea(this.value,{$i});" id="id_area_{$i}">
+		{if($i==1)}
+		<option value="">选择区</option>
+		{else if($i==2)}
+		<option value="">选择大厦</option>
+		{/if}
+		</select>
+	{/foreach}
+</div>
+<table class="cinfotab">
+<tr><td class="x1"><span>详细地址：</span></td><td>
+	<input name="address" type="text" class="xtxt">
+</td></tr>
+</table>
+<div class='xbtn'><input type="button" name="btn_saveinfo" value="保 存" class="xbtn1" onclick="thisjs.address_save();">&nbsp;&nbsp;<input type="button" name="btn_saveinfo" value="取 消" class="xbtn2" onclick="thisjs.address_cancel();"></div>
+</form>
+</div>
+</div>
+<script>
+var thisjs = new function() {
+	this.arealist = {fun_format::json($areainfo["list"])};//json格式，指定id包函的子地区
+	this.areainfo = {fun_format::json($areainfo["area"])};//对应id地区详细信息
+	this.depth = {$areainfo["depth"]};//当前地区深度
+
+	//编辑已有收货地址
+	this.address_edit = function(id) {
+		this.address_id = id;
+		kj.show("#id_edit_info");
+		kj.set("#id_edit_info" , "style.top" , "50px");
+		kj.set("#id_edit_info" , "style.height" , kj.h()+"px");
+		kj.set("#id_edit_info" , "style.left" , "0px");
+		if(id>0) {
+			var objdata = kj.getAttribute("#id_address_"+id , "kjdata");
+			if(objdata) objdata = kj.json(objdata);
+			if(objdata && 'id' in objdata) {
+				document.frmEditinfo.address.value=objdata.address;
+				document.frmEditinfo.name.value=objdata.name;
+				document.frmEditinfo.tel.value=objdata.tel;
+				this.address_seldefault(objdata.allid);
+			}
+		}
+	}
+	this.address_del = function(id) {
+		if(!confirm("确定要删除吗？")) {
+			return;
+		}
+		kj.ajax.get(kj.cfg('baseurl') + "/?app=ajax&app_act=address.del&id="+id , function(data) {
+			var obj_data=kj.json(data);
+			thisjs.submiting = false;
+			if(obj_data.isnull) {
+				alert("操作失败");
+			} else {
+				if('code' in obj_data && obj_data.code=='0') {
+					kj.remove("#id_address_"+id);
+					var arr = kj.obj("#id_cainfo ul");
+					if(arr.length<4) kj.show("#id_cainfo .xnew");
+				}else{
+					if("msg" in obj_data){
+						alert(obj_data.msg);
+					}else{
+						alert("操作失败");
+					}
+				}
+			}
+		});
+	}
+	this.address_seldefault = function(allid) {
+		if(!allid || allid=='') return;
+		var arr = allid.split(",");
+		//加载默认值选中
+		this.select_sel(kj.obj("#id_area_0") , arr[0]);
+		for(var i=0 ; i < this.depth ; i++) {
+			//if(arr.length-1<=i) break;
+			this.changearea(arr[i],i,arr[i+1]);
+		}
+		if(arr.length<2) this.refresh_area_val();
+	}
+	//提交收货信息
+	this.address_save = function() {
+		var area = kj.obj("#id_area").value;
+		var area_allid = kj.obj("#id_area_allid").value;
+		var area_id = kj.obj("#id_area_id").value;
+		var sex='';
+		if(this.chk_info() == false) return;
+		var data = {"id":this.address_id,"name":document.frmEditinfo.name.value,"area":area,"area_id":area_id,"area_allid":area_allid,"address":document.frmEditinfo.address.value,"tel":document.frmEditinfo.tel.value};
+		kj.ajax.post(kj.cfg('baseurl') + "/index.php?app=ajax&app_act=address.save" , data ,function(data){
+			var obj_data=kj.json(data);
+			thisjs.saveinfo = false;
+			if(obj_data.isnull) {
+				alert("保存失败");
+			} else {
+				if('code' in obj_data && obj_data.code=='0') {
+					var id = "#id_address_" + thisjs.address_id;
+					if(thisjs.address_id>0) {
+						kj.set(id + " .xtit" , "innerHTML" ,document.frmEditinfo.name.value );
+						kj.set(id + " .xtel" , "innerHTML" ,document.frmEditinfo.tel.value );
+						kj.set(id + " .xlou" , "innerHTML" ,document.frmEditinfo.address.value );
+						kj.set(id + " .xarea" , "innerHTML" ,kj.obj("#id_area").value );
+					} else {
+						thisjs.address_id = obj_data.id;
+						kj.delClassName("#id_cainfo ul" , 'xsel');
+						var html = '<div class="xbox">';
+						html += '<li><font class="xtit">'+document.frmEditinfo.name.value+'</font><font class="xtel">'+document.frmEditinfo.tel.value+'</font></li>';
+						html += '<li><font class="xarea">'+kj.obj("#id_area").value+'</font><font class="xlou">'+document.frmEditinfo.address.value+'</font></li>';
+						html += '<li class="xico"><i></i></li></div>';
+						html += '<div class="xbtn"><a href="javascript:thisjs.address_edit('+obj_data.id+');" title="修改"><img src = "'+kj.cfg('basecss')+'/wap/images/edit.png"></a>&nbsp;&nbsp;<a href="javascript:thisjs.address_del('+obj_data.id+');" title="删除"><img src = "'+kj.cfg('basecss')+'/wap/images/del.png"></a></div>';
+
+						var obj = document.createElement("ul");
+						obj.id = 'id_address_'+obj_data.id;
+						obj.className = '';
+						obj.innerHTML = html;
+						//kj.obj("#id_cainfo").appendChild(obj);
+						var arrul = kj.obj("#id_cainfo ul");
+						kj.insert_before(kj.obj("#id_cainfo") , arrul[arrul.length-1] , obj);
+						var arr = kj.obj("#id_cainfo ul");
+						if(arr.length>4) kj.hide("#id_cainfo .xnew");
+					}
+					var kjdata = "{'id':"+thisjs.address_id+",'name':'"+document.frmEditinfo.name.value+"','tel':'"+document.frmEditinfo.tel.value+"','address':'"+document.frmEditinfo.address.value+"','allid':'"+document.frmEditinfo.area_allid.value+"'}"
+					kj.setAttribute("#id_address_"+thisjs.address_id , "kjdata" , kjdata);
+				}else{
+					if("msg" in obj_data){
+						alert(obj_data.msg);
+					}else{
+						alert("操作失败");
+					}
+				}
+			}
+			kj.hide("#id_edit_info");
+		});
+	}
+	this.select_sel = function(obj,val) {
+		var is_sel = false;
+		for(var i = 0 ; i < obj.length; i++) {
+			if(obj[i].value == val) {
+				obj[i].selected = true;
+				is_sel = true;
+				break;
+			}
+		}
+		if(!is_sel && obj.length>0 ) obj[0].selected = true;
+	}
+	//地区下拉发生改变时触发
+	this.changearea = function(val , index , defautval) {
+		var obj,i,ii;
+		index++;
+		//当index大于深度时跳出
+		if(index > this.depth) {
+			this.refresh_area_val();
+			return;
+		}
+		//发生改变后，重置之后的地区下拉
+		for(i = index ; i < this.depth; i++) {
+			obj = kj.obj("#id_area_" + i);
+			if(!obj) break;
+			obj.options.length = 0;
+			if(i>index) {
+				if(kj.obj("#id_area_" + i)) kj.obj("#id_area_" + i).style.display = 'none';
+			}
+		}
+		var key = "id_" + val;
+		if(!(key in this.arealist) || !("length" in this.arealist[key]) || !kj.obj("#id_area_" + index)) {
+			//跳出则刷新当前地区值
+			if(kj.obj("#id_area_" + index)) kj.obj("#id_area_" + index).style.display = 'none';
+			this.refresh_area_val();
+			return;
+		}
+		kj.add_option("#id_area_" + index , '' , '');
+		for(i = 0 ; i < this.arealist["id_"+val].length ; i++ ) {
+			obj = kj.obj("#id_area_" + index);
+			ii = this.arealist["id_"+val][i];
+			if( !("id_" + ii in this.areainfo ) ) continue;
+			kj.add_option(obj , this.areainfo["id_" + ii]["name"] , ii);
+			//选中默认值
+			if(obj.options[i+1].value == defautval) {
+				obj.options[i+1].selected=true;
+			}
+		}
+		if(kj.obj("#id_area_" + index)) kj.obj("#id_area_" + index).style.display = '';
+		this.changearea(obj.value , index , defautval);
+	}
+	this.refresh_area_val = function() {
+		var obj = kj.obj(":address_area_id[]");
+		var arr_id = [];
+		var arr_val = [];
+		var val = '';
+		var id = 0;
+		for(var i = 0 ; i < obj.length ; i++) {
+			if(obj[i].value != '') {
+				if( !("id_" + obj[i].value in this.areainfo ) ) continue;
+				arr_id[arr_id.length] = obj[i].value;
+				val = ( 'val' in this.areainfo["id_" + obj[i].value] ) ? this.areainfo["id_" + obj[i].value]['val'] : this.areainfo["id_" + obj[i].value]['name'];
+				arr_val[arr_val.length] = val;
+			} else {
+				break;
+			}
+		}
+		if(arr_id.length>0) {
+			kj.obj("#id_area_id").value = arr_id[arr_id.length-1];
+		} else {
+			kj.obj("#id_area_id").value = '';
+		}
+		kj.obj("#id_area_allid").value = arr_id.join(",");
+		kj.obj("#id_area").value = arr_val.join(" ");
+	}
+	//检查用户信息合法性
+	this.chk_info = function() {
+			if(document.frmEditinfo.name.value=="") {
+				alert("请填写联系人信息");
+				document.frmEditinfo.name.focus();
+				return false;
+			}
+
+			if(document.frmEditinfo.tel.value=='') {
+				alert("请填写联系电话");
+				document.frmEditinfo.tel.focus();
+				return false;
+			}
+			if(!kj.rule.types.tel(document.frmEditinfo.tel.value)) {
+				alert("输入电话格式不正确");
+				document.frmEditinfo.tel.focus();
+				return false;
+			}
+			for(var i = 0 ; i < this.depth ; i++) {
+				x = kj.obj("#id_area_" + i);
+				if(x && x.value=="" && x.style.display=='') {
+					alert("请选择您所在地区范围");
+					x.focus();
+					return false;
+				}
+			}
+			if(document.frmEditinfo.address.value=="") {
+				alert("请填写详细收货地址");
+				document.frmEditinfo.address.focus();
+				return false;
+			}
+			return true;
+	}
+	//取消编辑
+	this.address_cancel = function() {
+		kj.hide("#id_edit_info");
+	}
+}
+</script>
+{include(label.footer)}
+</body>
+</html>

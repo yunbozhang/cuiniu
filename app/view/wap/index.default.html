@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>{cfg:(site_title,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css?rand=<?php echo rand();?>"/>
+</head>
+<body>
+{include(label.header)}
+<div class="top">
+	<h1><a href="?app_act=area">位置：{$area_name}</a></h1>
+	<font style="float:right;margin-right:10px"><a href="?app_act=area" id="id_top_back">[切换]</a></font>
+	<img src="images/logo.png">
+</div>
+{set $arr=fun_kj::get_ads('A1-wap',1)}
+{if(isset($arr['list']) && count($arr['list'])>0)}
+<div class="kj_slider" style="{if(!empty($arr['h']))}height:{$arr['h']};{/if}">
+	<div class="xli" style="{if(!empty($arr['h']))}height:{$arr['h']};{/if}">
+		{foreach($arr['list'] as $item)}
+		<li><a href="{$item['link']}"><img src = "{fun_get::html_url($item['url'])}" style="{if(!empty($arr['h']))}height:{$arr['h']};{/if}"></a></li>
+		{/foreach}
+	</div>
+	<div class="xbtn Tslider_btn" style="display:none">{foreach($arr['list'] as $item)}<a href="javascript:void(0);">&nbsp;</a>{/foreach}</div>
+</div>
+{else if(isset($arr['html']) && trim($arr['html'])!='')}
+<div style="float:left;width:100%">
+	{$arr['html']}
+</div>
+{/if}
+<div style="float:left;width:100%;overflow:hidden">
+<table class="category2">
+	<tr>
+	<td colspan='2' class="x2">
+		<a href="?app_act=search"><img src="images/icon_search.png"><br><font>搜索</font></a>
+		<a href="?app_act=collect"><img src="images/tico2.png"><br><font>收藏</font></a>
+		<a href="?app=act.gift"><img src="images/tico5.png"><br><font>礼品</font></a>
+		<a href="?app_act=help"><img src="images/tico4.png"><br><font>帮助</font></a>
+	</td>
+	</tr>
+</table>
+</div>
+<table class="box3">
+<tr><td><li onclick="pageIndex.showtype();" id="id_type_tit" class="Tmousedown"><font>分类</font><i></i></li></td>
+<td><li id="id_act_tit" onclick="pageIndex.showsort();" class="Tmousedown"><font></font><i></i></li></td>
+<td class="x1"><li onclick="pageIndex.showcondition();" id="id_state_tit" class="Tmousedown"><font>筛选</font><i></i></li></td><tr>
+</table>
+<div id="id_act_sort" style="display:none" class="dropdown">
+<ul>
+<li onclick="pageIndex.sort(0,'距离');" title="距离"><div><font>距离</font></div></li><li onclick="pageIndex.sort(1,'最新');" title="最新"><div><font>最新</font><i></i></div></li><li onclick="pageIndex.sort(2,'销量');" title="销量"><div><font>销量</font><i></i></div></li><li onclick="pageIndex.sort(3,'人气');" title="人气"><div><font>人气</font><i></i></div></li>
+</ul>
+</div>
+<div id="id_condition" style="display:none" class="dropdown">
+	<ul>
+		<li onclick="if(this.className=='xsel'){this.className=''}else{this.className='xsel'}pageIndex.shoppage=0;pageIndex.shopmore();" id="id_chk_addprice">免费配送</li>
+		<li onclick="if(this.className=='xsel'){this.className=''}else{this.className='xsel'}pageIndex.shoppage=0;pageIndex.shopmore();" id="id_chk_state">正常营业</li>
+	</ul>
+</div>
+<div id="id_typelist" style="display:none" class="dropdown">
+<ul>
+	<a href="javascript:void(0);" onclick="pageIndex.selshoptype('' , this , '全部');">全部<i>&nbsp;</i></a>
+	{foreach($arr_type as $item)}
+	<a href="javascript:void(0);" onclick="pageIndex.selshoptype('{$item}' , this , '{$item}');">{$item}<i>&nbsp;</i></a>
+	{/foreach}
+</ul>
+</div><div id="id_shopall">
+<ul>
+<div style="height:500px"></div>
+</ul>
+</div>
+<div class="init" id="id_init_refresh" style="display:none">
+	<li><img src="images/init.gif"><font>正在加载...</font></li>
+</div>
+<script src="page.index.js"></script>
+<script>
+{if(cls_obj::get("cls_session")->isapp==1)}
+	pageIndex.shopmore();
+{else}
+	pageIndex.getLocation();
+{/if}
+
+pageIndex.cssdir = "{$temp_url}";
+pageIndex.shoppage = 0;
+pageIndex.shoppages = kj.toint("{$shop_list['pageinfo']['pages']}");
+pageIndex.pagesize = kj.toint("{$shop_list['pageinfo']['pagesize']}");
+pageIndex.sortby = kj.toint("{$shop_list['sortby']}");
+pageIndex.sortval = kj.toint("{$shop_list['sortval']}");
+pageIndex.sort_init();
+</script>
+<script src="/common/js/kj.slider.js"></script>
+{include(label.footer)}
+</body>
+</html>

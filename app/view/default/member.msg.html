@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>我的留言-{cfg:(site_title,sys)}</title>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+</head>
+<body>
+{include(header)}
+{include(member_left)}
+<div class="uright">
+	<div class="upath"><font>我的留言</font></div>
+	{foreach($arr_list['list'] as $item)}
+	<div class="umsg">
+		<div class="info"> 姓名：<font>{$item["msg_name"]}</font>&nbsp;&nbsp;&nbsp;&nbsp;电话：<font>{$item["msg_tel"]}</font>&nbsp;&nbsp;&nbsp;&nbsp;邮箱：<font>{$item["msg_email"]}</font></div>
+		<div class="xcontent">{$item["msg_cont"]}</div>
+		<div class="beta">时间：{$item["msg_time"]}　　IP：{$item["msg_ip"]}</div>
+		{if(!empty($item["msg_recont"]))}
+		<div class="return" id="id_return_{$item["msg_id"]}">
+			<div class="return_content">{$item["msg_recont"]}</div>
+			<div class="return_beta">&nbsp;&nbsp;回复时间：{$item["msg_retime"]}</div>
+		</div>
+		{/if}
+	</div>
+	{/foreach}
+	<div class="page" style="margin-top:20px">
+		<li{if($arr_list['pagebtns']['pre']<1)} class="xnone"{/if}><a href="{if($arr_list['pagebtns']['pre']<1)}javascript:void(0);{else}{fun_get::url(array('page'=>''))}&page={$arr_list['pagebtns']['pre']}{/if}">上一页</a></li>
+		{if($arr_list['pagebtns']['start']!=1)}<li><a href="{fun_get::url(array('page'=>''))}&page=1">1</a></li>{/if}
+		{if($arr_list['pagebtns']['start']>2)}
+			<li class="xnone"><font>...</font></li>
+		{/if}
+		{foreach($arr_list['pagebtns']['list'] as $item)}
+		<li{if(fun_get::get('page',1)==$item)} class="xsel"{/if}><a href="{fun_get::url(array('page'=>''))}&page={$item}">{$item}</a></li>
+		{/foreach}
+		{if($arr_list['pagebtns']['end']<$arr_list['pageinfo']['pages']-1)}
+			<li class="xnone"><font>...</font></li>
+		{/if}
+		{if($arr_list['pagebtns']['end']<$arr_list['pageinfo']['pages'])}
+		<li><a href="{fun_get::url(array('page'=>''))}&page={$arr_list['pageinfo']['pages']}">{$arr_list['pageinfo']['pages']}</a></li>
+		{/if}
+		<li{if($arr_list['pagebtns']['next']<1)} class="xnone"{/if}><a href="{if($arr_list['pagebtns']['next']<1)}javascript:void(0);{else}{fun_get::url(array('page'=>''))}&page={$arr_list['pagebtns']['next']}{/if}">下一页</a></li>
+		</li>
+	</div>
+</div>
+{include(footer)}
+</body>
+</html>

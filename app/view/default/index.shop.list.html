@@ -1,0 +1,80 @@
+{if(!empty($arr_menu["tj"]))}
+	{if($shopinfo['shop_mode']==1)}
+		<div class="alist">
+		{foreach($arr_menu["tj"] as $menu)}
+			<li><span class="xname"><a href="?app_act=menu&id={$menu['menu_id']}"><font>{$menu['menu_title']}</font></a>{if(!empty($menu['attribute']))}<i>{$menu['attribute']}</i>{/if}</span><span class="xprice">{fun_kj::get_price($menu['menu_price'])}</span><span class="x1">(已售{if(isset($arr_menu['abount_sold']['id_'.$menu['menu_id']]))}$arr_menu['abount_sold']['id_'.$menu['menu_id']]{else}{$menu['menu_sold']}{/if}份)</span>
+			<span class="x1" style="width:80px"><label class="starbg" onclick="jsshop.comment({$menu['menu_id']});"><font style="width:{$menu['commentrate']}%"></font></label></span>
+			<span class="xbtn">
+				<input type="button" name="btnjian" class="xbtnjian Tjian{$menu['menu_id']}" onclick="jsshop.change_num({$menu['menu_id']},-1)" style="display:none">
+				<input type="text" name="num" value="" class="xnum Tnumv{$menu['menu_id']} Tnum{$menu['menu_id']}" style="display:none" onkeyup="jsshop.change_num({$menu['menu_id']},this.value,1)">
+				<input type="button" name="btnjia" class="xbtnjia Tmenu{$menu['menu_id']}" onclick="{if(isset($arr_menu['abount_menu']['id_'.$menu['menu_id']]))}jsshop.guige_show({$menu['menu_id']},this);{else}jsshop.cartin(this);jsshop.cart_add({id:'{$menu['menu_id']}',name:'{$menu['menu_title']}',pic:'{$menu['menu_pic_small']}',price:'{$menu['menu_price']}',type:'{$menu['menu_type']}'});{/if}">
+			</span></li>
+		{/foreach}
+		</div>
+	{else}
+		<div class="lipic">
+			<ul>
+		{foreach($arr_menu["tj"] as $menu)}
+			<li>
+				<p class="xpic"><a href="?app_act=menu&id={$menu['menu_id']}"><img src = "{if(empty($menu['menu_pic']))}{$temp_url}images/nopic.png{else}{$menu['menu_pic']}{/if}"></a>{if(!empty($menu['attribute']))}<font>{$menu['attribute']}</font>{/if}</p>
+				<p class="xtit"><span>{$menu['menu_title']}</span><label class="starbg" onclick="jsshop.comment({$menu['menu_id']});"><font style="width:{$menu['commentrate']}%"></font></label></p>
+				<p><span class="xprice">{fun_kj::get_price($menu['menu_price'])}</span></p>
+				<p>
+				<span class="xsold">已售{if(isset($arr_menu['abount_sold']['id_'.$menu['menu_id']]))}$arr_menu['abount_sold']['id_'.$menu['menu_id']]{else}{$menu['menu_sold']}{/if}份</span>
+				<span class="xbtn btn-s1">
+				{if(isset($arr_menu['abount_menu']['id_'.$menu['menu_id']]))}
+					<font>多规格</font>
+					<input type="button" name="btnjia" class="xbtnjia" onclick="jsshop.guige_show({$menu['menu_id']},this,'img');" class="Tmenu{$menu['menu_id']}" class="Tmenu1">
+				{else}
+					<input type="button" name="btnjian" class="xbtnjian Tjian{$menu['menu_id']}" onclick="jsshop.change_num({$menu['menu_id']},-1)" style="display:none">
+					<input type="text" name="num" value="" class="xnum Tnumv{$menu['menu_id']} Tnum{$menu['menu_id']}" style="display:none" onkeyup="jsshop.change_num({$menu['menu_id']},this.value,1);">
+					<input type="button" name="btnjia" class="xbtnjia Tmenu{$menu['menu_id']}" onclick="jsshop.cartin(this,'img');jsshop.cart_add({id:'{$menu['menu_id']}',name:'{$menu['menu_title']}',pic:'{$menu['menu_pic_small']}',price:'{$menu['menu_price']}',type:'{$menu['menu_type']}'});">
+				{/if}
+				</span></p>
+			</li>
+		{/foreach}
+			</ul>
+		</div>
+	{/if}
+{/foreach}
+{foreach($arr_menu["list"] as $item)}
+<div class="atitle Tatitle" id="id_atitle_{$item['id']}"><li class="xtit">{if(!empty($item["name"]))}{$item["name"]}{else}未分组{/if}</li></div>
+{if($shopinfo['shop_mode']!=2 && $item['mode']!=2)}
+	<div class="alist Tgroup{$item['id']}">
+	{foreach($item['list'] as $menu)}
+		<li><span class="xname"><a href="?app_act=menu&id={$menu['menu_id']}"><font>{$menu['menu_title']}</font></a>{if(!empty($menu['attribute']))}<i>{$menu['attribute']}</i>{/if}</span><span class="xprice">{fun_kj::get_price($menu['menu_price'])}</span><span class="x1">(已售{if(isset($arr_menu['abount_sold']['id_'.$menu['menu_id']]))}$arr_menu['abount_sold']['id_'.$menu['menu_id']]{else}{$menu['menu_sold']}{/if}份)</span><span class="x1" style="width:80px"><label class="starbg" onclick="jsshop.comment({$menu['menu_id']});"><font style="width:{$menu['commentrate']}%"></font></label></span><span class="xbtn">
+			{if(isset($arr_menu['abount_menu']['id_'.$menu['menu_id']]))}
+				<font>多规格</font>
+				<input type="button" name="btnjia" class="xbtnjia Tmenu{$menu['menu_id']}" onclick="jsshop.guige_show({$menu['menu_id']},this);">
+			{else}
+				<input type="button" name="btnjian" class="xbtnjian Tjian{$menu['menu_id']}" onclick="jsshop.change_num({$menu['menu_id']},-1)" style="display:none"><input type="text" name="num" value="" class="xnum Tnumv{$menu['menu_id']} Tnum{$menu['menu_id']}" style="display:none" onkeyup="jsshop.change_num({$menu['menu_id']},this.value,1)"><input type="button" name="btnjia" class="xbtnjia Tmenu{$menu['menu_id']}" onclick="jsshop.cartin(this);jsshop.cart_add({id:'{$menu['menu_id']}',name:'{$menu['menu_title']}',pic:'{$menu['menu_pic_small']}',price:'{$menu['menu_price']}',type:'{$menu['menu_type']}'});">
+			{/if}
+		</span></li>
+	{/foreach}
+	</div>
+{else}
+	<div class="lipic">
+		<ul>
+	{foreach($item['list'] as $menu)}
+		<li>
+			<p class="xpic"><a href="?app_act=menu&id={$menu['menu_id']}"><img src = "{if(empty($menu['menu_pic']))}{$temp_url}images/nopic.png{else}{$menu['menu_pic']}{/if}">{if(!empty($menu['attribute']))}<font>{$menu['attribute']}</font>{/if}</a></p>
+			<p class="xtit"><span>{$menu['menu_title']}</span><label class="starbg" onclick="jsshop.comment({$menu['menu_id']});"><font style="width:{$menu['commentrate']}%"></font></label></p>
+			<p><span class="xprice">{fun_kj::get_price($menu['menu_price'])}</span></p>
+			<p>
+			<span class="xsold">已售{if(isset($arr_menu['abount_sold']['id_'.$menu['menu_id']]))}$arr_menu['abount_sold']['id_'.$menu['menu_id']]{else}{$menu['menu_sold']}{/if}份</span>
+			<span class="xbtn btn-s1">
+				{if(isset($arr_menu['abount_menu']['id_'.$menu['menu_id']]))}
+					<font>多规格</font>
+					<input type="button" name="btnjia" class="xbtnjia Tmenu{$menu['menu_id']}" onclick="jsshop.guige_show({$menu['menu_id']},this,'img');">
+				{else}
+				<input type="button" name="btnjian" class="xbtnjian Tjian{$menu['menu_id']}" onclick="jsshop.change_num({$menu['menu_id']},-1)" style="display:none">
+				<input type="text" name="num" value="" class="xnum Tnumv{$menu['menu_id']} Tnum{$menu['menu_id']}" style="display:none" onkeyup="jsshop.change_num({$menu['menu_id']},this.value,1);">
+				<input type="button" name="btnjia" class="xbtnjia Tmenu{$menu['menu_id']}" onclick="jsshop.cartin(this,'img');jsshop.cart_add({id:'{$menu['menu_id']}',name:'{$menu['menu_title']}',pic:'{$menu['menu_pic_small']}',price:'{$menu['menu_price']}',type:'{$menu['menu_type']}'});">
+				{/if}
+			</span></p>
+		</li>
+	{/foreach}
+		</ul>
+	</div>
+{/if}
+{/foreach}

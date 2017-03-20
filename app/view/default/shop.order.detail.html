@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>订单明细-商家管理-{cfg:(site_title,sys)}</title>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+<script src="{cfg:(dirpath,base)}/common.php?app=sys&app_act=web.config&app_ajax=1"></script>
+<style>
+body{background:#fff}
+</style>
+</head>
+<body>
+{foreach($order_list["list"] as $item)}
+	<div class="mshopinfo">
+		<li class="ximg"><a href="?app_act=shop&id={$item['order_shop_id']}" target="_blank"><img src = "{fun_get::html_url($item['shop_pic'])}"></a></li>
+		<li class="x1"><a href="?app_act=shop&id={$item['order_shop_id']}" target="_blank"><p>{$item['shop_name']}</p><p>{$item['shop_tel']}</p></a></li>
+		<li class="x2"><p>订单号：{$item['order_id']}</p><p>时间：{$item['order_addtime']}</p></li>
+		<li class="x3 Tstate{$item['order_id']}">{$item['state']}</li>
+	</div>
+	<table class="mtable">
+	{set $ii=count($item['menu'])+2}
+		<tr class="xtit"><td class="xcol1">商品</td><td>数量</td><td>小计</td><td rowspan="{$ii}" style="width:278px;background:#fff;border-left:1px #ddd solid" valign="top">
+			<div class="mstep" id="id_step_{$item['order_id']}">
+				{if($item['order_pay_method']=='onlinepayment')}
+				<li><i></i><span><p>订单提交成功，等待付款</p><p class="xx1"></p></span></li>
+				{if($item['order_state']==-2 || $item['order_state']>0)}<li{if($item['order_state']==-2)} class="xoff"{/if}><i></i><span><p>支付成功，等待商家接单</p><p class="xx1"></p></span></li>{/if}
+				{else}
+				<li><i></i><span><p>下单成功，等待商家接单</p><p class="xx1"></p></span></li>
+				{/if}
+				{if($item['order_state']==1)}
+					<li><i></i><span><p>商家已接单，正在配送中</p><p class="xx1"></p></span></li>
+					<li class="nobg{if($item['order_comment']==0)} xoff{/if}"><i></i><span><p>订单完成</p><p class="xx1"></p></span></li>
+				{else if($item['order_state']==0 || $item['order_state']==-2)}
+					<li class="xoff"><i></i><span><p>商家已接单，正在配送中</p><p class="xx1"></p></span></li>
+					<li class="xoff"><i></i><span><p>订单完成</p></span></li>
+				{else}
+					<li class="xclose"><i></i><span><p>{$item['state']}</p></span></li>
+				{/if}
+			</div>
+		</td></tr>
+		{foreach($item['menu'] as $menu)}
+		<tr><td class="xcol1">
+		{set $price=0}
+		{foreach($menu['id'] as $item_menu)}
+			{set $price+=$order_list['price']['id_'.$item_menu]}
+			{$order_list['menu']['id_'.$item_menu]['menu_title']}&nbsp;&nbsp;
+		{/foreach}
+		</td><td>{$menu['num']}份</td><td>{fun_kj::get_price($price*$menu['num'])}</td>
+		</tr>
+		{/foreach}
+		<tr><td colspan="3" style="padding:0px">
+		<div class="mdetail">
+			<li class="x1">
+				<p><span class="y1">联系人：</span><span>{$item['order_name']}</span></p>
+				<p><span class="y1">联系电话：</span><span>{$item['order_mobile']}</span></p>
+				<p><span class="y1">配送地址：</span><span>{$item["order_area"]} — {$item['order_louhao1']}</span></p>
+				<p><span class="y1">付款方式：</span><span>{if($item['order_pay_method']=='onlinepayment')}在线支付{else if($item['order_pay_method']=='paymented')}已抵扣{else}货到付款{/if}</span></p>
+				<p><span class="y1">送货时间：</span><span>{$item['order_arrive']}</span></p>
+				<p><span class="y1">备注：</span><span>{$item['order_beta']}</span></p>
+			</li>
+			{if(!empty($item['order_act']))}
+			<li class="x4">
+			{foreach($item['order_act'] as $act)}
+				<span>{$act}</span>
+			{/foreach}
+			</li>
+			{/if}
+			<li class='x2'>
+				<p class="xtotal">商品 {fun_kj::get_price($item['order_total'])}{if($item['order_addprice']>0)} + 配送费 {fun_kj::get_price($item['order_addprice'])}{/if}{if($item['order_score_money']>0)} - 抵扣 {fun_kj::get_price($item['order_score_money'])}{/if}{if($item['order_favorable']>0)} - 优惠 {fun_kj::get_price($item['order_favorable'])}{/if}{if($item['order_repayment']>0)} - 预付款 {fun_kj::get_price($item['order_repayment'])}{/if} = 应收：<font>{fun_kj::get_price($item['order_total_pay'])}</font>
+				</p>
+			</li>
+		</div>
+		</td></tr>
+	</table>
+{/foreach}
+</body>
+</html>

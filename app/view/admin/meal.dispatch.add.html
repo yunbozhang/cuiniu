@@ -1,0 +1,49 @@
+{include(header)}
+<div class="pMain_1" id="id_pMain_1">
+	<div class="pPath">&nbsp;&nbsp;路径：<a href="javascript:kj.set('#id_url_pid','value','0');kj.set('#id_url_area_pid','value','0');admin.refresh();">顶级</a>
+	{foreach($arr_path as $path)}
+	 -> <a href="javascript:kj.set('#id_url_pid','value','{$path['area_id']}');admin.refresh();">{$path['area_name']}</a>
+	{/foreach}
+	</div>
+</div>
+<div class="pMain" id="id_main">
+<input type="hidden" name="url_pid" value="{fun_get::get('url_pid')}" id="id_url_pid">
+<div class="pTableBox" id="id_table_box">
+	<div class='pTableTit' id="id_table_title">
+		<li><span class="x_tit" style="width:25px">&nbsp;</span></li>
+		<li><span class="x_tit" style="width:250px">名称</span><span class="x_split"></span></li>
+		<li><span class="x_tit" style="cursor:none;width:80px">操作</span></li>
+	</div>
+	<div class="pTableList" id="id_table_list">
+		<div class='pTable' id="id_table">
+			{foreach($arr_list['list'] as $item)}
+			<div class='pTabRow' id="id_tabrow_{$item['area_id']}">
+				<li><input type='checkbox' name='selid[]' value="{$item['area_id']}"></li>
+				<li>{$item["area_name"]}</li>
+				<li>
+				{if($item['area_childs']>0)}<a href="javascript:kj.set('#id_url_pid','value','{$item['area_id']}');admin.refresh();">下级</a>&nbsp;&nbsp;{/if}
+				{if(!in_array($item['area_id'] , $arr_list['pids']))}<a href="javascript:thisjs.add('{$item['area_id']}');">添加</a>{/if}
+				</li>
+			</div>
+			{/foreach}
+		</div>
+	</div>
+</div>
+</div>
+<div class="pFootAct" id="id_pFootAct">
+	<li><label><input type='checkbox' name='selall' value='1'>全选</label>&nbsp;&nbsp;{if($this_limit->chk_act("save"))}<input type="button" name="btnExe" value="添加" onclick="admin.frm_ajax('add_save');" class="pBtn">{/if}</li>
+</div>
+<script src="admin.table.js"></script>
+<script>
+//初始化表格控件
+kj.onload(function(){
+admin.table.list1.init('#id_table_title' , '#id_table');
+});
+//当前页面js对象
+var thisjs = new function() {
+	this.add = function(msgid) {
+		admin.ajax_url( {url:"?app={$get_app}&app_act=add_save&app_module={$get_app_module}&url_shop_id={fun_get::get('url_shop_id')}&id=" + msgid,refresh:false} , function() {kj.remove("#id_tabrow_" + msgid);admin.ajax_fun='';admin._form_ajax();} );
+	}
+}
+</script>
+{include(footer)}

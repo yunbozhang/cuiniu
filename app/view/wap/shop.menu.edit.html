@@ -1,0 +1,132 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>运营配置-{cfg:(site_title,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+<style>
+#id_pic_view img{max-width:100px;max-height:100px}
+.meselect select{width:260px;float:left;margin:5px 0px 3px 0px;clear:both}
+</style>
+</head>
+<body>
+{include(label.header)}
+<div class="top">
+	<h1>运营配置</h1>
+	<a href="?" class="x1"><img src="images/home.png"></a>
+	<a href="?app=shop" id="id_top_back" class="x2"><img src="images/back.png"></a>
+</div>
+<div class="main">
+<form name="frm_main" action="{fun_get::url(array('app_act'=>'save'))}" method="post">
+<input type="hidden" name="id" value="{$editinfo['menu_id']}">
+<div class="shopedit">
+	<div class="xtitle">状态</div>
+	<div class="xtext">
+		<div class="Actcheck"><input type="hidden" name="menu_state" value="{$editinfo['menu_state']}"><span{if($editinfo['menu_state']==1)} class="xon"{/if}><i></i></span><font kjdata="{'on':'上线','off':'下线'}">{if($editinfo['menu_state']==1)}上线{else}下线{/if}</font></div>
+	</div>
+	<div class="xtitle">所属组</div>
+	<div class="xtext">
+		{$editinfo["html_group"]}
+	</div>
+	<div class="xtitle">名称</div>
+	<div class="xtext">
+		<input type="text" name="menu_title" value="{$editinfo['menu_title']}">
+	</div>
+	<div class="xtitle">数量&nbsp;&nbsp;<font>每天允许订购的数量，为零则不限</font></div>
+	<div class="xtext">
+		<input type="text" name="menu_num" value="{$editinfo['menu_num']}">
+	</div>
+	<div class="xtitle">价格</div>
+	<div class="xtext">
+		<input type="text" name="menu_price" value="{$editinfo['menu_price']}">
+	</div>
+	<div class="xtitle">价格</div>
+	<div class="xtext">
+		<input type="text" name="menu_price" value="{$editinfo['menu_price']}">
+	</div>
+	<div class="xtitle">图片</div>
+	<div class="xtext">
+		<div id="id_pic_view">
+		{if(!empty($editinfo['menu_pic']))}<img src = "{fun_get::html_url($editinfo['menu_pic'])}">{/if}
+		</div>
+		<input type="hidden" name="menu_pic" id="id_menu_pic" value="{$editinfo['menu_pic']}">
+		<input type="hidden" name="menu_pic_small" id="id_menu_pic_small" value="{$editinfo['menu_pic_small']}">
+		<iframe name="frm_big" src="common.php?app=other&app_act=upload&small=1&hidebtn=1" width="300px" height="30px" frameborder=0 scrolling="no"></iframe>
+	</div>
+	<div class="xtitle">相册图片</div>
+	<div class="xtext">
+		<div id="id_pic_list" class="xpic">
+		{foreach($editinfo['pics'] as $key=>$item)}
+			<li><img src = "{fun_get::html_url($item)}"><i onclick="kj.remove(kj.parent(this,'li'));"></i><input type="hidden" name="pic1_url[]" value="{$item}"></li>
+		{/foreach}
+		</div>
+		<iframe name="frm_piclist" src="common.php?app=other&app_act=upload&hidebtn=1&url_objid=idlist" width="300px" height="30px" frameborder=0 scrolling="no"></iframe>
+	</div>
+	<div class="xtitle">提供模式<font id="id_mode_0" style="display:none">&nbsp;&nbsp;即每天都提供预订</font><font id="id_mode_2" style="display:none">&nbsp;&nbsp;在当日商品自定义添加</font></div>
+	<div class="xtext">
+		<select name="menu_mode" onchange="thisjs.mode(this.value);">
+			<option value="0">每天</option>
+			<option value="1"{if($editinfo['menu_mode']==1)} selected{/if}>按星期</option>
+			<option value="3"{if($editinfo['menu_mode']==3)} selected{/if}>按日期</option>
+			<option value="2"{if($editinfo['menu_mode']==2)} selected{/if}>自定义</option>
+		</select>
+	</div>
+	<div class="xlabel" id="id_mode_1" style="display:none">
+		<label><input type="checkbox" name="menu_weekday[]" value="1"{if(in_array('1',$editinfo['weekday']))} checked{/if}>周一</label><label><input type="checkbox" name="menu_weekday[]" value="2"{if(in_array('2',$editinfo['weekday']))} checked{/if}>周二</label><label><input type="checkbox" name="menu_weekday[]" value="3"{if(in_array('3',$editinfo['weekday']))} checked{/if}>周三</label><label><input type="checkbox" name="menu_weekday[]" value="4"{if(in_array('4',$editinfo['weekday']))} checked{/if}>周四</label><label><input type="checkbox" name="menu_weekday[]" value="5"{if(in_array('5',$editinfo['weekday']))} checked{/if}>周五</label><label><input type="checkbox" name="menu_weekday[]" value="6"{if(in_array('6',$editinfo['weekday']))} checked{/if}>周六</label><label><input type="checkbox" name="menu_weekday[]" value="0"{if(in_array('0',$editinfo['weekday']))} checked{/if}>周天</label>
+	</div>
+	<div class="xlabel" id="id_mode_3" style="display:none">
+		{for($i=1;$i<32;$i++)}
+		<label><input type="checkbox" name="menu_date[]" value="{$i}"{if(in_array($i,$editinfo['date']))} checked{/if}>{$i}号</label>
+		{/for}
+	</div>
+	<div class="xbtn"><input type="button" name="btn_saveinfo" value=" 提 交 " class="btn1" onclick="thisjs.on_save();"></div>
+</div>
+</form>
+</div>
+{include(label.footer)}
+</body>
+</html>
+<script>
+var thisjs = new function() {
+	this.on_save = function() {
+		kj.ajax.post(document.frm_main , function(data) {
+			var objdata = kj.json(data);
+			if(objdata.isnull) {
+				alert("系统繁忙");
+				return;
+			}
+			if(objdata.code == '0') {
+				kj.alert.show("保存成功");
+			} else {
+				alert(objdata.msg);
+			}
+		});
+	}
+	this.mode = function(val) {
+		kj.obj("#id_mode_1").style.display = (val == 1) ? '' : 'none';
+		kj.obj("#id_mode_3").style.display = (val == 3) ? '' : 'none';
+		kj.obj("#id_mode_2").style.display = (val == 2) ? '' : 'none';
+		kj.obj("#id_mode_0").style.display = (val == 0) ? '' : 'none';
+	}
+}
+function upload_callback(info){
+	var obj = kj.json(info);
+	if('url' in obj) {
+		if(obj.objid == 'idlist') {
+			var obj_li = document.createElement("li");
+			obj_li.innerHTML = '<img src = "' + kj.url_view(obj.url) + '"><input type="hidden" name="pic1_url[]" value="' + obj.url + '"><i onclick="kj.remove(kj.parent(this,\'li\'));"></i>';
+			kj.obj("#id_pic_list").appendChild(obj_li);
+		} else {
+			kj.obj("#id_menu_pic").value = obj.url;
+			kj.obj("#id_menu_pic_small").value = obj.url_small;
+			kj.obj("#id_pic_view").innerHTML='<img src = "' + kj.url_view(obj.url) + '">';
+		}
+	}
+}
+thisjs.mode(document.frm_main.menu_mode.value);
+</script>
+<script src="/common/js/kj.pic.js"></script>

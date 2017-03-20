@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>评价-{cfg:(site_title,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+</head>
+<body>
+{include(label.header)}
+<div class="top">
+	<h1>评论订单</h1>
+	<a href="?" class="x1"><img src="images/home.png"></a>
+	<a href="?app=member&app_act=order.detail&id={fun_get::get('order_id')}" id="id_top_back" class="x2"><img src="images/back.png"></a>
+</div>
+<div class="main">
+<form name="frmMain" method="post" action="{fun_get::url(array('app_act'=>'comment.save'))}">
+<input type="hidden" name="commentid" value="{$arr_list['comment']['id']}">
+<div class="comment">
+	{if(!empty($arr_list['score']))}
+	<div class="xinfo">
+	{if(empty($arr_list['comment']['id']))}
+		<font>本次订单可以获得：{$arr_list['score']} 积分 ，将在评论后送出</font>
+	{else}
+		<font>本次订单已奖励：{$arr_list['score']} 积分</font>
+	{/if}
+	</div>
+	{/if}
+	<li class="xtit">套餐评价</li>
+	{foreach($arr_list['list'] as $item)}
+		<li onmouseover="kj.addClassName(this,'xsel');" onmouseout="kj.delClassName(this,'xsel');" class="Tgoods{$item['menu_id']}"><span class="col1">{$item['menu_title']}</span>
+		<span class="col2{if(empty($arr_list['comment']['id']))} Tcomments{/if}">
+		<input type="hidden" name="commentval{$item['menu_id']}" value="{$item['comment']['comment_val']}" class="Tcommentval Tcmenu" kjdata="{$item['menu_title']}">
+		<input type="hidden" name="commentid{$item['menu_id']}" value="{$item['comment']['comment_id']}">
+		{set $datatit=''}
+		{foreach($arr_comment_menu as $ii=>$item3)}
+		<font {if($item['comment']['comment_val']>$ii)}class="star2"{set $datatit=$item3}{else}class="star1"{/if} datatit="{$item3}" title="{$ii}"></font>
+		{/foreach}
+		<label class="xxinfo" style="display:none">{$datatit}</label>
+		</li>
+	{/foreach}
+	<li class="xtit">您对本次购买打几分？</li>
+	{foreach($arr_comment_shop as $item=>$key)}
+		<li onmouseover="kj.addClassName(this,'xsel');" onmouseout="kj.delClassName(this,'xsel');"><span class="col1">{$item}</span>
+		<span class="col2{if(empty($arr_list['comment']['id']))} Tcomments{/if}">
+		<input type="hidden" name="commentname[]" value="{$item}">
+		<input type="hidden" name="commentval[]" value="{if(isset($arr_list['comment']['list'][$item]))}{$arr_list['comment']['list'][$item]}{else}-1{/if}" class="Tcommentval">
+		{set $datatit=''}
+		{foreach($key as $ii=>$item3)}
+		<font {if(isset($arr_list['comment']['list'][$item]) && $arr_list['comment']['list'][$item]>$ii)}class="star2"{set $datatit=$item3}{else}class="star1"{/if} datatit="{$item3}"></font>
+		{/foreach}
+		<label class="xxinfo" style="display:none">{$datatit}</label>
+		</li>
+	{/foreach}
+	{if(empty($arr_list['comment']['id']))}
+	<li>亲，分享一下您本次的感受吧</li>
+	<li><textarea name="comment_beta"></textarea></li>
+	{else if(!empty($arr_list['comment']['beta']))}
+		<li class="xxbeta">{$arr_list['comment']['beta']}</li>
+	{/if}
+
+	<li class="xpic" id="id_piclist">
+		{foreach($arr_list['comment']['pic'] as $pic)}
+			<div class="xxpic"><a href="{fun_get::html_url($pic)}" target="_blank"><img src = "{fun_get::html_url($pic)}" class="img"></a></div>
+		{/foreach}
+	</li>
+	{if(empty($arr_list['comment']['id']))}
+	<li class="xupload">
+		<font>贴图：</font><iframe name="frm_upload" src = "common.php?app=other&app_act=upload&hidebtn=1" width="300px" height="30px" frameborder=0 scrolling="no"></iframe>
+	</li>
+	<li style="text-align:right"><input type="button" name="btncomment" value="评论" class="btn1" onclick="thisjs.save();">&nbsp;&nbsp;&nbsp;&nbsp;</li>
+	{/if}
+</div>
+</form>
+</div>
+<script>
+var thisjs = new function() {
+	this.removepic = function(o) {
+		var objp = kj.parent(o , '.xxpic');
+		kj.remove(objp);
+	}
+	this.save = function(id) {
+		thisjs.comment_gid = id;
+		var arrmenu = kj.obj(".Tcmenu");
+		var i = 0,txt;
+		for( i = 0 ; i < arrmenu.length ; i++) {
+			if(arrmenu[i].value == -1) {
+				txt = kj.getAttribute(arrmenu[i],"kjdata");
+				alert("请为"+txt+"打分");
+				return;
+			}
+		}
+		var arrval = kj.obj(":commentval[]");
+		var arrname = kj.obj(":commentname[]");
+		for(i = 0 ; i < arrval.length ; i++) {
+			if(arrval[i].value=='-1') {
+				alert("请为本次的"+arrname[i].value+"打分");
+				return;
+			}
+		}
+		document.frmMain.btncomment.disabled=true;
+		document.frmMain.btncomment.className='btn2';
+		kj.ajax.post(document.frmMain,function(data) {
+			var objdata = kj.json(data);
+			if(objdata.isnull || !('code' in objdata)) {
+				alert("系统繁忙");
+				return;
+			}
+			if(objdata.code=='0') {
+				kj.alert.show("谢谢您的评论",function() {
+					thisjs.commentok();
+				});
+			} else {
+				alert(objdata.msg);
+			}
+		});
+	}
+	this.commentok = function() {
+		location.reload(true);
+	}
+}
+kj.onload(function(){
+	kj.handler(".Tcomments font","mouseover",function(e){
+		var objp = kj.parent(this,'.Tcomments');
+		var info = kj.getAttribute(this,'datatit');
+		kj.set(kj.obj(".xxinfo" , objp) , "innerHTML" , info);
+		var arr = kj.obj("font" , objp);
+		var index = kj.index(arr , this);
+		for(var i = 0; i <= index ; i++) {
+			kj.set(arr[i],'className','star2');
+		}
+		for(i = index+1; i < arr.length ; i++) {
+			kj.set(arr[i],'className','star1');
+		}
+	});
+	kj.handler(".Tcomments font","mouseout",function(e){
+		var objp = kj.parent(this,'.Tcomments');
+		var arrx = kj.obj(".Tcommentval" , objp);
+		var index = kj.toint(arrx[0].value);
+		var arr = kj.obj("font" , objp);
+		for(var i = 0; i <= index ; i++) {
+			kj.set(arr[i],'className','star2');
+		}
+		for(i = index+1; i < arr.length ; i++) {
+			kj.set(arr[i],'className','star1');
+		}
+		var info = '';
+		if(index>=0) info = kj.getAttribute(arr[index],'datatit');
+		kj.set(kj.obj(".xxinfo" , objp) , "innerHTML" , info);
+	});
+	kj.handler(".Tcomments font","click",function(e){
+		var objp = kj.parent(this,'.Tcomments');
+		var arr = kj.obj("font" , objp);
+		var index = kj.index(arr , this);
+		var arrx = kj.set(kj.obj(".Tcommentval" , objp) , 'value' , index);
+
+	});
+});
+function upload_callback(data) {
+	var obj = kj.json(data);
+	if(obj.isnull || !('url' in obj)) return;
+	var obj_div=document.createElement("div");
+	obj_div.className = 'xxpic';
+	obj_div.innerHTML = '<input type="hidden" name="pic[]" value="'+obj.url+'"><img src = "' + kj.url_view(obj.url) + '" class="img"><div class="xdiv transparent"><img src="images/close.png" onclick="thisjs.removepic(this);" title="删除"></div>';
+	kj.obj("#id_piclist").appendChild(obj_div);
+}
+</script>
+{include(label.footer)}
+</body>
+</html>

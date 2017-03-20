@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>商品评价-{cfg:(site_title,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+</head>
+<body>
+{include(label.header)}
+<div class="top">
+	<h1>商品评价</h1>
+	<a href="?" class="x1"><img src="images/home.png"></a>
+	<a href="?app_act=menu&id={$menuinfo['menu_id']}" id="id_top_back" class="x2"><img src="images/back.png"></a>
+</div>
+<div class="shop_comment">
+	<table class="xtotal">
+		<tr><td class="x1"><h1>{$menucomment['menu_comment']}<font>分</font></h1><p><span class="starbg"><font style="width:<?php echo $menucomment['menu_comment']/5*100;?>%"></font></span></p><p>共有 <font class='xnum' id="id_comment_num">{$arr_list['pageinfo']['total']}</font> 人评价</p></td>
+		<td class="x3">
+			{foreach($menucomment['commentval'] as $item=>$key)}
+			<p><font>{$item}分</font><span><font style="width:<?php echo number_format($key/$menucomment['commenttotalren']*100,2);?>%"></font></span><font>{$key}人</font></p>
+			{/foreach}
+		</td>
+		</tr>
+	</table>
+	<div class="xtit">全部评价</div>
+	<div class="main">
+	<div class="xlist" id="id_comment_list">
+		{foreach($arr_list['list'] as $item)}
+			<ul>
+				<li class="xxtit"><p><span>{$item['user_name']}</span><span><img src="images/vip{$item['level']}.png"></span><span class="xstar"><font style="width:{$item['val']}%"></font></span></p><p><span class="ydate">{$item['addtime']}</span></p></li>
+				<li class="xcont">{$item['comment_beta']}</li>
+				{if(!empty($item['pic']))}
+				<li class="xpic">
+				{foreach($item['pic'] as $pic)}
+				<img src = "{fun_get::html_url($pic)}" onclick="kj.pic.preview('{$pic}')">
+				{/foreach}
+				</li>
+				{/if}
+				{if(!empty($item['comment_recont']))}
+				<li class="xrecont">
+				{$item['comment_recont']}
+				</li>
+				{/if}
+			</ul>
+		{/foreach}
+	</div>
+	</div>
+</div>
+<div class="page">
+	{if($arr_list['pagebtns']['start']!=1)}<li><a href="{fun_get::url(array('page'=>''))}&page=1">1</a></li>{/if}
+	{if($arr_list['pagebtns']['start']>2)}
+		<li class="xnone"><font>...</font></li>
+	{/if}
+	{foreach($arr_list['pagebtns']['list'] as $item)}
+	<li{if(fun_get::get('page',1)==$item)} class="xsel"{/if}><a href="{fun_get::url(array('page'=>''))}&page={$item}">{$item}</a></li>
+	{/foreach}
+	{if($arr_list['pagebtns']['end']<$arr_list['pageinfo']['pages']-1)}
+		<li class="xnone"><font>...</font></li>
+	{/if}
+	{if($arr_list['pagebtns']['end']<$arr_list['pageinfo']['pages'])}
+	<li><a href="{fun_get::url(array('page'=>''))}&page={$arr_list['pageinfo']['pages']}">{$arr_list['pageinfo']['pages']}</a></li>
+	{/if}
+</div>
+{include(label.footer)}
+</body>
+</html>

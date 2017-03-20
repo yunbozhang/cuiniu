@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>商家简介-商家管理-{cfg:(site_title,sys)}</title>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+</head>
+<body>
+{include(header)}
+{include(shop.header)}
+{include(shop.left)}
+<div class="uright">
+	<div class="upath"><font>店铺资料</font></div>
+	<table class='usetable'>
+		<tr>
+			<td class="x1" valign="top">简介：<br><span class='pBeta'>不超过500字</span></td><td class="pTabColVal"><textarea name="shop_desc" id="shop_desc" cols="70" rows="5" style="border:1px #ccc solid">{$editinfo['shop_desc']}</textarea></td></tr>
+		<tr>
+			<td class="x1" valign="top">详细介绍：</td><td class="x_colval" valign="top"><textarea name="shop_intro" id="shop_intro" cols="60" rows="5" style="display:none">{$editinfo['shop_intro']}</textarea>{fun_get::editor('shop_intro','admin',600)}</td></tr>
+		<tr>
+			<td class="x1" valign="top"></td><td class="x_colval" valign="top" style="padding-top:30px">
+				<input type="button" name="btn_submit" class="btn-3" value="保 存" onclick="thisjs.on_save()">
+			</td></tr>
+		</table>
+</div>
+{include(shop.footer)}
+{include(footer)}
+</body>
+</html>
+<script src="shop.js"></script>
+<script>
+var thisjs = new function() {
+	this.on_save = function() {
+		thisjs.get_cont();
+		shop.frm_ajax('info.save.intro');
+	}
+	//因为这里用ajax，fckeditor不会取到内容，所以自己取
+	this.get_cont = function() {
+		kj.obj("#shop_intro").value = objEditor.getContent(); //这就是内容
+	}
+	//ajax 提交后，还得清空内容
+	this.clear_cont = function() {
+		//只有当添加时才要清空
+		{if(empty($editinfo['shop_id']))}
+			objEditor.setContent('');
+		{/if}
+	}
+}
+
+</script>
+<script src="/common/js/kj.pic.js"></script>

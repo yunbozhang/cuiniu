@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>结算记录-{cfg:(site_title,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+</head>
+<body>
+{include(label.header)}
+<div class="top">
+	<h1>配送范围-添加</h1>
+	<a href="?" class="x1"><img src="images/home.png"></a>
+	<a href="?app_module=shop&app=dispatch" id="id_top_back" class="x2"><img src="images/back.png"></a>
+</div>
+<div class="spath">&nbsp;&nbsp;路径：<a href="javascript:thisjs.go('0');">顶级</a>
+{foreach($arr_path as $path)}
+ -> <a href="javascript:thisjs.go('{$path['area_id']}');">{$path['area_name']}</a>
+{/foreach}
+</div>
+<div class="main">
+	<table class="shoptable" id="id_metable">
+		<tr class="xtit"><td>名称</td><td>操作</td></tr>
+		{foreach($arr_list['list'] as $item)}
+		<tr id="id_row_{$item['area_id']}">
+		<td>{$item["area_name"]}</td>
+		<td>
+		{if($item['area_childs']>0)}<a href="javascript:thisjs.go('{$item['area_id']}');">下级</a>&nbsp;&nbsp;{/if}
+		{if(!in_array($item['area_id'] , $arr_list['pids']))}<a href="javascript:thisjs.add('{$item['area_id']}');">添加</a>{/if}
+		</td></tr>
+		{/foreach}
+	</table>
+</div>
+{include(label.footer)}
+</body>
+</html>
+<script>
+//当前页面js对象
+var thisjs = new function() {
+	this.add = function(msgid) {
+		kj.ajax("{fun_get::url(array('app_act'=>'add_save','id'=>''))}&id=" + msgid,function(data) {
+			var objdata = kj.json(data);
+			if(objdata.isnull) {
+				alert("系统繁忙");
+				return;
+			}
+			if(objdata.code == '0') {
+				kj.remove("#id_row_" + objdata.id);
+				kj.alert.show('添加成功');
+			} else {
+				alert(objdata.msg);
+			}
+		});
+	}
+	this.go = function(pid) {
+		window.open("{fun_get::url(array('url_pid'=>''))}&url_pid=" + pid,"_self");
+	}
+}
+</script>

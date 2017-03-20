@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>编辑配送范围-商家管理-{cfg:(site_title,sys)}</title>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+<script src="{cfg:(dirpath,base)}/common.php?app=sys&app_act=web.config&app_ajax=1"></script>
+<script src="/common/js/kj.js"></script>
+<script src="/common/js/kj.ajax.js"></script>
+<script src="/common/js/kj.dialog.js"></script>
+<script src="/common/js/kj.alert.js"></script>
+<script src="/common/js/kj.rule.js"></script>
+</head>
+<body>
+{include(shop.header)}
+<div class="pMain" id="id_main">
+	<div class="pPath">&nbsp;&nbsp;路径：<a href="javascript:shop.refresh('url_pid=0');">顶级</a>
+	{foreach($arr_path as $path)}
+	 -> <a href="javascript:shop.refresh('url_pid={$path['area_id']}');">{$path['area_name']}</a>
+	{/foreach}
+	</div>
+<div class="pTableBox" id="id_table_box">
+	<div class='pTableTit' id="id_table_title">
+		<li><span class="x_tit" style="width:25px">&nbsp;</span></li>
+		<li><span class="x_tit" style="width:250px">名称</span><span class="x_split"></span></li>
+		<li><span class="x_tit" style="cursor:none;width:80px">操作</span></li>
+	</div>
+	<div class="pTableList" id="id_table_list">
+		<div class='pTable' id="id_table">
+			{foreach($arr_list['list'] as $item)}
+			<div class='pTabRow' id="id_tabrow_{$item['area_id']}">
+				<li><input type='checkbox' name='selid[]' value="{$item['area_id']}"></li>
+				<li>{$item["area_name"]}</li>
+				<li>
+				{if($item['area_childs']>0)}<a href="javascript:shop.refresh('url_pid={$item['area_id']}');">下级</a>&nbsp;&nbsp;{/if}
+				{if(!in_array($item['area_id'] , $arr_list['pids']))}<a href="javascript:thisjs.add('{$item['area_id']}');">添加</a>{/if}
+				</li>
+			</div>
+			{/foreach}
+		</div>
+	</div>
+</div>
+</div>
+<div class="peFootAct" id="id_pFootAct">
+	<li>{if($this_limit->chk_act("save"))}<input type="button" name="btnExe" value="添加" onclick="shop.frm_ajax('add_save',function(){parent.shop.refresh();});" class="btn-3">{/if}</li>
+</div>
+{include(shop.footer)}
+</body>
+</html>
+<script src="shop.js"></script>
+<script src="shop.table.js"></script><script>
+//初始化表格控件
+kj.onload(function(){
+	shop.table.list1.init('#id_table_title' , '#id_table');
+});
+//当前页面js对象
+var thisjs = new function() {
+	this.add = function(msgid) {
+		shop.ajax_url( {url:"?app={$get_app}&app_act=add_save&app_module={$get_app_module}&url_shop_id={fun_get::get('url_shop_id')}&id=" + msgid,refresh:false} , function() {kj.remove("#id_tabrow_" + msgid);shop.ajax_fun='';shop.ajax_back();} );
+	}
+}
+</script>

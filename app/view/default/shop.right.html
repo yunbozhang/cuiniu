@@ -1,0 +1,44 @@
+{$shopinfo=inc:get_shopinfo($shop_id)}
+<div class="shopright">
+	<li class="xlogo"><img src=""></li>
+	<li class="xname">{$shopinfo['shop_name']}</li>
+	<li class="xnum"><font>商品：62</font>&nbsp;&nbsp;<font>评论：88</font></li>
+	<li class="xtit"><font>商家信息</font><a href="{cfg:(dirpath,base)}/index.php?app_act=shop.info&shop_id={$shop_id}">详细</a></li>
+	<li class="xinfo">
+		{if(!empty($shopinfo['extend']['arr_opentime']))}
+		<p>
+		<span class="xcol1">营业时段:</span>
+		<span class="xcol2">
+		{foreach($shopinfo['extend']['arr_opentime'] as $item=>$key)}
+		{$key}<br>
+		{/foreach}
+		</span>
+		</p>
+		{/if}
+		<p><span class="xcol1">配送费:</span><span class="xcol2">{if(empty($shopinfo['shop_addprice']))}免费{else}{$shopinfo['shop_addprice']} 元/每次{/if}</span></p>
+		<p><span class="xcol1">起送价:</span><span class="xcol2">{$shopinfo['shop_dispatch_price']} 元</span></p>
+		<p><span class="xcol1">配送时间:</span><span class="xcol2">{$shopinfo['extend']['arrivedelay']}分钟</span></p>
+		{if(!empty($shopinfo['shop_tel']))}<p><span class="xcol1">订餐电话:</span><span class="xcol2">{$shopinfo['shop_tel']}</span></p>{/if}
+		{if(!empty($shopinfo['shop_address']))}<p><span class="xcol1">店铺地址:</span><span class="xcol2">{$shopinfo['shop_address']}</span></p>{/if}
+	</li>
+	<li class="xtit"><font>活动公告</font><a href="{cfg:(dirpath,base)}/index.php?app_act=shop.news&channel_key=activitie&shop_id={$shop_id}">更多</a></li>
+	<li class="xli">
+    {$arr_activitie=inc:get_activitie($shopinfo['shop_id'])}/*数据源：店铺活动列表*/
+	{foreach($arr_activitie as $item)}
+	<p><a href="{cfg:(dirpath,base)}/index.php?app_act=shop.view&id={$item['article_id']}">{$item['article_title']}</a></p>
+	{/foreach}
+	</li>
+	<li class="xtit"><font>TOP热销榜</font></li>
+	<li class="cat_hot Tpaihang">
+    {$arr_hot=inc:get_top_goods($shopinfo['shop_id'])}/*数据源：店铺活动列表*/
+	{foreach($arr_hot as $ii=>$item)}
+		{set $i=$ii+1}
+		<p class="Tact">
+			<span class="{if($ii<3)}xnum2{else}xnum{/if}">{$i}</span>
+			<span class="ytit"><a href="?app_act=goods&id={$item['goods_id']}" target="_blank">{$item['goods_name']}</a></span>
+			<span class="xpic Thide"{if($ii>0)} style="display:none"{/if}><a href="?app_act=goods&id={$item['goods_id']}" target="_blank"><img src = "{fun_get::html_url($item['goods_pic'])}"></a></span>
+			<span class="xprice Thide"{if($ii>0)} style="display:none"{/if}><font>{fun_kj::get_price($item['goods_price'])}</font><br><s>{fun_kj::get_price($item['goods_price_market'])}</s><br><em>{fun_kj::get_price($item['goods_sold'])}</em>人已购</span>
+		</p>
+	{/foreach}
+	</li>
+</div>

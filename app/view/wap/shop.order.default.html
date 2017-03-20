@@ -1,0 +1,245 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>订单管理-{cfg:(site_title,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+<style>
+#id_pic_view img{max-width:100px;max-height:100px}
+.meselect select{width:260px;float:left;margin:5px 0px 3px 0px;clear:both}
+</style>
+</head>
+<body>
+{include(label.header)}
+<div class="top">
+	<h1 id="id_pagetit">订单管理</h1>
+	<a href="javascript:thisjs.show_search();" class="x3">查找</a>
+	<a href="?app=shop" id="id_top_back" class="x2"><img src="images/back.png"></a>
+</div>
+<div class="main Tlist">
+	<table class="shoptable">
+		<tr class="xtit"><td>订单号<td><td>姓名</td><td>金额</td><td>时间</td></tr>
+		{foreach($arr_list['list'] as $item)}
+		<tr onclick="thisjs.open({$item['order_id']});"><td>{$item['order_id']}<td><td>{$item['order_name']}</td><td>{fun_kj::get_price($item['order_total_pay'])}</td><td>{$item['order_addtime']}</td></tr>
+		{/foreach}
+	</table>
+	<div class="page">
+		{if($arr_list['pagebtns']['start']!=1)}<li><a href="{fun_get::url(array('page'=>''))}&page=1">1</a></li>{/if}
+		{if($arr_list['pagebtns']['start']>2)}
+			<li class="xnone"><font>...</font></li>
+		{/if}
+		{foreach($arr_list['pagebtns']['list'] as $item)}
+		<li{if(fun_get::get('page',1)==$item)} class="xsel"{/if}><a href="{fun_get::url(array('page'=>''))}&page={$item}">{$item}</a></li>
+		{/foreach}
+		{if($arr_list['pagebtns']['end']<$arr_list['pageinfo']['pages']-1)}
+			<li class="xnone"><font>...</font></li>
+		{/if}
+		{if($arr_list['pagebtns']['end']<$arr_list['pageinfo']['pages'])}
+		<li><a href="{fun_get::url(array('page'=>''))}&page={$arr_list['pageinfo']['pages']}">{$arr_list['pageinfo']['pages']}</a></li>
+		{/if}
+		</li>
+	</div>
+	<div class="shopedit" style="border:1px #ddd dotted">
+		<div class="xtext">
+			<li><span class="x35">总计金额：</span><span class="x65">{fun_kj::get_price($arr_list["pageinfo"]['totalall'])}</span></li>
+			<li><span class="x35">预付金额：</span><span class="x65">{fun_kj::get_price($arr_list["pageinfo"]['totalrepayment'])}</span></li>
+			<li><span class="x35">配送金额：</span><span class="x65">{fun_kj::get_price($arr_list["pageinfo"]['totaladdprice'])}</span></li>
+			<li><span class="x35">抵扣金额：</span><span class="x65">{fun_kj::get_price($arr_list["pageinfo"]['totalmoney'])}</span></li>
+			<li><span class="x35">优惠金额：</span><span class="x65">{fun_kj::get_price($arr_list["pageinfo"]['favorable'])}</span></li>
+			<li><span class="x35">结算金额：</span><span class="x65">{fun_kj::get_price($arr_list["pageinfo"]['total_pay'])}</span></li>
+			<li><span class="x35">在线支付：</span><span class="x65">{fun_kj::get_price($arr_list["pageinfo"]['payed'])}</span></li>
+		</div>
+	</div>
+</div>
+</div>
+<div class="main" id="id_search" style="display:none">
+<form name="frmSearch" method="post" action="{fun_get::url()}">
+<table class="cinfotab">
+<tr><td class="x1"><span>订单状态：</span></td><td>
+<select name="s_state">
+<option value="-999">不限</option>
+{foreach($arr_state as $item=>$val)}
+	{if(fun_get::get("s_state" , -999)==$val)}
+	<option value='{$val}' selected>{$item}</option>
+	{else}
+	<option value='{$val}'>{$item}</option>
+	{/if}
+{/foreach}
+</select>
+</td></tr>
+<tr><td class="x1"><span>开始时间：</span></td><td>
+	<select name="year1">
+		<option value="">--年--</option>
+		{for($i=2012;$i<=(int)date("Y");$i++)}
+		<option value="{$i}"{if(fun_get::get("year1")==$i)} selected{/if}>{$i}年</option>
+		{/for}
+	</select>&nbsp;
+	<select name="month1">
+		<option value="">--月--</option>
+		{for($i=1;$i<=12;$i++)}
+		<option value="{$i}"{if(fun_get::get("month1")==$i)} selected{/if}>{$i}月</option>
+		{/for}
+	</select>&nbsp;
+	<select name="day1">
+		<option value="">--日---</option>
+		{for($i=1;$i<=31;$i++)}
+		<option value="{$i}"{if(fun_get::get("day1")==$i)} selected{/if}>{$i}日</option>
+		{/for}
+	</select>
+</td></tr>
+<tr><td class="x1"><span>结束时间：</span></td><td>
+	<select name="year2">
+		<option value="">--年--</option>
+		{for($i=2012;$i<=(int)date("Y");$i++)}
+		<option value="{$i}"{if(fun_get::get("year2")==$i)} selected{/if}>{$i}年</option>
+		{/for}
+	</select>&nbsp;
+	<select name="month2">
+		<option value="">--月--</option>
+		{for($i=1;$i<=12;$i++)}
+		<option value="{$i}"{if(fun_get::get("month2")==$i)} selected{/if}>{$i}月</option>
+		{/for}
+	</select>&nbsp;
+	<select name="day2">
+		<option value="">--日---</option>
+		{for($i=1;$i<=31;$i++)}
+		<option value="{$i}"{if(fun_get::get("day2")==$i)} selected{/if}>{$i}日</option>
+		{/for}
+	</select>
+</td></tr>
+<tr><td class="x1"><span>关 键 字：</span></td><td>
+	<input type="text" id="s_key" name="s_key" value="{fun_get::get('s_key')}" placeholder="姓名/手机">
+</td></tr>
+</table>
+<div class='btn-2' style="width:60%;margin:20px 20% 0px 20%"><input type="button" name="btn_saveinfo" value="查 找" class="xbtn1" onclick="thisjs.search();"><input type="button" name="btn_saveinfo" value="清 空" class="xbtn2" onclick="thisjs.clear();"></div>
+</div>
+{include(label.footer)}
+<script>
+var thisjs = new function() {
+	this.open = function(id) {
+		window.open("?app_module=shop&app=menu&app_act=edit&id="+id,"_self");
+	}
+	this.del = function() {
+	}
+	this.open = function(id) {
+		window.open("{fun_get::url(array('app_act'=>'detail','id'=>''))}&id=" + id , "_self");
+	}
+	this.show_search = function() {
+		this.pagetit = kj.obj("#id_pagetit").innerHTML;
+		kj.set("#id_pagetit","innerHTML" , "搜索");
+		kj.show("#id_search");
+		kj.hide(".Tlist");
+		this.back_url = kj.obj("#id_url_back").href;
+		kj.obj("#id_url_back").href="javascript:thisjs.back_search()";
+	}
+	this.back_search = function() {
+		kj.obj("#id_url_back").href=this.back_url;
+		kj.set("#id_pagetit","innerHTML" , this.pagetit);
+		kj.show(".Tlist");
+	}
+	this.search = function() {
+		var arr = [];
+		var date1 = '',date2 = '';
+		if(document.frmSearch.year1.value!='' && document.frmSearch.month1.value!='' && document.frmSearch.day1.value!='') {
+			date1 = document.frmSearch.year1.value + "-" + document.frmSearch.month1.value + "-" + document.frmSearch.day1.value;
+		} else if(document.frmSearch.year1.value!='') {
+			if(document.frmSearch.month1.value=='') {
+				alert("请选择月份");
+				document.frmSearch.month1.focus();
+				return;
+			} else {
+				alert("请选择日期");
+				document.frmSearch.day1.focus();
+				return;
+			}
+		} else if(document.frmSearch.month1.value!='') {
+			if(document.frmSearch.year1.value=='') {
+				alert("请选择年份");
+				document.frmSearch.year1.focus();
+				return;
+			} else {
+				alert("请选择日期");
+				document.frmSearch.day1.focus();
+				return;
+			}
+		} else if(document.frmSearch.day1.value!='') {
+			if(document.frmSearch.year1.value=='') {
+				alert("请选择年份");
+				document.frmSearch.year1.focus();
+				return;
+			} else {
+				alert("请选择月份");
+				document.frmSearch.month1.focus();
+				return;
+			}
+		}
+		if(document.frmSearch.year2.value!='' && document.frmSearch.month2.value!='' && document.frmSearch.day2.value!='') {
+			date2 = document.frmSearch.year2.value + "-" + document.frmSearch.month2.value + "-" + document.frmSearch.day2.value + " 23:59:59";
+		} else if(document.frmSearch.year2.value!='') {
+			if(document.frmSearch.month2.value=='') {
+				alert("请选择月份");
+				document.frmSearch.month2.focus();
+				return;
+			} else {
+				alert("请选择日期");
+				document.frmSearch.day2.focus();
+				return;
+			}
+		} else if(document.frmSearch.month2.value!='') {
+			if(document.frmSearch.year2.value=='') {
+				alert("请选择年份");
+				document.frmSearch.year2.focus();
+				return;
+			} else {
+				alert("请选择日期");
+				document.frmSearch.day2.focus();
+				return;
+			}
+		} else if(document.frmSearch.day2.value!='') {
+			if(document.frmSearch.year2.value=='') {
+				alert("请选择年份");
+				document.frmSearch.year2.focus();
+				return;
+			} else {
+				alert("请选择月份");
+				document.frmSearch.month2.focus();
+				return;
+			}
+		}
+		arr[0] = 's_state='+document.frmSearch.s_state.value;
+		arr[1] = 's_key='+document.frmSearch.s_key.value;
+		arr[2] = 's_addtime1='+date1;
+		arr[3] = 's_addtime2='+date2;
+		arr[arr.length] = 'year1='+document.frmSearch.year1.value;
+		arr[arr.length] = 'month1='+document.frmSearch.month1.value;
+		arr[arr.length] = 'day1='+document.frmSearch.day1.value;
+		arr[arr.length] = 'year2='+document.frmSearch.year2.value;
+		arr[arr.length] = 'month2='+document.frmSearch.month2.value;
+		arr[arr.length] = 'day2='+document.frmSearch.day2.value;
+		var url = kj.urlencode("{fun_get::url()}" , arr);
+		window.open(url,"_self");
+	}
+	this.clear = function() {
+		var arr = [];
+		arr[0] = 's_group_id=';
+		arr[1] = 's_key=';
+		arr[2] = 's_addtime1=';
+		arr[3] = 's_addtime2=';
+		arr[arr.length] = 'year1=';
+		arr[arr.length] = 'month1=';
+		arr[arr.length] = 'day1=';
+		arr[arr.length] = 'year2=';
+		arr[arr.length] = 'month2=';
+		arr[arr.length] = 'day2=';
+		var url = kj.urlencode("{fun_get::url()}" , arr);
+		window.open(url,"_self");
+	}
+
+}
+</script>
+</body>
+</html>

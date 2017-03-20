@@ -1,0 +1,240 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>购物车-{cfg:(site_title,sys)}</title>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+<script>
+	thisdata = [];
+</script>
+</head>
+<body>
+{include(header)}
+{set $total=0}
+{foreach($cart_list['shop'] as $item=>$shop)}
+<form name="frmMain" method="post" action="?app=ajax&app_act=saveorder&shop_id={$shop['info']['shop_id']}">
+<input type="hidden" name="cart_ids" value="">
+<input type="hidden" name="address_id" value="">
+<input type="hidden" name="addprice" value="">
+<div class="carttit"><a href="?app_act=shop&id={$shop['info']['shop_id']}">{$shop['info']['shop_name']}</a></div>
+<table class="carttab" id="id_menu_list">
+<tr class="xtit"><td class="x1">商品</td><td class="x2">单价</td><td class="x3">数量</td><td class="x4">小计</td><td class="x5">操作</td></tr>
+{foreach($shop['cart'] as $key=>$cart)}
+<tr id="id_goods_row{$key}">
+	<td class="x1">
+		<h1>
+			{set $price=0}
+			{foreach($cart['ids'] as $menu)}
+			<input type="hidden" name="menuid[]" value="{$menu}">
+			<b>{$cart_list['menu']['id_'.$menu]['menu_title']}</b>
+			{set $price=$price+$cart_list['menu']['id_'.$menu]['menu_price']}
+			{/foreach}
+			<input type="hidden" name="menuprice[]" value="{$price}">
+		</h1>
+		</td>
+	<td class="x2">{fun_kj::get_price($price)}</td>
+    <td class="x3 btn-s1">
+		<input type="button" name="btnjian" class="xbtnjian Tnumbtn{$key}" onclick="pageCart.change_num('#id_num_{$key}',-1,this);"><input type="text" name="menunum[]" value="{$cart['num']}" class="xnum" onkeyup="pageCart.change_num('#id_num_{$key}',this.value,this,1)" id="id_num_{$key}"><input type="button" name="btnjia" class="xbtnjia" onclick="pageCart.change_num('#id_num_{$key}',1);">
+	</td><td class="x4 Tgtotal{$key}">{fun_kj::get_price($price*$cart['num'])}</td><td class="x5"><a href="javascript:void(0);" onclick="pageCart.cart_remove(this)">[移除]</a></td></tr>
+	<script>
+		{for($i=0;$i<$cart['num'];$i++)}
+		thisdata[thisdata.length] = "{$key}";
+		{/for}
+	</script>
+	{set $total+=$cart['price']}
+{/foreach}
+</table>
+<div class="cartbox">
+	<div class="xtotal"><li><font>商品合计：</font><font class="Ttotalprice">{cfg:(coinsign,sys)}{$total}</font></li></div>
+	<div class="xtit"><h1>收货信息</h1></div>
+	<div class="cainfo" id="id_cainfo">
+	{foreach($this_info as $index => $item)}
+		{set $arr=explode(",",$item["address_area_allid"])}
+		{set $dispatch=$dispatch_min_price}
+		{set $addprice=$dispatch_min_addprice}
+		{foreach($arr as $areaid)}
+			{if(isset($areainfo['area']['id_' . $areaid]['price']) && $areainfo['area']['id_' . $areaid]['price']>0 )} 
+			{set $dispatch=$areainfo['area']['id_'.$areaid]['price']}
+			{/if}
+			{if(isset($areainfo['area']['id_' . $areaid]['addprice']) && $areainfo['area']['id_' . $areaid]['addprice']>0 )} 
+			{set $addprice=$areainfo['area']['id_'.$areaid]['addprice']}
+			{/if}
+		{/foreach}
+		<ul id="id_address_{$item['address_id']}" onclick="pageCart.infosel(this);" kjdata="{addprice:'{$addprice}',dispatch:'{$dispatch}','id':{$item['address_id']},'name':'{$item['address_name']}','tel':'{$item['address_tel']}','allid':'{$item['address_area_allid']}','address':'{$item['address_address']}'}">
+			<li><font class="xname">{$item['address_name']}</font>&nbsp;&nbsp;&nbsp;<b>Tel：</b><font class="xtel">{$item['address_tel']}</font><span><a href="javascript:pageCart.address_edit({$item['address_id']});" title="修改"><img src="images/edit.png"></a>&nbsp;&nbsp;<a href="javascript:pageCart.address_del({$item['address_id']});" title="删除"><img src="images/del.png"></a></span></li>
+			<li><font class="xarea">{$item['address_area']}</font></li>
+			<li class="xaddress">{$item['address_address']}</li>
+			<li>起送价：<font class="Tdispatch">{$dispatch}</font>，配送费：<font class="Taddprice">{$addprice}</font></li>
+			<li class="xtag"></li>
+		</ul>
+	{/foreach}
+	{set $areanums=cls_config::get('max_info_num','meal')}
+	<ul class="xnew" onclick="pageCart.address_edit(0);" style="cursor:pointer{if(count($this_info)>=$areanums && !empty($areanums))};display:none{/if}" onmouseover="this.style.color='#ff6600';" onmouseout="this.style.color='#666';">
+		+ 添加新地址
+	</ul>
+	</div>
+	<div class="xtit"><h1>配送时间</h1></div>
+	<div id="id_arrivetime" class="xbox1">
+		<li>
+		{if(!empty($arr_reserve_day))}
+			<select name="reserve_day" onchange="pageCart.arrive_change(this.value);">
+			{if(!empty($cart_list["arrivetime"]))}<option value="">今天</option>{/if}
+			{foreach($arr_reserve_day as $ii=>$item)}
+				{if($ii == 0)}
+				<option value="{$item['val']}">明天</option>
+				{else}
+				<option value="{$item['val']}">{$item['name']}</option>
+				{/if}
+			{/foreach}
+			</select>
+		{/if}
+		<select name="arrive"{if(empty($cart_list["arrivetime"]))} style="display:none"{/if}>
+			<option value="尽快送到">尽快送到</option>
+			{foreach($cart_list["arrivetime"] as $item=>$key)}
+			<option value="{$key}">{$key}</option>
+			{/foreach}
+		</select>
+		<select name="arrive2"{if(!empty($cart_list["arrivetime"]))} style="display:none"{/if}>
+			{foreach($cart_list["arrive"] as $item=>$key)}
+			<option value="{$key}">{$key}</option>
+			{/foreach}
+		</select>
+		</li>
+	</div>
+	<div class="xtit"><h1>支付方式</h1></div>
+	<div class="xpaymethod chkbox Tradio" id="id_paymethod">
+	{if(in_array('afterpayment',$paymethod))}
+		<li>货到付款<i></i><input type="radio" value="afterpayment" name="paymethod"></li>
+	{/if}
+	{if(in_array('onlinepayment',$paymethod))}
+		<li>在线付款<i></i><input type="radio" value="onlinepayment" name="paymethod"></li>
+	{/if}
+	<li style="display:none">已抵扣，无需要付款<i></i><input type="radio" value="paymented" name="paymethod"></li>
+	</div>
+	<div class="xtit"><h1>给商家留言</h1></div>
+	<div class="xbeta">
+		<textarea name="beta" id="id_beta" onkeyup="pageCart.beta_keyup()"></textarea>&nbsp;还能输入<span style="color:#ff0000" id="id_beta_num">30</span>个字<br>
+		{foreach($cart_beta as $item)}
+		<a href="javascript:pageCart.insert_beta('{$item}');" title="点击插入备注">{$item}</a>&nbsp;&nbsp;
+		{/foreach}	
+	</div>
+	<div class="xact" id="id_act"{if(empty($shop_act))} style='display:none'{/if}>
+	</div>
+	{if(in_array('repayment',$paymethod))}
+	<div class="xli">
+		<li><p>预付款 (余额：<font id="id_my_repayment"></font>) 抵扣：</p><span><input type='text' name='repayment' value="" onblur="pageCart.repayment_refresh();" onkeyup="pageCart.repayment_refresh();" id="id_repayment_input"></span><p>元</p></li>
+	</div>
+	{/if}
+	<div class="xtotal">
+		<li>
+		<span>合计金额：</span><span><font id="id_shop_total" class="Ttotalprice">{fun_kj::get_price($total,'','')}</font>(商品金额)</span>
+		<span> +<font id="id_shop_addprice"></font>(配送费)</span>
+		{if(in_array('repayment',$paymethod))}<span> - <font id="id_shop_repayment"></font>(预付款)</span>{/if}
+		<span> - <font id="id_shop_act"></font>(优惠金额)</span><span> = </span><h1 class="Talltotalprice" id="id_shop_alltotal"></h1>
+		</li>
+	</div>
+</div>
+<div class="cartbtn">
+	<li style="float:left"><input type="button" name="btngouwu" value="继续购物" class="btn-4" onclick="window.open('?' , '_self');"></li>
+	<li style="float:right;padding-right:5px">
+	{if(cls_obj::get("cls_user")->uid<1 && cls_config::get("nologin","base")!=1)}
+	<input type="button" name="btnsubmit" value="请先登录" class="btn-3" onclick="jsheader.showlogin();">
+	{else}
+	<input type="button" name="btnsubmit" value="去结算»" class="btn-3" onclick="pageCart.submit();">
+	{/if}
+	</li>
+</div>
+</form>
+{/foreach}
+<div id="id_edit_info" style="display:none">
+<form name="frmEditinfo">
+<table class="cinfotab">
+<tr><td class="xcol1">所在区域：</td><td>
+	<input type="hidden" name="area_id" id="id_area_id" value="">
+	<input type="hidden" name="area_allid" id="id_area_allid" value="">
+	<input type="hidden" name="area" id="id_area" value="">
+	<p>
+	<select name="address_area_id[]" onchange="pageCart.changearea(this.value,0);" id="id_area_0">
+	<option value="">--请选择--</option>
+	{foreach($areainfo["default"] as $item)}
+		<option value="{$item['id']}">{$item['name']}</option>
+	{/foreach}
+	</select>
+	{for($i=1;$i<$areainfo["depth"];$i++)}
+		<select name="address_area_id[]" onchange="pageCart.changearea(this.value,{$i});" id="id_area_{$i}" style="display:none">
+		<option value="">--请选择--</option>
+		</select>
+	{/foreach}
+	</p>
+	<p>
+	<span class="x_sel2" >起送价：</span><span class="x_sel2" id="id_dispatch_0">{$dispatch_min_price}</span>
+	&nbsp;&nbsp;<span class="x_sel2">配送费：</span><span class="x_sel2" id="id_addprice_0">{$dispatch_min_addprice}</span>
+	</p>
+	</td></tr>
+<tr><td class="xcol1"></td><td>
+		<input type="text" name="address" placeholder="请填写详细配送地址" style="width:300px">
+</td></tr>
+<tr><td class="xcol1">联系姓名：</td><td>
+	<input name="name" type="text">
+</td></tr>
+<tr><td class="xcol1">联系电话：</td><td>
+	<input name="tel" type="text" maxlength="11">
+</td></tr>
+<tr><td></td>
+<td valign="top"><input type="button" name="btn_saveinfo" value="保 存" class="btn-1" onclick="pageCart.address_save();">&nbsp;&nbsp;<input type="button" name="btn_saveinfo" value="取 消" class="btn-2" onclick="pageCart.address_cancel();"></td></tr>
+</table>
+</form>
+</div>
+{if($shop['info']['shop_verifytel']>0 || cls_config::get("nologin","base")==1)}
+<div id="id_order_verify" style="display:none">
+	<div class="order_verify" >
+	<li style="color:#888">手机号：<span id="id_orderverify_tel"></span></li>
+	<li id="id_order_info1"><input type="button" name="btnorderverify" value="发送验证码到手机" class="btn-2" onclick="pageCart.sendsms();"></li>
+	<li style="display:none" id="id_order_info2">请输入您手机收到的验证码&nbsp;<span id="id_orderverify_timers" style="color:#ff0000">(剩余：<font id="id_orderverify_timer"></font>秒)</span><span id="id_orderverify_resend" style="display:none"><a href="javascript:pageCart.resendsms();" style="color:#ff6600">重新发送</a></span></li>
+	<li><input name="orderverify_code" type="text" class="pTxt1 pTxtL100" id="id_orderverify_code"/></li>
+	<li><span style="float:left"><input type="submit" name="btn_order_verify" value="确 定" class="button5" id="id_btn_order_verify" onclick="pageCart.verfiysms();">&nbsp;&nbsp;<input type="button" name="btn_order_cancel" value="取 消" class="button5x" id="id_btn_order_verify" onclick="kj.dialog.close('#winverifytel');document.frmMain.btnsubmit.disabled=false;"></span></li>
+	</div>
+</div>
+{/if}
+{include(footer)}
+</body>
+</html>
+<script src="page.cart.js?rnd=Math.random()"></script>
+<script>
+kj.onload(function(){
+	pageCart.arealist = {fun_format::json($areainfo["list"])};//json格式，指定id包函的子地区
+	pageCart.areainfo = {fun_format::json($areainfo["area"])};//对应id地区详细信息
+	pageCart.depth = {$areainfo["depth"]};//当前地区深度
+	pageCart.order_verify = kj.toint("{$shop['info']['shop_verifytel']}");
+	pageCart.area_info_nums = kj.toint("{cfg:(max_info_num,meal)}");
+	pageCart.action_score = {$action_score};
+	pageCart.addprice = kj.toint('{$dispatch_min_addprice}');
+	pageCart.minaddprice = kj.toint('{$dispatch_min_addprice}');
+	pageCart.user_repayment = kj.toint('{$user_repayment}');
+	pageCart.shopid = '{$shop['info']['shop_id']}';
+	pageCart.ordernum = {if(empty($shop['num']))}0{else}{$shop['num']}{/if};
+	pageCart.shop_minleast = kj.toint("{$shop['info']['shop_dispatch_price']}");
+	pageCart.minleast = pageCart.shop_minleast;
+	pageCart.act_list = {if(count($shop_act)>0)}{fun_format::json($shop_act)}{else}[]{/if};//时间条件优惠金额
+	{if($shop['info']['shop_verifytel']>0 || cls_config::get("nologin","base")==1)}
+		pageCart.order_verify = 1;
+	{else}
+		pageCart.order_verify = 0;
+	{/if}
+	var arr = kj.obj("#id_paymethod li");
+	pageCart.chk_radio(arr[0]);
+	kj.obj("#id_my_repayment").innerHTML = kj.cfg("coinsign") + pageCart.user_repayment;
+	pageCart.init(thisdata);
+	arr = kj.obj("#id_cainfo ul");
+	if(!arr || arr.length<2) {
+		//if(arr && arr.length>1) kj.addClassName(arr[0] , "xsel");
+	} else {
+		pageCart.infosel(arr[0]);
+	}
+});
+{if(cls_obj::get("cls_user")->uid<1)}
+	jsheader.showlogin();
+{/if}
+</script>

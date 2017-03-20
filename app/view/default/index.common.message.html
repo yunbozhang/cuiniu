@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>提示-{cfg:(site_title,sys)}</title>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+</head>
+<body>
+{include(header)}
+<div class="payok mg1">
+	<table align="center" width="380px"><tr><td>
+	{if($message['code']==0)}
+		<div class="tipsright">
+		<li class="tit">{if(isset($message['tips'])&&!empty($message['tips']))}{$message['tips']}{else}恭喜您，操作成功{/if}</li>
+		<li>
+		{foreach($message["action"] as $item)}
+			{if($item['time']==0)}{fun_base::url_jump($item['url'])}{/if}
+			<a class="btn-a1" href="{$item['url']}" target="{$item['target']}"><font>{$item['title']}</font></a>
+			{if($item['time']>0)}
+				(即将跳转：<font id="id_time" style="font-size:16px">{$item['time']}秒</font>)
+				<script>
+				var jump_time={$item['time']};
+				function me_refresh_time() {
+					jump_time--;
+					kj.set("#id_time","innerHTML",jump_time+'秒');
+					if(jump_time<=0) {
+						window.open("{$item['url']}","{$item['target']}");
+					}
+				}
+				setInterval("me_refresh_time()",1000);
+				</script>
+			{/if}
+		{/foreach}
+		</li>
+		</div>
+	{else}
+		<div class="tipserror">
+		<li class="tit" style="color:#ff0000">{if(isset($message['tips'])&&!empty($message['tips']))}{$message['tips']}{else}操作失败{/if}</li>
+		<li>
+		{foreach($message["action"] as $item)}
+			{if($item['time']==0)}{fun_base::url_jump($item['url'])}{/if}
+			<a class="btn-a1" href="{$item['url']}" target="{$item['target']}"><font>{$item['title']}</font></a>
+			{if($item['time']>0)}
+				<br>(即将跳转：<font id="id_time" style="font-size:16px">{$item['time']}秒</font>)
+				<script>
+				var jump_time={$item['time']};
+				function me_refresh_time() {
+					jump_time--;
+					kj.set("#id_time","innerHTML",jump_time+'秒');
+					if(jump_time<=0) {
+						window.open("{$item['url']}","{$item['target']}");
+					}
+				}
+				setInterval("me_refresh_time()",1000);
+				</script>
+			{/if}
+		{/foreach}
+		</li>
+		</div>
+	{/if}
+		</td></tr>
+		</table>
+</div>
+{include(footer)}
+</body>
+</html>

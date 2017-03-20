@@ -1,0 +1,38 @@
+{include(header)}
+<div class="pMain" id="id_main">
+<table class='pEditTable'>
+<tr class='pTabTitRow'><td class='pTabTitCol' colspan="2"></td></tr>
+<tr>
+	<td class="pTabColName">分类：</td>
+	<td class="pTabColVal">
+		<select name="table_group_id">
+			<option value=""></option>
+		{foreach($arr_group as $item)}
+			<option value="{$item['group_id']}"{if($editinfo['table_group_id']==$item['group_id'])} selected{/if}>{$item['group_name']}</option>
+		{/foreach}
+		</select>
+	</td></tr>
+<tr>
+	<td class="pTabColName">名称：</td>
+	<td class="pTabColVal"><input type="text" name="table_name" value="{$editinfo['table_name']}" class='pTxt1 pTxtL200' ruletips="桌位名称不能为空" ruletipsmode=1 required> <span style="color:#ff0000">*</span></td></tr>
+<tr>
+	<td class="pTabColName">人数：</td>
+	<td class="pTabColVal"><input type="text" name="table_num" value="{$editinfo['table_num']}" class='pTxt1 pTxtL60'> <span class="pBeta">例：5-8人</span></td></tr>
+<tr>
+	<td class="pTabColName">状态：</td>
+	<td class="pTabColVal"><select name="table_state">
+		<option value="1"{if($editinfo['table_state']==1)} selected{/if}>营业</option>
+		<option value="0"{if($editinfo['table_state']==0)} selected{/if}>休息</option>
+	</select></td></tr>
+</table>
+</div>
+<div class="pFootAct" id="id_pFootAct">
+	<li>
+	<input type="button" name="dosubmit" value="保存" onclick="admin.frm_ajax('save' , function(){thisjs.clear_cont();});" class="pBtn">
+	</li>
+</div>
+<script>
+var thisjs = new function() {
+}
+</script>
+{include(footer)}

@@ -1,0 +1,123 @@
+{include(header)}
+<style>
+.shop_comment{float:left;width:880px;text-align:left}
+.shop_comment ul{float:left;width:864px;margin:8px 8px 15px 8px;border-bottom:1px #ccc dotted;padding:0px 0px 8px 0px}
+.shop_comment ul li{float:left;width:864px;margin:5px 0px 3px 0px}
+.shop_comment ul .xxtit{color:#666;font-weight:bold}
+.shop_comment ul .xxtit span{float:left;margin-right:8px}
+.shop_comment ul .xcont{line-height:18px;color:#666}
+.shop_comment ul .xrecont{line-height:18px;border:1px #ff0000 dotted;padding:5px;color:#ff8800;width:740px}
+.shop_comment ul .xpic{}
+.shop_comment ul .xpic img{width:120px;height:100px;cursor:pointer}
+.shop_comment ul .xxtit .xstar{float:right;width:85px;background:url(images/star.png) 0px -17px repeat-x;height:16px}
+.shop_comment ul .xxtit .xstar font{float:left;margin:0px;background:url(images/star.png) 0px 0px repeat-x;height:16px}
+</style>
+<div class="pMenu" id="id_pMenu">
+	<li style="font-weight:bold"><input type="hidden" name="url_shop_id" value="{$admin_shop['id']}" id="id_url_shop_id"><span class="more1" onmouseover="kj.windiv({'id':'shop_user_windiv','fid':this,'src':'common.php?app=meal&app_act=shop1'});" id="id_shop_user">店铺：{if(empty($admin_shop["name"]))}选择{else}{$admin_shop["name"]}{/if}</span></li>
+	<li class="sel">管理</li>
+	<li onclick="admin.menu_display(0);" class="x_btn">查找</li>
+	<li class = "x_btn"><a href="javascript:parent.thisjs.klkkdj_open('订单评论-帮助','app=service&app_act=help&key=help.meal.comment');" title="帮助"><img src="images/faq.gif"></a></li>
+</div>
+<div class="btnMenuDiv" id="id_btnMenuDiv"{if($arr_list['issearch']==0)} style="display:none"{/if}>
+<li>时间：<input type="text" id="s_time1" name="s_time1" value="{fun_get::get('s_time1')}" class='pTxtDate' onfocus="new Calendar().show(this);"> 到 <input type="text" name="s_time2" id="s_time2" value="{fun_get::get('s_time2')}" class='pTxtDate' onfocus="new Calendar().show(this);"></li>
+<li>关 键 字：<input type="text" id="s_key" name="s_key" value="{fun_get::get('s_key')}" class='pTxt1'>　<input type="button" name="btn_s_ok" value="查找" class="pBtn" onclick="admin.search();"> 　<input type="button" name="btn_s_clear" value="清空" class="pBtn" onclick="admin.clear_search();"></li>
+</div>
+<div class="pMain" id="id_main">
+	<div class="shop_comment" id="id_comment_list">
+		{foreach($arr_list['list'] as $key=>$item)}
+			<ul id="id_comment_{$item['comment_order_id']}">
+				<li class="xxtit"><span><input type="checkbox" name="selid[]" value="{$item["comment_order_id"]}"></span><span>订单：{$item['comment_order_id']}&nbsp;&nbsp;,&nbsp;&nbsp;{$item['user_name']}&nbsp;&nbsp;,&nbsp;&nbsp;</span><span>{$item['addtime']}</span><span class="xstar"><font style="width:{$item['val']}%"></font></span></li>
+				<li class="xcont">{$item['comment_beta']}</li>
+				{if(!empty($item['pic']))}
+				<li class="xpic">
+				{foreach($item['pic'] as $pic)}
+				<img src = "{fun_get::html_url($pic)}" onclick="kj.pic.preview('{$pic}')">
+				{/foreach}
+				</li>
+				{/if}
+				{if(!empty($item['comment_recont']))}
+				<li class="xrecont" id="id_recont_{$item['comment_order_id']}">
+				回复：{$item['comment_recont']}
+				</li>
+				{/if}
+				<li class="xact Tmeact" id="id_act_{$item['comment_order_id']}">
+				<a href="javascript:thisjs.comment_return({$item['comment_order_id']});">[回复]</a>&nbsp;&nbsp;<a href="javascript:thisjs.comment({$item['comment_order_id']});">[修改]</a>&nbsp;&nbsp;<a href="javascript:admin.ajax_url({app_act:'delete',id:'{$item['comment_order_id']}'});">[删除]</a>
+				</li>
+			</ul>
+		{/foreach}
+	</div>
+</div>
+<div id="id_comment_input" style="display:none">
+<textarea name="commentreturn" cols="60" rows="5" style="border:1px #ccc solid;padding:5px" id="id_commentreturn"></textarea><br>
+<input type="button" name="btnretrun" value="回复" onclick="thisjs.comment_return_save();" class="pBtn">&nbsp;&nbsp;<input type="button" name="btnrecancel" value="取消" onclick="kj.hide('#id_comment_input');kj.show('.Tmeact');" class="pBtn2">
+</div>
+<div class="pPage" id="id_pPage">
+{$arr_list['pagebtns']}
+</div>
+<div class="pFootAct" id="id_pFootAct">
+	<li>
+	<label><input type='checkbox' name='selall' value='1'>全选</label>　
+	<select name="selact">
+	<option value="">--操作--</option>
+	{if($this_limit->chk_act("del"))}<option value="delete">删除</option>{/if}
+	</select>&nbsp;
+	&nbsp;<input type="button" name="dosubmit" value="执行" onclick="admin.selact();" class="pBtn">
+	</li>
+</div>
+<script>
+//店铺选择回调函数
+function shop1_callback(o) {
+	if("id" in o) {
+		kj.set("#id_url_shop_id" , "value" , o.id);
+		admin.refresh();
+	}
+}
+var thisjs = new function() {
+	this.comment_return = function(id) {
+		var obj = kj.obj("#id_comment_input");
+		var objcomment = kj.obj("#id_comment_"+id);
+		objcomment.appendChild(obj);
+		kj.show("#id_comment_input");
+		this.comment_return_id = id;
+		kj.show(".Tmeact");
+		var x = (kj.obj("#id_recont_" + id)) ? kj.obj("#id_recont_" + id).innerHTML : '';
+		x = x.replace("回复：","");
+		x = x.trim();
+		kj.obj("#id_commentreturn").innerHTML = x;
+		kj.hide("#id_act_"+id);
+	}
+	this.comment_return_save = function() {
+		var cont = kj.obj("#id_commentreturn").value;
+		kj.ajax.post("{fun_get::url(array('app_act'=>'recont','id'=>''))}&id="+this.comment_return_id,{"cont":cont},function(data) {
+			var objdata = kj.json(data);
+			if(objdata.isnull ) {
+				alert("系统繁忙");
+				return;
+			}
+			if(objdata.code == '0') {
+				kj.alert.show("回复成功" , function() {
+					var obj = kj.obj("#id_recont_"+thisjs.comment_return_id);
+					if(obj) {
+						obj.innerHTML =  "回复："+kj.obj("#id_commentreturn").value;
+					} else {
+						var obj_div=document.createElement("li");
+						obj_div.id = "id_recont_" + thisjs.comment_return_id;
+						obj_div.innerHTML = "回复："+kj.obj("#id_commentreturn").value;
+						obj_div.className = 'xrecont';
+						kj.insert_before(kj.obj("#id_comment_"+objdata.id) , kj.obj("#id_act_"+objdata.id) , obj_div);
+
+					}
+					kj.hide("#id_comment_input");
+					kj.show("#id_act_"+objdata.id);
+				});
+			} else {
+				alert(objdata.msg);
+			}
+		});
+	}
+	this.comment = function(id) {
+		master_open({'url':"?app_module=meal&app=order&app_act=comment&id="+id,'id':'order_comment','type':'iframe','title':'订单评论','w':700,'showbtnmax':false});
+	}
+}
+</script>
+{include(footer)}

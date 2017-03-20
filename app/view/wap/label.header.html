@@ -1,0 +1,19 @@
+<link rel="stylesheet" type="text/css" href="images/app.css"/>
+<div style="float:left;width:100%;height:40px;">&nbsp;</div>
+{if(in_array($app_act,array('default')) && $app=='index')}
+<div class="toolbar{if(cls_obj::get("cls_user")->type=='shop')} toolbarA{/if}">
+	<a href="{cfg:(dirpath,base)}/{cfg:(basename,base)}" class="x1{if($app=='index' && !in_array($app_act,array('cart','cart.ok','login','reg','search','news','news.view')))}a{/if}">首页</a>
+	<a href="{cfg:(dirpath,base)}/{cfg:(basename,base)}?app_act=search" class="x2{if($app=='search')}a{/if}" style="display:none">搜索</a>
+	<a href="{cfg:(dirpath,base)}/{cfg:(basename,base)}?app_act=cart" class="x3{if($app=='index' && in_array($app_act,array('cart','cart.ok')))}a{/if}"><span>购物车</span><font id="id_toll_cartnum" class="TcartAllNum" style="display:none"></font></a>
+	<a href="{cfg:(dirpath,base)}/{cfg:(basename,base)}?app_act=help" class="x4{if($app=='index' && in_array($app_act,array('news','news.view')))}a{/if}" style="display:none">帮助</a>
+	<a href="{cfg:(dirpath,base)}/{cfg:(basename,base)}?app=member&app_act=main" class="x5{if($app=='member' || $app=='user')}a{/if}"><span>会员</span>{if(!empty($user_tips))}<font>{$user_tips}</font>{/if}</a>
+	{if(cls_obj::get("cls_user")->type=='shop')}
+	<a href="{cfg:(dirpath,base)}/{cfg:(basename,base)}?app=shop" class="x6{if($app=='shop' || $app_module=='shop')}a{/if}">商家</a>
+	{/if}
+</div>
+{/if}
+<script src="{cfg:(dirpath,base)}/common.php?app=sys&app_act=web.config&app_ajax=1"></script>
+<script src="/common/js/kj.js"></script>
+<script src="/common/js/kj.ajax.js"></script>
+<script src="/common/js/kj.rule.js"></script>
+<script src="/common/js/kj.alert.js"></script>

@@ -1,0 +1,113 @@
+{include(header)}
+<script>
+kj.onload(function(){
+	kj.handler(":module[]","click",function(){
+		if(this.checked){
+			kj.show("#id_module_"+this.value);
+		} else {
+			kj.hide("#id_module_"+this.value);
+		}
+	});
+	kj.handler("input<<name,/_page\\[\\]/ig","click",function(){
+		var module = kj.getAttribute(this,"module");
+		if(this.checked){
+			kj.show("#id_app_"+module+"_"+this.value);
+		} else {
+			kj.hide("#id_app_"+module+"_"+this.value);
+		}
+	});
+	kj.handler("input<<name,/^all_/ig","click",function(){
+		if(this.checked){
+			kj.set("input<<name,/"+this.value+"_/ig","disabled",true);
+		} else {
+			kj.set("input<<name,/"+this.value+"_/ig","disabled",false);
+		}
+	});
+});
+</script>
+<style>
+.me_div1{float:left;width:98%;text-align:left;margin-top:20px}
+.me_div1 .x_div1{float:left;clear:both;width:100%}
+.me_div1 .x_name1{float:left;clear:both;width:100%}
+.me_div1 .x_module1{float:left;clear:both;padding-left:30px;;width:80%}
+.me_div1 .x_module1 li{float:left;width:100%}
+.me_div1 .x_module1 li span{float:left;padding-right:10px;white-space:nowrap;}
+</style>
+<div class="pMenu" id="id_pMenu">
+<input type="hidden" name="url_limit_dir" value="{$this_limit_dir}" id="id_url_limit_dir">
+{foreach($arr_limit_dir as $item=>$key)}
+	<li{if($this_limit_dir == $key)} class="sel"{/if} onclick="admin.refresh_url(['url_limit_dir={$key}']);">{$item}</li>
+{/foreach}
+	<li onclick="window.open('{fun_get::url(array('app_act'=>'limit_article'))}','_self');">文章权限</li>
+	<li onclick="window.open('{fun_get::url(array('app_act'=>'menu'))}','_self');">自定义菜单</li>
+	<li class = "x_btn"><a href="javascript:parent.thisjs.klkkdj_open('用户组-帮助','app=service&app_act=help&key=help.sys.user.group');" title="帮助"><img src="images/faq.gif"></a></li>
+</div>
+<div class="pMain" id="id_main">
+	<div class="me_div1">
+	{foreach($arr_limit as $key=>$item)}
+		<div class="x_div1">
+			<div class="x_name1"><label><input type="checkbox" name="module[]" value="{$key}"{if(isset($group_limit[$key]))} checked{/if}>{$item["name"]}</label></div>
+			<div class="x_module1" id="id_module_{$key}"{if(!isset($group_limit[$key]))} style="display:none"{/if}>
+			<li style="color:#ff6600"><label><input type="checkbox" name="all_{$key}" value="{$key}"{if(isset($group_limit[$key]['all']))} checked{/if}>全选</label></li>
+			{foreach($item['list'] as $key_app=>$list_app)}
+			<li><label><input type="checkbox" name="{$key}_page[]" value="{$key_app}"{if(isset($group_limit[$key]['app_'.$key_app]))} checked{/if} {if(isset($group_limit[$key]['all']))} disabled{/if} module="{$key}">{$list_app["name"]}</label></li>
+				<li style="padding-left:30px{if(!isset($group_limit[$key]['app_'.$key_app]) || isset($group_limit[$key]['all']))};display:none{/if}" id="id_app_{$key}_{$key_app}"><span style="color:#ff6600"><label><input type="checkbox" name="all_{$key}_{$key_app}" value="{$key}_{$key_app}"{if(isset($group_limit[$key]['app_'.$key_app]['all']))} checked{/if}>全选</label></span>
+				{foreach($list_app['act'] as $act=>$act_name)}
+					{if(is_numeric($act))}
+						{set $act_key=$act_name}
+					{else}
+						{set $act_key=$act}
+					{/if}
+					<span><label><input type="checkbox" name="{$key}_{$key_app}_act[]" value="{$act_key}"{if(isset($group_limit[$key]['app_'.$key_app]['act_'.$act_key]))} checked{/if}{if(isset($group_limit[$key]['app_'.$key_app]['all']))} disabled{/if}>{cls_language::get($act_name)}</label></span>
+				{/foreach}
+				</li>
+			{/foreach}
+			</div>
+		</div>
+	{/foreach}
+		<div class="x_div1" style="margin:10px 0px;border-top:1px #ccc solid;padding-top:8px">
+			<span class="x1" id="id_area"><input type="hidden" name="group_limit_area" value="{$limit_area}">配送地区：<input type="text" name="area_names" value="{$limit_area_name}" readonly=true class="pTxtL150">&nbsp;<a href="javascript:thisjs.sel_area('id_area');" style="color:#0000ff">[选择]</a></span>&nbsp;&nbsp;<span class="pBeta">多个Id以“,”号分隔，为空则不限</span>
+		</div>
+	</div>
+</div>
+<div class="pFootAct" id="id_pFootAct">
+	<li>
+	<input type="button" name="dosubmit" value="保存" onclick="admin.frm_ajax('limit_save');" class="pBtn">
+	</li>
+</div>
+<script>
+var thisjs = new function() {
+
+	this.sel_area = function(id) {
+		var arr = kj.obj("#" + id + " :group_limit_area");
+		var ids = '';
+		if(arr && arr.length>0) ids = arr[0].value;
+		kj.dialog({'url':'common.php?app=sys&app_act=area&callback=callback_area&objid='+id + "&ids="+ids,'id':'dialog_area_sel','type':'iframe','title':'选择配送地区'});
+	}
+
+	this.remove = function(o) {
+		var obj = kj.parent(o,"ul");
+		kj.remove(obj);
+	}
+	this.istime = function(ischeck) {
+		if(ischeck) {
+			kj.show(".Tistime");
+		} else {
+			kj.hide(".Tistime");
+		}
+	}
+}
+function callback_area(o) {
+	if(!o) return;
+	var obj = kj.obj("#" + o.objid);
+	if(!obj) return;
+	var arr = kj.obj(":group_limit_area" , obj);
+	var obj_ids = arr[0];
+	arr = kj.obj(":area_names" , obj);
+	obj_names = arr[0];
+	obj_ids.value = o.ids;
+	obj_names.value = o.names;
+	kj.dialog.close("#windialog_area_sel");
+}
+</script>
+{include(footer)}

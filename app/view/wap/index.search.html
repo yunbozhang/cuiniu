@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>搜索-{cfg:(site_title,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+</head>
+<body>
+{include(label.header)}
+<script src="shoplist.js"></script>
+<div class="top">
+	<h1>搜索商家</h1>
+	<a href="?" class="x1"><img src="images/home.png"></a>
+	<a href="{if(fun_get::get('s_key')!='')}?{else}javascript:history.back();{/if}" id="id_top_back" class="x2"><img src="images/back.png"></a>
+</div>
+<div class="main">
+	<div class="search"><span><input type="text" name="s_key" value="{fun_get::get('s_key')}" class='xtxt' id="id_s_key" placeholder="请输入要搜索的商家或商品名称"></span><input type="button" name="btnok" value="" class="xbtn" onclick="thisjs.search();"></div>
+	<div class="main">
+		<div class="swords">
+			<li class="xtit">热门搜索：</li>
+			<li>{foreach($cache_words as $words)}<a href="javascript:thisjs.search('{$words}');">{$words}</a>{/foreach}</li>
+			<li class="xtit">历史搜索：</li>
+			<li>{foreach($history_words as $words)}<a href="javascript:thisjs.search('{$words}');">{$words}</a>{/foreach}</li>
+		</div>
+	</div>
+</div>
+<script>
+var thisjs = new function() {
+	this.search = function(key) {
+		if(!key) key = kj.obj("#id_s_key").value;
+		if(key == '') {
+			alert("请输入搜索关键词");
+			return;
+		}
+		window.open("?app_act=shoplist&s_key=" + key , "_self");
+	}
+}
+</script>
+{include(label.footer)}
+</body>
+</html>

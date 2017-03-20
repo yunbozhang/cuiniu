@@ -1,0 +1,22 @@
+{include(header)}
+<div class="pMain" id="id_main">
+<table class='pEditTable'>
+<tr class='pTabTitRow'><td class='pTabTitCol' colspan="2"></td></tr>
+<tr>
+	<td class="pTabColName">名称：</td>
+	<td class="pTabColVal"><input type="text" name="group_name" value="{$editinfo['group_name']}" class='pTxt1 pTxtL200' ruletips="分类名称不能为空" ruletipsmode=1 required> <span style="color:#ff0000">*</span></td></tr>
+<tr>
+	<td class="pTabColName">排序：</td>
+	<td class="pTabColVal"><input type="text" name="group_sort" value="{$editinfo['group_sort']}" class='pTxt1 pTxtL60'></td></tr>
+</table>
+</div>
+<div class="pFootAct" id="id_pFootAct">
+	<li>
+	<input type="button" name="dosubmit" value="保存" onclick="admin.frm_ajax('group.save' , function(){thisjs.clear_cont();});" class="pBtn">
+	</li>
+</div>
+<script>
+var thisjs = new function() {
+}
+</script>
+{include(footer)}

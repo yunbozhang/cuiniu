@@ -1,0 +1,254 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>编辑广告-{cfg:(site_title,sys)}</title>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+<script src="{cfg:(dirpath,base)}/common.php?app=sys&app_act=web.config&app_ajax=1"></script>
+<script src="/common/js/kj.js"></script>
+<script src="/common/js/kj.dialog.js"></script>
+<script src="/common/js/kj.alert.js"></script>
+<script src="/common/js/kj.page.js"></script>
+<script src="/common/js/kj.ajax.js"></script>
+<script src="/common/js/kj.rule.js"></script>
+<script src="/common/js/date.js"></script>
+<script src="shop.js"></script>
+<script src="shop.table.js"></script>
+<style>
+body{background:#fff}
+.me_div1{float:left;width:500px}
+.me_div1 li{line-height:25px;float:left;width:500px;padding-bottom:10px}
+.me_div2{float:left;clear:both}
+</style>
+</head>
+<body style="overflow-x:hidden">
+{include(shop.header)}
+<div class="pMenu" id="id_pMenu" style="width:100%">
+	<li class="sel">基本信息</li>
+</div>
+<div class="pMain" id="id_main">
+<table class='pEditTable'>
+<tr class='pTabTitRow'><td class='pTabTitCol' colspan="2"></td></tr>
+{if($version_info['module']=='meal_mall')}
+<tr>
+	<td class="pTabColName">指定店铺：</td><td class="pTabColVal">
+		<input type="hidden" name="ads_shop_id" value="{$editinfo['ads_shop_id']}" id="id_ads_shop_id">
+		<div class="more1" onmouseover="kj.windiv({'id':'shop_id_windiv','fid':this,'src':'common.php?app=meal&app_act=shop1&url_mode=1'});" id="id_ads_shop" onmouseout="kj.hide('#windivshop_id_windiv');">{if(empty($editinfo["ads_shop_id"]))}选择{else}{if(!empty($editinfo["shop_name"]))}{$editinfo["shop_name"]}{else}空{/if}{/if}</div>
+	</td>
+	</tr>
+{/if}
+<tr>
+	<td class="pTabColName">地&nbsp;&nbsp;区：</td><td class="pTabColVal">
+	<input type="hidden" name="ads_area_id" id="id_ads_area_id" value="{$editinfo['ads_area_id']}">
+	<input type="hidden" name="ads_area_allid" id="id_ads_area_allid" value="{$editinfo['ads_area_allid']}">
+	<input type="hidden" name="ads_area" id="id_ads_area" value="{$editinfo['ads_area']}">
+	<select name="area_id[]" onchange="thisjs.changearea(this.value,0);" id="id_area_0">
+		<option value=""></option>
+	{foreach($editinfo["area"]["default"] as $item)}
+		<option value="{$item['area_id']}"{if(in_array($item['area_id'] , explode("," , $editinfo['ads_area_allid']) ) )} selected{/if}>{$item['area_name']}</option>
+	{/foreach}
+	</select>
+	{for($i=1;$i<$editinfo["area"]["depth"];$i++)}
+		<select name="area_id[]" onchange="thisjs.changearea(this.value,{$i});" id="id_area_{$i}">
+		</select>
+	{/foreach}
+	&nbsp; <span style="color:#ff0000">*</span>&nbsp;<span class="pBeta">为空则不限</span>
+	</td>
+	</tr>
+<tr>
+	<td class="pTabColName">广告位：</td><td class="pTabColVal">
+	<select name="ads_position">
+		<option value="B1">PC端主页头部</option>
+		<option value="B1-wap"{if($editinfo['ads_position']=='B1-wap')} selected{/if}>WAP端主页头部</option>
+	</select>
+	&nbsp; <span style="color:#ff0000">*</span>&nbsp;<span class="pBeta">同地区广告位不能相同</span></td></tr>
+<tr>
+	<td class="pTabColName">类&nbsp;&nbsp;型：</td>
+	<td class="pTabColVal">
+		<select name="ads_type" onchange="thisjs.ontype(this.selectedIndex);" id="id_ads_type">
+		{foreach($arr_type as $item=>$key)}
+			<option value="{$key}"{if($key==$editinfo['ads_type'])} selected{/if}>{$item}</option>
+		{/foreach}
+		</select>
+	</td></tr>
+<tr>
+	<td class="pTabColName">状&nbsp;&nbsp;态：</td>
+	<td class="pTabColVal">
+		<select name="ads_state">
+		{foreach($arr_state as $item=>$key)}
+			<option value="{$key}"{if($key==$editinfo['ads_state'])} selected{/if}>{$item}</option>
+		{/foreach}
+		</select>
+	</td></tr>
+<tr>
+	<td class="pTabColName">标&nbsp;&nbsp;题：</td><td class="pTabColVal"><input type="text" name="ads_title" value="{$editinfo['ads_title']}" class='pTxt1 pTxtL300' ruletips="广告标题不能为空" ruletipsmode=1 required> <span style="color:#ff0000">*</span>&nbsp;<span class="pBeta">描述广告内容，方便记忆</span></td></tr>
+<tr>
+	<td class="pTabColName">开放时间：</td><td class="pTabColVal"><input type="text" name="ads_starttime" value="{$editinfo['ads_starttime']}" class='pTxt1 pTxtL150' onfocus="new Calendar().show(this);" ruletips="开放时间不能为空或格式不正确" rule='datetime' ruletipsmode=1 required>&nbsp;&nbsp;<input type="text" name="ads_endtime" value="{$editinfo['ads_endtime']}" class='pTxt1 pTxtL150' onfocus="new Calendar().show(this);" ruletips="结束时间不能为空或格式不正确" rule='datetime' ruletipsmode=1 required> <span style="color:#ff0000">*</span>&nbsp;<span class="pBeta">请设计开放结束时间，否则不会显示</span></td>
+	</tr>
+</table>
+<table class='pEditTable' style="margin-top:0px;display:none">
+<tr class='pTabTitRow'><td class='pTabTitCol' colspan="2"></td></tr>
+<tr>
+	<td class="pTabColName">图片：</td><td class="pTabColVal"><input type="text" name="pic_url" id="id_pic_url" value="{$editinfo['fields']['pic_url']}" class='pTxt1 pTxtL300'>&nbsp;<a href="javascript:kj.dialog({id:'dialog_attatch',title:'选择图片',url:'common.php?app=other&app_act=attatch&url_objid=id_pic_url',w:600,showbtnhide:false,type:'iframe'});">选择</a><br><iframe name="frm_pic_url" src="common.php?app=other&app_act=upload&objid=id_pic_url" width="300px" height="30px" frameborder=0 scrolling="no"></iframe></td>
+	</tr>
+<tr>
+	<td class="pTabColName">宽&nbsp;&nbsp;度：</td><td class="pTabColVal"><input type="text" name="pic_w" value="{$editinfo['fields']['pic_w']}" class='pTxt1 pTxtL150'>&nbsp;&nbsp;<span class="pBeta">px</span>&nbsp;<span class="pBeta">带百分号则按百分比，否则按像素，为空自适应</span></td></tr>
+<tr>
+	<td class="pTabColName">高&nbsp;&nbsp;度：</td><td class="pTabColVal"><input type="text" name="pic_h" value="{$editinfo['fields']['pic_h']}" class='pTxt1 pTxtL150'>&nbsp;&nbsp;<span class="pBeta">px</span>&nbsp;<span class="pBeta">带百分号则按百分比，否则按像素，为空自适应</span></td></tr>
+<tr>
+	<td class="pTabColName">链&nbsp;&nbsp;接：</td><td class="pTabColVal"><input type="text" name="pic_link" value="{$editinfo['fields']['pic_link']}" class='pTxt1 pTxtL300'></td>
+	</tr>
+</table>
+<table class='pEditTable' style="margin-top:0px;display:none">
+<tr class='pTabTitRow'><td class='pTabTitCol' colspan="2"></td></tr>
+<tr>
+	<td class="pTabColName">flash：</td><td class="pTabColVal"><input type="text" name="flash_url" id="id_flash_url" value="{$editinfo['fields']['flash_url']}" class='pTxt1 pTxtL300'>&nbsp;<a href="javascript:kj.dialog({id:'dialog_attatch',title:'选择图片',url:'common.php?app=other&app_act=attatch&url_objid=id_flash_url',w:600,showbtnhide:false,type:'iframe'});">选择</a><br><iframe name="frm_pic_url" src="common.php?app=other&app_act=upload&objid=id_flash_url" width="300px" height="30px" frameborder=0 scrolling="no"></iframe></td>
+	</tr>
+<tr>
+	<td class="pTabColName">宽&nbsp;&nbsp;度：</td><td class="pTabColVal"><input type="text" name="flash_w" value="{$editinfo['fields']['flash_w']}" class='pTxt1 pTxtL150'>&nbsp;&nbsp;<span class="pBeta">px</span></td></tr>
+<tr>
+	<td class="pTabColName">高&nbsp;&nbsp;度：</td><td class="pTabColVal"><input type="text" name="flash_h" value="{$editinfo['fields']['flash_h']}" class='pTxt1 pTxtL150'>&nbsp;&nbsp;<span class="pBeta">px</span></td></tr>
+<tr>
+	<td class="pTabColName">链&nbsp;&nbsp;接：</td><td class="pTabColVal"><input type="text" name="flash_link" value="{$editinfo['fields']['flash_link']}" class='pTxt1 pTxtL300'>&nbsp;&nbsp;<span class="pBeta">为空则默认flash里的链接</span></td>
+	</tr>
+</table>
+<table class='pEditTable' style="margin-top:0px;display:none">
+<tr class='pTabTitRow'><td class='pTabTitCol' colspan="2"></td></tr>
+<tr>
+	<td class="pTabColName">内容：</td><td class="pTabColVal"><textarea name="txt_cont" rows="10" cols="50">{$editinfo['fields']['txt_cont']}</textarea>&nbsp;&nbsp;<span class="pBeta">支持html与js</span></td>
+	</tr>
+</table>
+<table class='pEditTable' style="margin-top:0px;display:none">
+<tr class='pTabTitRow'><td class='pTabTitCol' colspan="2"></td></tr>
+<tr>
+	<td class="pTabColName">宽&nbsp;&nbsp;度：</td><td class="pTabColVal"><input type="text" name="slide1_w" value="{$editinfo['fields']['slide1_w']}" class='pTxt1 pTxtL150'>&nbsp;&nbsp;<span class="pBeta">px</span></td></tr>
+<tr>
+	<td class="pTabColName">高&nbsp;&nbsp;度：</td><td class="pTabColVal"><input type="text" name="slide1_h" value="{$editinfo['fields']['slide1_h']}" class='pTxt1 pTxtL150'>&nbsp;&nbsp;<span class="pBeta">px</span></td></tr>
+<tr>
+	<td class="pTabColName">图片列表：</td><td class="pTabColVal">
+	<div class="me_div1" id="id_slide1">
+	<li style="display:none">
+	标题：<input type="text" name="slide1_txt[]" value="" class='pTxt1 pTxtL300'><br>
+	链接：<input type="text" name="slide1_link[]" value="" class='pTxt1 pTxtL300'><br>
+	图片：<input type="text" name="slide1_url[]" id="url_THISID" value="" class='pTxt1 pTxtL300'>&nbsp;<a href="javascript:kj.dialog({id:'dialog_attatch',title:'选择图片',url:'common.php?app=other&app_act=attatch&url_objid=url_THISID',w:600,showbtnhide:false,type:'iframe'});">选择</a>&nbsp;&nbsp;[<a href="javascript:kj.remove('#THISID');">删除</a>]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<iframe name="frm_THISID" src="common.php?app=other&app_act=upload&objid=url_THISID" width="300px" height="30px" frameborder=0 scrolling="no"></iframe></li>
+	{foreach($editinfo['fields']['slide1'] as $key=>$item)}
+	<li id="id_slide_{$key}">
+	标题：<input type="text" name="slide1_txt[]" value="{$item['txt']}" class='pTxt1 pTxtL300'><br>
+	链接：<input type="text" name="slide1_link[]" value="{$item['link']}" class='pTxt1 pTxtL300'><br>
+	图片：<input type="text" name="slide1_url[]" id="id_slide1_{$key}" value="{$item['url']}" class='pTxt1 pTxtL300'>&nbsp;<a href="javascript:kj.dialog({id:'dialog_attatch',title:'选择图片',url:'common.php?app=other&app_act=attatch&url_objid=id_slide1_{$key}',w:600,showbtnhide:false,type:'iframe'});">选择</a>&nbsp;&nbsp;[<a href="javascript:kj.remove('#id_slide_{$key}');">删除</a>]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<iframe name="frm_slide1_{$key}" src="common.php?app=other&app_act=upload&objid=id_slide1_{$key}" width="300px" height="30px" frameborder=0 scrolling="no"></iframe>	
+	</li>
+	{/foreach}
+	</div>
+	<div class="me_div2"><input type="button" name="btn_slide_add" value="添加" onclick="thisjs.slide1_add();"></div>
+	</td>
+	</tr>
+</table>
+</div>
+<div style="float:left;width:100%;height:50px">&nbsp;</div>
+<div class="peFootAct" id="id_pFootAct" style="width:100%;margin-top:20px">
+	<li>
+	<input type="button" name="dosubmit" class="button4" value="保存" onclick="shop.frm_ajax('save');">
+	</li>
+</div>
+<script>
+var thisjs = new function() {
+	this.arealist = {$editinfo["area"]["list"]};//json格式，指定id包函的子地区
+	this.areainfo = {$editinfo["area"]["area"]};//对应id地区详细信息
+	this.depth = {$editinfo["area"]["depth"]};//当前地区深度
+	this.defaultval = "{$editinfo['ads_area_allid']}"//当前选择值
+	this.defaultval = this.defaultval.split(",");//格式化成数组
+	this.ontype = function(id) {
+		id++;
+		var arr = kj.obj(".pEditTable");
+		for(var i = 1 ; i < arr.length ; i++) {
+			if(i != id && arr[i].style.display!='none') arr[i].style.display = 'none';
+			if(i == id && arr[i].style.display == 'none') arr[i].style.display = '';
+		}
+	}
+	this.slide1_add = function(){
+		var arr = kj.obj("#id_slide1 li");
+		if(!arr) return;
+		if( !('length' in arr) || arr.length < 1 ) return;
+
+		var obj_div = document.createElement("li");
+		var str_id = "id" + Math.random();
+		str_id = str_id.replace(/\./g, "");
+		obj_div.id = str_id;
+		obj_div.className = arr[0].className;
+		obj_div.innerHTML = arr[0].innerHTML.replace(/THISID/g,obj_div.id);
+		kj.obj("#id_slide1").appendChild(obj_div);
+	}
+	//地区下拉发生改变时触发
+	this.changearea = function(val , index) {
+		var obj,i,ii;
+		index++;
+		//当index大于深度时跳出
+		if(index>this.depth) return;
+		//发生改变后，重置之后的地区下拉
+		for(i = index ; i < this.depth; i++) {
+			obj = kj.obj("#id_area_" + i);
+			if(!obj) break;
+			obj.options.length = 0;
+			if(i>index) kj.hide(obj);
+		}
+
+		var key = "id_" + val;
+		if(!(key in this.arealist) || !("length" in this.arealist[key])) {
+			kj.hide("#id_area_" + index);
+			//跳出则刷新当前地区值
+			this.refresh_area_val();
+			return;
+		}
+		kj.show("#id_area_" + index);
+		kj.add_option("#id_area_" + index , '' , '');
+		for(i = 0 ; i < this.arealist["id_"+val].length ; i++ ) {
+			obj = kj.obj("#id_area_" + index);
+			ii = this.arealist["id_"+val][i];
+			if( !("id_" + ii in this.areainfo ) ) continue;
+			kj.add_option(obj , this.areainfo["id_" + ii]["area_name"] , ii);
+			//选中默认值
+			if(this.defaultval.length>index && obj.options[i+1].value == this.defaultval[index]) {
+				obj.options[i+1].selected=true;
+			}
+		}
+		this.changearea(obj.value , index);
+		this.refresh_area_val();
+	}
+	this.refresh_area_val = function() {
+		var obj = kj.obj(":area_id[]");
+		var arr_id = [];
+		var arr_val = [];
+		var id = 0;
+		for(var i = 0 ; i < obj.length ; i++) {
+			if(obj[i].value != '') {
+				if( !("id_" + obj[i].value in this.areainfo ) ) continue;
+				arr_id[arr_id.length] = obj[i].value;
+				arr_val[arr_val.length] = ('area_val' in this.areainfo["id_" + obj[i].value]) ? this.areainfo["id_" + obj[i].value]["area_val"] : this.areainfo["id_" + obj[i].value]["area_name"];
+			} else {
+				break;
+			}
+		}
+		if(arr_id.length>0) {
+			kj.obj("#id_ads_area_id").value = arr_id[arr_id.length-1];
+		} else {
+			kj.obj("#id_ads_area_id").value = '';
+		}
+		kj.obj("#id_ads_area_allid").value = arr_id.join(",");
+		kj.obj("#id_ads_area").value = arr_val.join(" ");
+	}
+}
+kj.onload(function(){
+	thisjs.ontype(kj.obj("#id_ads_type").selectedIndex);
+	//加载默认值选中
+	thisjs.changearea(kj.obj("#id_area_0").value,0);
+	{for($i=1;$i<$editinfo["area"]["depth"];$i++)}
+		thisjs.changearea(kj.obj("#id_area_{$i}").value,{$i});
+	{/for}
+});
+function attatch_callback() {
+	kj.dialog.close("#windialog_attatch");
+}
+</script>
+{include(shop.footer)}
+</body>
+</html>

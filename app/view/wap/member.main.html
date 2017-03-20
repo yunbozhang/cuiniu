@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>会员中心-{cfg:(site_title,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+<link rel="stylesheet" type="text/css" href="/common/images/emoji.css"/>
+</head>
+<body>
+{include(label.header)}
+<div class="top">
+	<h1>会员中心</h1>
+	<a href="?" class="x1"><img src="images/home.png"></a>
+	<a href="?" id="id_top_back" class="x2"><img src="images/back.png"></a>
+</div>
+<div class="utop">
+	<li class="x1">
+		<p class="ypic">{if(cls_obj::get('cls_user')->pic!='')}<img src = "{cls_obj::get('cls_user')->pic}">{else}<img src="images/sir.gif">{/if}</p>
+		<p>
+		<span>{fun_format::toemoji(cls_obj::get("cls_user")->name,1)}</span>
+		<span><img src="images/vip{$memberinfo['level']}.png"></span>
+		<span>上次登录：{cls_obj::get("cls_user")->lastlogintime}</span>
+		</p>
+	</li>
+	<li class="x2">
+		<a href="?app=member&app_act=myvip">经验<br>{$memberinfo['experience']}</a>
+		<a href="?app=member&app_act=myintegral">积分<br>{cls_obj::get("cls_user")->get_score()}</a>
+		<a href="?app=member&app_act=voucher">优惠券<br>0</a>
+		<a href="?app=member&app_act=repayment">余额<br>{cls_obj::get("cls_user")->get_repayment()}</a>
+	</li>
+</div>
+	<div class="ubox1">
+		<a href="?app=member"><span class="xm1"></span><font>我的订单</font></a>
+		<a href="?app=member&app_act=repayment"><span class="xm2"></span><font>我的存款</font></a>
+		<a href="?app=member&app_act=myintegral"><span class="xm3"></span><font>我的积分</font></a>
+		<a href="?app=member&app_act=myvip"><span class="xm4"></span><font>我的经验</font></a>
+		<a href="?app=act.gift&app_act=mygift"><span class="xm5"></span><font>我的礼品</font></a>
+		<a href="?app=member&app_act=msg"><span class="xm6"></span><font>我的留言</font></a>
+		<a href="?app=member&app_act=address"><span class="xm7"></span><font>收货地址</font></a>
+		<a href="?app=member&app_act=voucher"><span class="xm8"></span><font>我的优惠券</font></a>
+		<a href="?app=member&app_act=pwd"><span class="xm9"></span><font>修改密码</font></a>
+	</div>
+	<!-- a href="common.php?app=sys&app_act=login.out" class="btn-a1" style="margin-top:15px"><font>退出登录</font></a -->
+{include(label.footer)}
+</body>
+</html>

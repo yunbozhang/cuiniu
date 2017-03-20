@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>运营配置-商家管理-{cfg:(site_title,sys)}</title>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+<style>
+.me_opentime{float:left;width:100%}
+.me_opentime li{float:left;width:100%;margin:5px 0px 3px 0px}
+</style>
+</head>
+<body>
+{include(header)}
+{include(shop.header)}
+{include(shop.left)}
+<input type="hidden" name="shop_progress" value="{$editinfo['shop_progress']}">
+<div class="uright">
+	<div class="upath"><font>店铺资料</font></div>
+		<table class='usetable'>
+		<tr>
+			<td class="x1" valign="top">开放时间 ：</td><td valign="top">
+			<div class="me_opentime" id="id_opentime">
+				<li>
+				<label><input type="checkbox" name="shop_weekday[]" value="1"{if(in_array('1',$editinfo['weekday']))} checked{/if}>周一</label>&nbsp;&nbsp;<label><input type="checkbox" name="shop_weekday[]" value="2"{if(in_array('2',$editinfo['weekday']))} checked{/if}>周二</label>&nbsp;&nbsp;<label><input type="checkbox" name="shop_weekday[]" value="3"{if(in_array('3',$editinfo['weekday']))} checked{/if}>周三</label>&nbsp;&nbsp;<label><input type="checkbox" name="shop_weekday[]" value="4"{if(in_array('4',$editinfo['weekday']))} checked{/if}>周四</label>&nbsp;&nbsp;<label><input type="checkbox" name="shop_weekday[]" value="5"{if(in_array('5',$editinfo['weekday']))} checked{/if}>周五</label>&nbsp;&nbsp;<label><input type="checkbox" name="shop_weekday[]" value="6"{if(in_array('6',$editinfo['weekday']))} checked{/if}>周六</label>&nbsp;&nbsp;<label><input type="checkbox" name="shop_weekday[]" value="0"{if(in_array('0',$editinfo['weekday']))} checked{/if}>周天</label>
+				</li>
+				{foreach($editinfo['opentime'] as $opentime)}
+				<li><select name="opentime_hour1[]">{for($i=0;$i<24;$i++)}<option value="{$i}"{if($i==$opentime['hour1'])} selected{/if}>{$i}点</option>{/for}</select><select name="opentime_minu1[]">{for($i=0;$i<59;$i++)}<option value="{$i}"{if($i==$opentime['minu1'])} selected{/if}>{$i}分</option>{/for}</select> 到 <select name="opentime_hour2[]">{for($i=0;$i<24;$i++)}<option value="{$i}"{if($i==$opentime['hour2'])} selected{/if}>{$i}点</option>{/for}</select><select name="opentime_minu2[]">{for($i=0;$i<59;$i++)}<option value="{$i}"{if($i==$opentime['minu2'])} selected{/if}>{$i}分</option>{/for}</select> 别称：<input type="text" name="opentime_name[]" value="{$opentime['name']}">&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" onclick="kj.remove(kj.parent(this,'li'));">移除</a></li>
+				{/foreach}
+			</div>
+			<a href="javascript:thisjs.opentime_add();"><img src="images/add.gif"> 添加</a>
+			</td></tr>
+		<tr>
+			<td class="x1" valign="top">送餐时间 ：</td><td valign="top">
+			<div class="me_opentime" id="id_arrivetime">
+				{foreach($editinfo['arrivetime'] as $arrivetime)}
+				<li><select name="arrivetime_hour[]">{for($i=0;$i<24;$i++)}<option value="{$i}"{if($i==$arrivetime['hour'])} selected{/if}>{$i}点</option>{/for}</select><select name="arrivetime_minu[]">{for($i=0;$i<60;$i++)}<option value="{$i}"{if($i==$arrivetime['minu'])} selected{/if}>{$i}分</option>{/for}</select> 别称：<input type="text" name="arrivetime_name[]" value="{$arrivetime['name']}">&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" onclick="kj.remove(kj.parent(this,'li'));">移除</a></li>
+				{/foreach}
+			</div>
+			<a href="javascript:thisjs.arrivetime_add();"><img src="images/add.gif"> 添加</a>
+			</td></tr>
+		<tr>
+			<td class="x1" valign="top">提前下单时间 ：</td><td valign="top" style="line-height:30px">
+			<input type="text" name="arrivedelay" value="{$editinfo['extend']['arrivedelay']}" class='pTxt1 pTxtL150'>&nbsp;<span class="pBeta">分钟<br>“下单时间与要求送餐时间相隔分钟数，如10点下单，这里如果是30分钟，那么表示最快10:30能送到”</span>
+			</td></tr>
+		<!--tr>
+			<td class="x1" valign="top">单份最低金额 ：</td><td valign="top" style="line-height:30px">
+			<input type="text" name="shop_oneminleast" value="{$editinfo['shop_oneminleast']}" class='pTxt1 pTxtL150'>&nbsp;<span class="pBeta">元<br>0表示不限</span>
+			</td></tr -->
+		<tr>
+			<td class="x1" valign="top">每天销量限制 ：</td><td valign="top" style="line-height:30px">
+			<input type="text" name="shop_day_limit" value="{$editinfo['shop_day_limit']}" class='pTxt1 pTxtL150'>&nbsp;<span class="pBeta">元<br>0表示不限</span>
+			</td></tr>
+		<tr>
+			<td class="x1" valign="top">起送价 ：</td><td valign="top" style="line-height:30px">
+			<input type="text" name="shop_dispatch_price" value="{$editinfo['shop_dispatch_price']}" class='pTxt1 pTxtL150'>&nbsp;<span class="pBeta">元<br>0表示不限 ,当设置此值时，如果送达目的地没有限制最低价，则按此价算</span>
+			</td></tr>
+		<tr>
+			<td class="x1" valign="top">配送费 ：</td><td valign="top" style="line-height:30px">
+			<input type="text" name="shop_addprice" value="{$editinfo['shop_addprice']}" class='pTxt1 pTxtL150'>&nbsp;<span class="pBeta">元<br>0表示免费配送，可以通过活动，添加满多少，然后减去配送费，以实现达到多少免配送费的功能</span>
+			</td></tr>
+		<!-- tr>
+			<td class="x1" valign="top">提供发票：</td>
+			<td valign="top">
+				<input type="checkbox" name="shop_ticket" value=1{if($editinfo['shop_ticket'])} checked{/if}>
+			</td></tr -->
+		<tr>
+			<td class="x1" valign="top"></td><td valign="top" style="margin-top:30px">
+				<input type="button" name="btn_submit" class="btn-3" value="保 存" onclick="shop.frm_ajax('extend.save');">
+			</td></tr>
+
+		</table>
+</div>
+<div id="id_new_opentime" style="display:none">
+<select name="opentime_hour1[]">{for($i=0;$i<24;$i++)}<option value="{$i}">{$i}点</option>{/for}</select><select name="opentime_minu1[]">{for($i=0;$i<60;$i++)}<option value="{$i}">{$i}分</option>{/for}</select> 到 <select name="opentime_hour2[]">{for($i=0;$i<24;$i++)}<option value="{$i}">{$i}点</option>{/for}</select><select name="opentime_minu2[]">{for($i=0;$i<60;$i++)}<option value="{$i}">{$i}分</option>{/for}</select> 别称：<input type="text" name="opentime_name[]" value="">&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" onclick="kj.remove(kj.parent(this,'li'));">移除</a>
+</div>
+<div id="id_new_arrivetime" style="display:none">
+<select name="arrivetime_hour[]">{for($i=0;$i<24;$i++)}<option value="{$i}">{$i}点</option>{/for}</select><select name="arrivetime_minu[]">{for($i=0;$i<60;$i++)}<option value="{$i}">{$i}分</option>{/for}</select> 别称：<input type="text" name="arrivetime_name[]" value="">&nbsp;&nbsp;&nbsp;<a href="javascript:void(0)" onclick="kj.remove(kj.parent(this,'li'));">移除</a>
+</div>
+{include(shop.footer)}
+{include(footer)}
+<script>
+var thisjs = new function() {
+	this.opentime_add = function() {
+		var objli = document.createElement("li");
+		objli.innerHTML = this.opentime_html;
+		kj.obj("#id_opentime").appendChild(objli);
+	}
+	this.arrivetime_add = function() {
+		var objli = document.createElement("li");
+		objli.innerHTML = this.arrivetime_html;
+		kj.obj("#id_arrivetime").appendChild(objli);
+	}
+}
+thisjs.opentime_html = kj.obj("#id_new_opentime").innerHTML;
+thisjs.arrivetime_html = kj.obj("#id_new_arrivetime").innerHTML;
+kj.remove("#id_new_opentime");
+kj.remove("#id_new_arrivetime");
+</script>
+</body>
+</html>
+<script src="shop.js"></script>

@@ -1,0 +1,1 @@
+alter table {DB_PRE}meal_shop engine innodb;

@@ -1,0 +1,129 @@
+{include(header)}
+<div class="pMenu" id="id_pMenu">
+	<li style="font-weight:bold"><input type="hidden" name="url_site_id" value="{$admin_site['id']}" id="id_url_site_id"><span class="more1" onmouseover="kj.windiv({'id':'shop_site_windiv','fid':this,'src':'common.php?app=weixin&app_act=dialog.site&url_mode=2'});" id="id_site_id">站点：{if(empty($weixin_site["name"]))}选择{else}{$weixin_site["name"]}{/if}</span></li>
+	<li class="sel">管理</li>
+	<li onclick="admin.menu_display(0);" class = "btnMenu">查找</li>
+	<li class = "x_btn"><a href="javascript:parent.thisjs.klkkdj_open('短信组件-帮助','app=service&app_act=help&key=help.weixin.user');" title="帮助"><img src="images/faq.gif"></a></li>
+	<li class="fdpic" onclick="master_open({url:'common.php?app=config&app_module=user&dir={$app_dir}&filename=weixin&key=weixin.user',title:'设置字段',w:400});">&nbsp;</li>
+</div>
+<div class="btnMenuDiv" id="id_btnMenuDiv"{if($arr_list['issearch']==0)} style="display:none"{/if}>
+<li>关注时间：<input type="text" name="s_addtime1" value="{fun_get::get('s_addtime1')}" class='pTxtDate' onfocus="new Calendar().show(this);"> 到 <input type="text" name="s_addtime2" value="{fun_get::get('s_addtime2')}" class='pTxtDate' onfocus="new Calendar().show(this);"></li>
+<li>状态：<select name="s_state">
+<option value="-999">不限</option>
+<option value="1"{if('1'==fun_get::get("s_state"))} selected{/if}>关注中</option>
+<option value="0"{if('0'==fun_get::get("s_state"))} selected{/if}>已取消关注</option>
+</select></li>
+<li>关 键 字：<input type="text" name="s_key" value="{fun_get::get('s_key')}" class='pTxt1'>　<input type="button" name="btn_s_ok" value="查找" class="pBtn" onclick="admin.search();"> 　<input type="button" name="btn_s_clear" value="清空" class="pBtn" onclick="admin.clear_search();"></li>
+</table>
+</div>
+<div class="pMain" id="id_main">
+<div class="pTableBox" id="id_table_box">
+	<div class='pTableTit' id="id_table_title">
+		<li><span class="x_tit" style="width:25px">&nbsp;</span></li>
+		{foreach($arr_list["tabtit"] as $item)}
+			<li><span class="x_tit"{if($item["w"]>0)} style="width:{$item["w"]}px"{/if} onclick="admin.table.list1.sort('{$item['key']}')">{$item["name"]}
+			{if(isset($arr_list['sort'][$item['key']]))}<img src="images/sort_{$arr_list['sort'][$item['key']]}.png">{/if}</span><span class="x_split"></span></li>
+		{/if}
+	</div>
+	<div class="pTableList" id="id_table_list">
+		<div class='pTable' id="id_table">
+			{foreach($arr_list['list'] as $item)}
+			<div class='pTabRow'>
+				<li><input type='checkbox' name='selid[]' value="{$item['user_openid']}" openname="{$item['user_name']}"></li>
+				{foreach($arr_list["tabtd"] as $field)}
+					<li>{if($field=='user_pic')}<img src="{$item['user_pic']}" style="width:50px;height:50px">{else}{if(empty($item[$field]))}&nbsp;{else}{$item[$field]}{/if}{/if}</li>
+				{/foreach}
+			</div>
+			{/foreach}
+		</div>
+	</div>
+</div>
+</div>
+<div class="pPage" id="id_pPage">
+{$arr_list['pagebtns']}
+</div>
+<div class="pFootAct" id="id_pFootAct">
+<li>
+<label><input type='checkbox' name='selall' value='1'>全选</label>&nbsp;&nbsp;
+<select name="selact" onchange="thisjs.selact(this.value)" id="id_selact">
+	<option value="">--操作--</option>
+	{if($this_limit->chk_act("sendmsg"))}<option value="sendmsg">发消息</option>{/if}
+	</select>&nbsp;<input type="button" name="btnExe" value="执行" onclick="thisjs.act();" class="pBtn">&nbsp;&nbsp;&nbsp;<input type="button" name="btntongbu" value="从微信同步" onclick="thisjs.tongbu('');" class="pBtn">
+</li>
+</div>
+<script src="admin.table.js"></script>
+<script src="/common/js/kj.progress.js"></script>
+<script>
+//初始化表格控件
+kj.onload(function(){
+admin.table.list1.init('#id_table_title' , '#id_table');
+});
+//自动保存
+admin.table.list1.save_resize = function() {
+	var lng_w = (kj.w(this.field));
+	kj.ajax.get("common.php?app=config&app_module=user&dir={$app_dir}&app_act=save_resize&filename=weixin&key=weixin.user&index=" + this.fieldsindex + "&w=" + lng_w , function(data){
+		//alert(data);
+	});
+}
+admin.table.list1.sort = function(key) {
+	kj.ajax.get("common.php?app=config&app_module=user&filename=weixin&dir={$app_dir}&app_act=sort&key=weixin.user&sortby=" + key , function(data){
+			var obj_data=kj.json(data);
+			if(!obj_data.isnull) {
+				admin.refresh();
+			}
+	});
+}
+var thisjs = new function() {
+	this.istongbu = false;
+	this.selact = function(val) {
+		if(val == 'sendmsg') {
+			kj.dialog({id:'sendmsg',title:'群发消息',url:'{fun_get::url(array("app_act"=>"sendmsg"))}',w:800,max_h:700,showbtnhide:false,type:'iframe'});
+		} else {
+			kj.dialog.close('#winsendmsg');
+		}
+	}
+	this.act = function() {
+		var val = kj.obj("#id_selact").value;
+		if(val == 'sendmsg') {
+			this.selact(val);
+		} else {
+			admin.selact();
+		}
+	}
+	this.tongbu = function(next_openid) {
+		if(this.istongbu) {
+			alert("正在同步，请不要重复点击");
+			return;
+		}
+		kj.ajax.get("{fun_get::url(array('app_act'=>'tongbu','next_openid'=>''))}&next_openid=" + next_openid, function(data) {
+			var objdata = kj.json(data);
+			if(objdata.next_openid!='') {
+				thisjs.tongbu(objdata.next_openid);
+			} else {
+				kj.progress.show1.open({id:'ontongbu',title:'正在同步数据',size:objdata.total,w:500});
+				thisjs.tongbu2(1);
+			}
+		});
+	}
+	this.tongbu2 = function(page) {
+		kj.progress.show1.step('ontongbu');
+		kj.ajax.get("{fun_get::url(array('app_act'=>'tongbu_info','page'=>''))}&page="+page , function(data) {
+			var objdata = kj.json(data);
+			objdata.nextpage=kj.toint(objdata.nextpage);
+			if(objdata.nextpage>0) {
+				thisjs.tongbu2(objdata.nextpage);
+			} else {
+				kj.progress.show1.close('ontongbu');
+				kj.alert.show("同步完成",function(){location.reload(true);});
+			}
+		});
+	}
+}
+function site_callback(o) {
+	if("id" in o) {
+		kj.set("#id_url_site_id" , "value" , o.id);
+		admin.refresh();
+	}
+}
+</script>
+{include(footer)}

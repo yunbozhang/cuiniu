@@ -1,0 +1,128 @@
+{include(header)}
+<div class="pMain" id="id_main">
+{if(empty($is_install))}
+<table class="pEditTable">
+<tr class='pTabTitRow'><td class="pTabColVal" style="height:50px;font-size:14px;font-weight:bold;color:#0000ff">启用UCENTER：
+		<label><input type="radio" name="isstart" value="1" onclick="thisjs.sel_isstart(true)" checked>&nbsp;是</label>&nbsp;&nbsp;<label><input type="radio" name="isstart" value="0" onclick="thisjs.sel_isstart(false)"{if(!$isstart)} checked{/if}>&nbsp;否</label>&nbsp;&nbsp;<span class="pBeta" style="font-weight:200;font-size:12px">如果发现整合不成功，导至无法登录管理后台，可以在/data/config/cfg.env.online.php 文件里把：USER_CENTER 值 还原为：user.klkkdj</span>
+</td></tr>
+</table>
+{else}
+<input type="hidden" name="isstart" value="1">
+{/if}
+<table class='pEditTable'{if(!$isstart && empty($is_install) )} style="display:none"{/if} id="id_tabel_cfg">
+<tr class='pTabTitRow'><td class='pTabTitCol' colspan="2"></td></tr>
+<tr>
+	<td class="pTabColName">连接 UCenter 的方式：</td>
+	<td class="pTabColVal">
+		<label><input type="radio" name="CONNECT" value="mysql" checked>&nbsp;数据库</label>&nbsp;&nbsp;<label><input type="radio" name="CONNECT" value=""{if(empty($editinfo['DBHOST']))} checked{/if}>&nbsp;SOCKET</label>
+	</td></tr>
+<tr>
+	<td class="pTabColName">UCenter 数据库主机：</td><td class="pTabColVal"><input type="text" name="DBHOST" value="{$editinfo['DBHOST']}" class='pTxt1 pTxtL150'></td></tr>
+ <tr>
+	<td class="pTabColName">UCenter 数据库用户名：</td><td class="pTabColVal"><input type="text" name="DBUSER" value="{$editinfo['DBUSER']}" class='pTxt1 pTxtL150'></td></tr>
+
+<tr>
+	<td class="pTabColName">UCenter 数据库密码：</td><td class="pTabColVal"><input type="password" name="DBPW" value="" class='pTxt1 pTxtL150'>&nbsp;&nbsp;{if(!empty($editinfo['DBPW']))}<span class="pBeta">为空则不变</span>{/if}</td></tr>
+
+<tr>
+	<td class="pTabColName">UCenter 数据库名称：</td><td class="pTabColVal"><input type="text" name="DBNAME" value="{$editinfo['DBNAME']}" class='pTxt1 pTxtL150'></td></tr>
+
+<tr>
+	<td class="pTabColName">UCenter 数据库字符集：</td><td class="pTabColVal">
+<label><input type="radio" name="DBCHARSET" value="utf8" checked>&nbsp;UTF8</label>&nbsp;&nbsp;<label><input type="radio" name="DBCHARSET" value="gbk"{if(strtolower($editinfo['DBHOST'])=='gbk')} checked{/if}>&nbsp;GBK</label>
+</td></tr>
+<tr>
+	<td class="pTabColName">UCenter 数据库表前缀：</td><td class="pTabColVal"><input type="text" name="DBTABLEPRE" value="{$editinfo['DBTABLEPRE']}" class='pTxt1 pTxtL150'></td></tr>
+
+<tr>
+	<td class="pTabColName">与 UCenter 的通信密钥：</td><td class="pTabColVal"><input type="text" name="KEY" value="{$editinfo['KEY']}" class='pTxt1 pTxtL150'></td></tr>
+
+<tr>
+	<td class="pTabColName">UCenter 的 URL 地址：</td><td class="pTabColVal"><input type="text" name="API" value="{$editinfo['API']}" class='pTxt1 pTxtL250'></td></tr>
+
+<tr>
+	<td class="pTabColName">UCenter 的字符集：</td><td class="pTabColVal">
+<label><input type="radio" name="CHARSET" value="utf-8" checked>&nbsp;UTF8</label>&nbsp;&nbsp;<label><input type="radio" name="CHARSET" value="gbk"{if(strtolower($editinfo['DBHOST'])=='gbk')} checked{/if}>&nbsp;GBK</label>
+<tr>
+	<td class="pTabColName">UCenter 的 IP：</td><td class="pTabColVal"><input type="text" name="CHARSET" value="{$editinfo['CHARSET']}" class='pTxt1 pTxtL150'></td></tr>
+<tr>
+	<td class="pTabColName">当前应用的 ID：</td><td class="pTabColVal"><input type="text" name="APPID" value="{$editinfo['APPID']}" class='pTxt1 pTxtL150'></td></tr>
+</table>
+</div>
+<div class="pFootAct" id="id_pFootAct">
+	<li>
+	<input type="button" name="dosubmit" value="保存并启用" onclick="thisjs.save();" class="pBtn">
+	&nbsp;&nbsp;<input type="button" name="docancel" value="稍后配置" onclick="thisjs.cancel();" class="pBtn2">
+	</li>
+</div>
+<script>
+var thisjs = new function() {
+	this.save = function() {
+		if( !('length' in document.frm_main.isstart) || document.frm_main.isstart[0].checked ) {
+			if(document.frm_main.CONNECT[0].checked ) {
+				if(document.frm_main.DBHOST.value == '') {
+					alert('UCenter 数据库主机 不能为空');
+					document.frm_main.DBHOST.focus();
+					return;
+				}
+				if(document.frm_main.DBUSER.value == '') {
+					alert('UCenter 数据库用户名 不能为空');
+					document.frm_main.DBUSER.focus();
+					return;
+				}
+				{if(empty($editinfo['DBPW']))}
+							if(document.frm_main.DBPW.value == '') {
+								alert('UCenter 数据库密码 不能为空');
+								document.frm_main.DBPW.focus();
+								return;
+							}
+				{/if}
+				if(document.frm_main.DBNAME.value == '') {
+					alert('UCenter 数据库名称 不能为空');
+					document.frm_main.DBNAME.focus();
+					return;
+				}
+				if(document.frm_main.DBCHARSET.value == '') {
+					alert('UCenter 数据库字符集 不能为空');
+					document.frm_main.DBCHARSET.focus();
+					return;
+				}
+				if(document.frm_main.DBTABLEPRE.value == '') {
+					alert('UCenter 数据库表前缀 不能为空');
+					document.frm_main.DBCHARSET.focus();
+					return;
+				}
+			}
+			if(document.frm_main.KEY.value == '') {
+				alert('与 UCenter 的通信密钥 不能为空');
+				document.frm_main.KEY.focus();
+				return;
+			}
+			if(document.frm_main.API.value == '') {
+				alert('UCenter 的 URL 地址 不能为空');
+				document.frm_main.API.focus();
+				return;
+			}
+			if(document.frm_main.APPID.value == '') {
+				alert('当前应用的 ID 不能为空');
+				document.frm_main.APPID.focus();
+				return;
+			}
+		}
+		admin.frm_ajax('save' , function(data){
+			if(parent && parent.thisjs && 'dialog_back' in parent.thisjs) parent.thisjs.dialog_back(data);
+		});
+	}
+	this.cancel = function() {
+		parent.thisjs.dialog_back('');
+	}
+	this.sel_isstart = function(val) {
+		if(val) {
+			kj.show("#id_tabel_cfg");
+		} else {
+			kj.hide("#id_tabel_cfg");
+		}
+	}
+}
+</script>
+{include(footer)}

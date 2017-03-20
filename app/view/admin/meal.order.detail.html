@@ -1,0 +1,113 @@
+{include(header)}
+<style>
+.mshopinfo{float:left;width:783px;border:1px #eee solid;margin-top:10px}
+.mshopinfo li{float:left;}
+.mshopinfo .ximg{}
+.mshopinfo .ximg img{width:60px;height:60px}
+.mshopinfo .x1{padding-top:8px;margin-left:8px}
+.mshopinfo .x1 p{float:left;clear:both;margin:3px 0px 3px 0px;font-size:14px}
+.mshopinfo .x2{padding-top:25px;margin-left:50px}
+.mshopinfo .x2 p{float:left;margin-left:20px}
+.mshopinfo .x3{margin:25px 0px 0px 50px;color:#ffa900}
+.mshopinfo .x4{float:right;margin:15px 30px 0px 0px}
+.mshopinfo .x4 span{background:url(sort_desc.png) no-repeat right center;padding-right:20px;float:left;cursor:pointer}
+.mshopinfo .x4 .yopen{background:url(sort_asc.png) no-repeat right center;color:#d80616}
+.mdetail{float:left;width:100%;background:#F1F1F1}
+.mdetail .x1{float:left;width:480px;padding:8px 0px}
+.mdetail .x1 p{float:left;width:480px;margin:7px 0px}
+.mdetail .x1 p span{float:left;font-weight:bold;}
+.mdetail .x1 p .y1{width:80px;padding-left:8px;text-align:right;font-weight:200}
+.mdetail .x2{float:right;width:470px;padding:8px 0px;font-weight:bold}
+.mdetail .x2 p{float:right;;margin:10px 0px;margin-right:10px;clear:both}
+.mdetail .x2 .xtotal{text-align:right}
+.mdetail .x2 .xtotal font{font-size:18px;color:#ff3300}
+.mdetail .x2 .xstate{color:#ff3300}
+.mdetail .x2 .xtips{float:right;}
+.mdetail .x2 .xtips a{float:right;background:#ffac00;color:#fff;padding:5px 8px;margin-top:-5px}
+.mdetail .x3{float:left;width:958px;padding:8px 0px;background:#fff}
+.mdetail .x3 .xtit{font-weight:bold;padding-left:30px;width:928px}
+.mdetail .x3 .xtit font{font-weight:200;color:#ff8800}
+.mdetail .x3 p{float:left;width:958px;margin:7px 0px}
+.mdetail .x3 p span{float:left;font-weight:bold;width:120px}
+.mdetail .x3 p .y1{width:60px;padding-left:8px;text-align:right;font-weight:200}
+.mdetail .x3 .xbeta{width:900px;border:1px #efefef dotted;margin:5px 0px 0px 30px;padding:5px}
+.mdetail .x4{float:left;width:480px;margin-left:20px}
+.mdetail .x4 span{float:left;padding:2px 3px;border:1px #ffac00 dotted;color:#d80616;margin:3px 5px}
+.mtable{float:left;border:1px #eee solid;width:785px;margin:0px 0px 20px 0px;border-top:0px}
+.mtable .xtit{}
+.mtable .xtit td{background:#F1F1F1;font-weight:bold}
+.mtable td{padding:12px 0px;border-bottom:1px #ccc dotted;text-align:center}
+.mtable .xcol1{text-align:left;padding-left:20px;width:200px}
+.mstep{float:left;width:250px;margin:15px 0px 0px 30px}
+.mstep li{float:left;width:245px;border-left:5px #d4ee9b solid}
+.mstep li i{float:left;width:26px;height:26px;background:url(images/step.png) no-repeat;margin-left:-15px}
+.mstep li span{float:left;width:200px;margin:5px 0px 0px 10px}
+.mstep li .xx1{padding:30px 0px}
+.mstep .xoff{border-left:5px #e5e5e5 solid;color:#888}
+.mstep .xoff i{background:url(images/step.png) no-repeat 0px -26px}
+.mstep .xclose{border-left:5px #e5e5e5 solid;color:#888}
+.mstep .xclose i{background:url(images/step.png) no-repeat 0px -52px}
+.mstep .nobg{border-left:5px #fff solid;}
+</style>
+<div class="pMain" id="id_main">
+	<div class="mshopinfo">
+		<li class="ximg"><a href="?app_act=shop&id={$order_list['detail']['order_shop_id']}" target="_blank"><img src = "{fun_get::html_url($order_list['detail']['shop_pic'])}"></a></li>
+		<li class="x1"><a href="?app_act=shop&id={$order_list['detail']['order_shop_id']}" target="_blank"><p>{$order_list['detail']['shop_name']}</p><p>{$order_list['detail']['shop_tel']}</p></a></li>
+	</div>
+	<table class="mtable" style="margin-top:0px;margin-bottom:0px">
+	{set $ii=count($order_list['detail']['menu'])+2}
+		<tr class="xtit"><td class="xcol1">餐品</td><td>数量</td><td>小计</td><td rowspan="{$ii}" style="width:278px;background:#fff;border-left:1px #ddd solid" valign="top">
+			<div class="mstep">
+				{if($order_list['detail']['order_pay_method']=='onlinepayment')}
+				<li><i></i><span><p>订单提交成功，等待付款</p><p class="xx1"><input type="button" class="btn-1" value="继续付款" name="btnpay">&nbsp;&nbsp;<input type="button" class="btn-2" value="取消订单" name="btncancel" onclick="thisjs.cancel()"></p></span></li>
+				<li><i></i><span><p>支付成功，等待餐厅接单</p><p class="xx1"></p></span></li>
+				{else}
+				<li><i></i><span><p>下单成功，等待餐厅接单</p><p class="xx1"><input type="button" class="btn-1" value="我要催单" name="btn">&nbsp;&nbsp;<input type="button" class="btn-2" value="取消订单" name="btncancel" onclick="thisjs.cancel()"></p></span></li>
+				{/if}
+				{if($order_list['detail']['order_state']==1)}
+					<li><i></i><span><p>餐厅已接单，制作配送中</p><p class="xx1"></p></span></li>
+					<li{if($order_list['detail']['order_comment']==0)} class="xoff"{/if}><i></i><span><p>订单完成</p></span></li>
+				{else if($order_list['detail']['order_state']==0)}
+					<li class="xoff"><i></i><span><p>餐厅已接单，制作配送中</p><p class="xx1"></p></span></li>
+					<li class="xoff"><i></i><span><p>订单完成</p></span></li>
+				{else}
+					<li class="xclose"><i></i><span><p>{$order_list['detail']['state']}</p></span></li>
+				{/if}
+			</div>
+		</td></tr>
+		{foreach($order_list['detail']['menu'] as $menu)}
+		<tr><td class="xcol1">
+		{set $price=0}
+		{foreach($menu['id'] as $item_menu)}
+			{set $price+=$order_list['price']['id_'.$item_menu]}
+			{$order_list['menu']['id_'.$item_menu]['menu_title']}&nbsp;&nbsp;
+		{/foreach}
+		</td><td>{$menu['num']}份</td><td>{fun_kj::get_price($price*$menu['num'])}</td>
+		</tr>
+		{/foreach}
+		<tr><td colspan="3" style="padding:0px">
+		<div class="mdetail">
+			<li class="x1">
+				<p><span class="y1">联系人：</span><span>{$order_list['detail']['order_name']}</span></p>
+				<p><span class="y1">联系电话：</span><span>{$order_list['detail']['order_mobile']}</span></p>
+				<p><span class="y1">配送地址：</span><span>{$order_list['detail']["order_area"]} — {$order_list['detail']['order_louhao1']}</span></p>
+				<p><span class="y1">付款方式：</span><span>{if($order_list['detail']['order_pay_method']=='onlinepayment')}在线支付{else if($order_list['detail']['order_pay_method']=='paymented')}已抵扣{else}货到付款{/if}</span></p>
+				<p><span class="y1">送货时间：</span><span>{$order_list['detail']['order_arrive']}</span></p>
+				<p><span class="y1">备注：</span><span>{$order_list['detail']['order_beta']}</span></p>
+			</li>
+			<li class='x2'>
+				<p class="xtotal">餐品 {fun_kj::get_price($order_list['detail']['order_total'])} + 配送费 {fun_kj::get_price($order_list['detail']['order_addprice'])}{if($order_list['detail']['order_score_money']>0)} - 抵扣 {fun_kj::get_price($order_list['detail']['order_score_money'])}{/if}{if($order_list['detail']['order_favorable']>0)} - 优惠 {fun_kj::get_price($order_list['detail']['order_favorable'])}{/if}{if($order_list['detail']['order_repayment']>0)} - 预付款 {fun_kj::get_price($order_list['detail']['order_repayment'])}{/if} = 应收：<font>{fun_kj::get_price($order_list['detail']['order_total_pay'])}</font></p>
+				</p>
+			</li>
+		</div>
+		</td></tr>
+	</table>
+</div>
+<script>
+var thisjs = new function() {
+	this.print = function() {
+		vReturnValue = window.showModelessDialog('/common.php?app_module=meal&app=call&app_act=print&order_id={fun_get::get("id")}', 'win_print', "dialogHeight:500px;dialogWidth:{$print_width}px");
+	}
+}
+</script>
+{include(footer)}

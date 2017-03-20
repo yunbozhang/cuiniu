@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>留言反馈-{cfg:(site_title,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+</head>
+<body>
+{include(label.header)}
+<div class="top">
+	<h1>意见反馈</h1>
+	<a href="?" class="x1"><img src="images/home.png"></a>
+	<a href="?app_act=help" id="id_top_back" class="x2"><img src="images/back.png"></a>
+</div>
+<div class="main">
+	<form name="frm_2" action="{cfg:(dirpath,base)}/index.php?app=ajax&app_act=msg_save" method="post">
+	<table class="cmsg">
+	<tr><td>
+			<textarea name="cont" class="xtxt" rows="5" placeholder="请输入您的评论，禁止垃圾信息！" ruletips='留言内容不能为空' required></textarea>			
+	</td></tr>
+	<tr><td>
+		<input type="text" class="xtxt" placeholder="姓名"{if(in_array('name',$options))} ruletips='请填写您的姓名' required{/if} name="name">			
+	</td></tr>
+	<tr><td>
+		<input type="text" name="email" class="xtxt" placeholder="电子邮箱" ruletips='电子邮箱填写不正确' rule='email' {if(in_array('email',$options))} required{/if}>
+	</td></tr>
+	<tr><td>
+		<input type="text" name="tel" class="xtxt" placeholder="联系电话" ruletips='联系电话填写不正确' rule='tel' {if(in_array('tel',$options))} required{/if}>
+
+	</td></tr>
+	<tr>
+	<td valign="top"><input type="button" name="btn_saveinfo" value="提交" class="xbtn1" onclick="thisjs.save();"></td></tr>
+	</table>
+	</form>
+</div>
+{include(label.footer)}
+</body>
+</html>
+<script>
+var thisjs = new function() {
+	this.save = function() {
+		if(kj.rule.form(document.frm_2) == false) {
+			return false;
+		}
+		kj.ajax.post(document.frm_2 , function(data) {
+			var obj_data = kj.json(data);
+			if(obj_data.isnull || !('code' in obj_data)) {
+				kj.alert("操作失败");
+			} else if(obj_data.code!='0') {
+				if('msg' in obj_data) {
+					kj.alert(obj_data.msg);
+				} else {
+					kj.alert('操作失败');
+				}
+			} else {
+				kj.alert('留言成功');
+				window.open('{cfg:(dirpath,base)}/{cfg:(basename,base)}?app=member&app_act=msg','_self');
+			}
+		});
+	}
+}
+</script>

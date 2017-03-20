@@ -1,0 +1,65 @@
+{if($shopinfo['shop_tips']!='')}
+<div class="shop_toptips" onmouseover="clearInterval(txtmar_timer)" onmouseout="txtmar_timer=setInterval(fun_txtmar,30)" title="{$shopinfo['shop_tips']}"><i>通知：</i><span id="txtmar1"><font id="txtmar2">{$shopinfo['shop_tips']}</font><font id="txtmar3"></font></span></div>
+<script>
+var txtmar_s,txtmar_s2,txtmar_s3,txtmar_timer;
+kj.onload(function() {
+	txtmar_s=kj.obj("#txtmar1");
+	txtmar_s2=kj.obj("#txtmar2");
+	txtmar_s3=kj.obj("#txtmar3");
+	var offset = kj.offset(txtmar_s);
+	if(offset.width>920) {
+		txtmar_s.scrollLeft=txtmar_s.scrollLeft+20;
+		txtmar_s3.innerHTML=txtmar_s2.innerHTML;
+		txtmar_timer=setInterval(fun_txtmar,30)
+	}
+});
+function fun_txtmar(){
+	if(txtmar_s2.offsetWidth<=txtmar_s.scrollLeft){
+		txtmar_s.scrollLeft-=txtmar_s2.offsetWidth;
+	} else {
+		txtmar_s.scrollLeft++;
+	}
+}
+</script>
+{/if}
+<div class="shoptop">
+	<li class="x1" id="id_shoptopli">
+		<img src = "{if(empty($shopinfo['shop_pic']))}{$temp_url}images/nopic.png{else}{$shopinfo['shop_pic']}{/if}" class="y1" onclick="window.open('?app_act=shop&id={$shopinfo['shop_id']}','_self');" style="cursor:pointer">
+		<p class="y2" onmouseover="jsshop.showext();" onmouseout="jsshop.hideext();">
+			<span class='xtit'>{$shopinfo['shop_name']}</span>
+			<span><label class="starbg"><font style="width:{$shopinfo['commentrate']}%"></font></label><i>{$shopinfo['shop_comment']}分</i></span>
+			<span>{if(empty($shopinfo['shop_addprice']))}免费配送{else}{$shopinfo['shop_addprice']} 元配送费{/if}&nbsp;，{$shopinfo['shop_dispatch_price']} 元起&nbsp;,{$shopinfo['extend']['arrivedelay']}分钟送到</span>
+		</p>
+		<p class="y3" onclick="jsheader.comment_shop('{$shopinfo['shop_id']}')" style="cursor:pointer">
+			<font>{$shopinfo['shop_comment']}</font>分<br>查看评分
+		</p>
+		<p class="y4">&nbsp;</p>
+		<p class="y3">
+			<font>{$shopinfo['extend']['arrivedelay']}+</font>分钟<br>平均送餐时间
+		</p>
+		<p class="y4">&nbsp;</p>
+		<p class="y3">
+			<font>{$shopinfo['shop_day_sold']}</font>单<br>今日销量
+		</p>
+	</li>
+	<li class="x2"></li>
+	<li class="x3" onclick="jsheader.collect_cancel({$shopinfo['shop_id']},kj.obj('#id_collectt'))">
+		<span>{if($shopinfo['iscollect'])}<font class="collect2 id_collect_{$shopinfo['shop_id']}" title="点击取消收藏" id="id_collectt"></font>{else}<font class="collect1 id_collect_{$shopinfo['shop_id']}" id="id_collectt"></font>{/if}
+		{if($shopinfo['iscollect'])}<label class="Tcollect{$shopinfo['shop_id']}">取消收藏</label>{else}<label class="Tcollect{$shopinfo['shop_id']}">收藏</label>{/if}
+		<p>(<i class="TcollectN{$shopinfo['shop_id']}">{$shopinfo['collectnum']}</i>)</p>
+		</span>
+	</li>
+</div>
+<div class="shopext" id="id_shopext" onmouseover="jsshop.showext();" onmouseout="jsshop.hideext();" style="display:none;cursor:pointer" onclick="window.open('?app_act=shop&id={$shopinfo['shop_id']}','_self');">
+	<ul>
+	<li>
+	<p><b>商家电话：</b><font>{$shopinfo['shop_tel']}</font></p>
+	<p><b>商家地址：</b><font>{$shopinfo['shop_address']}</font></p>
+	<p><b>营业时间：</b><font>
+		{foreach($shopinfo['extend']['arr_opentime'] as $item=>$key)}
+		{$key}<br>
+		{/foreach}</font>
+	</p>
+	</li>
+	</ul>
+</div>

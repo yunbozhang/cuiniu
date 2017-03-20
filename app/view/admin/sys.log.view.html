@@ -1,0 +1,12 @@
+{include(header)}
+<input type="hidden" name="url_dirpath" value="{$arr_list['path']}">
+<div class="pMenu" id="id_pMenu">
+	<li class="sel" onclick="admin.act('');">管理</li>
+	<li class = "x_btn"><a href="javascript:parent.thisjs.klkkdj_open('系统日志-帮助','app=service&app_act=help&key=help.sys.log');" title="帮助"><img src="images/faq.gif"></a></li>
+</div>
+<div class="pMain" id="id_main">
+	<div style="float:left;width:100%;text-align:left;line-height:20px;">
+		{$content}
+	</div>
+</div>
+{include(footer)}

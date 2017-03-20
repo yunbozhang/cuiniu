@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>订单统计-商家管理-{cfg:(site_title,sys)}</title>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+<style>
+.me_div1{float:left;margin:10px 0px 10px 20px}
+.me_line{float:left;width:99%}
+.me_table{float:left;width:400px;border-collapse: collapse;border:1px #cccccc solid}
+.me_table td{border-top:1px #cccccc solid;border-bottom:1px #cccccc solid;padding:8px 0px 5px 0px}
+.me_table .x_tit{font-weight:bold}
+.me_table .x_tit td{height:20px}
+.me_div2{float:left;width:402px;margin:10px;}
+.me_tit{float:left;width:100%;font-weight:bold;text-align:left;font-size:14px;margin:0px 0px 10px 0px;color:#4CB1EF}
+</style>
+</head>
+<body>
+{include(header)}
+{include(shop.header)}
+{include(shop.left)}
+<script src="/common/js/date.js"></script>
+<div class="uright">
+		<div class="pMenu" id="id_pMenu">
+			<li{if(fun_get::get("channel")=='')} class="sel"{/if} onclick="shop.refresh('channel=');">订单量</li>
+			<li{if(fun_get::get("channel")=='money')} class="sel"{/if} onclick="shop.refresh('channel=money');">成交额</li>
+		</div>
+		<div class="me_div1">
+		统计模式：<label><input type="radio" name="mode" value="day" checked onclick="shop.refresh('mode=');">按天</label>&nbsp;&nbsp;<label><input type="radio" name="mode" value="month"{if($mode=='month')} checked{/if} onclick="shop.refresh('mode=month');">按月</label>&nbsp;&nbsp;<label><input type="radio" name="mode" value="year"{if($mode=='year')} checked{/if} onclick="shop.refresh('mode=year');">按年</label>
+		</div>
+		<div class="me_div1">
+			<span id="id_mode_day" style="float:left;padding-left:60px{if($mode=='year' || $mode=='month')};display:none{/if}">日期：<input type="text" id="id_day_date" name="date" value="{fun_get::get('date')}" class='pTxtDate' onfocus="new Calendar().show(this,null,function(){shop.refresh('date='+kj.obj('#id_day_date').value);});"> </span>
+			<span id="id_mode_month" style="float:left;padding-left:60px{if($mode!='year' && $mode!='month')};display:none{/if}">
+				<select name="year" onchange="shop.refresh('year='+this.value);">
+				{for($i=2012;$i<=date("Y");$i++)}
+				<option value="{$i}"{if(fun_get::get("year")==$i)} selected{/if}>{$i}年</option>
+				{/for}
+				</select>
+			</span>
+			<span id="id_mode_year" style="float:left;padding-left:20px{if($mode!='month')};display:none{/if}">
+				<select name="month" onchange="shop.refresh('month='+this.value);">
+				{for($i=1;$i<13;$i++)}
+				<option value="{$i}"{if(fun_get::get("month")==$i)} selected{/if}>{$i}月</option>
+				{/for}
+				</select>
+			</span>
+		</div>
+		<div id="container" style="float:left;width:760px;height:500px">
+		</div>
+</div>
+{include(shop.footer)}
+{include(footer)}
+</body>
+</html>
+<script src="shop.js"></script>
+<script src="/components/report/jquery.min.js"></script>
+<script type="text/javascript">
+$(function () {
+    var chart;
+    $(document).ready(function() {
+        chart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'container',
+                type: 'line'
+            },
+            title: {
+                text: ''
+            },
+            subtitle: {
+                text: ''
+            },
+            xAxis: {
+                categories: {$report['sub']}
+            },
+            yAxis: {
+                title: {
+                    text: '{if(fun_get::get("channel")=="money")}成效额{else}订单量{/if}'
+                }
+            },
+            tooltip: {
+                enabled: false,
+                formatter: function() {
+                    return '<b>'+ this.series.name +'</b><br/>'+
+                        this.x +': '+ this.y;
+                }
+            },
+            plotOptions: {
+                line: {
+                    dataLabels: {
+                        enabled: true
+                    },
+                    enableMouseTracking: false
+                }
+            },
+            series: [{
+                name: '{if(fun_get::get("channel")=="money")}成效额统计{else}订单量统计{/if}',
+                data: {$report['data']}
+            }]
+        });
+    });
+    
+});
+</script>
+<script src="/components/report/highcharts.js"></script>

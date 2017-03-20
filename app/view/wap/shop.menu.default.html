@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>商品管理-{cfg:(site_title,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+<style>
+#id_pic_view img{max-width:100px;max-height:100px}
+.meselect select{width:260px;float:left;margin:5px 0px 3px 0px;clear:both}
+</style>
+</head>
+<body>
+{include(label.header)}
+<div class="top">
+	<h1 id='id_pagetit'>商品管理</h1>
+	<a href="javascript:thisjs.show_search();" class="x3">查找</a>
+	<a href="?app=shop" id="id_top_back" class="x2"><img src="images/back.png"></a>
+</div>
+<div class="main Tlist">
+	<table class="shoptable">
+		<tr class="xtit"><td>名称<td><td>价格</td><td>操作</td></tr>
+		{foreach($arr_list['list'] as $item)}
+		<tr><td>{$item['menu_title']}<td><td>{cfg:(coinsign,sys)}{$item['menu_price']}</td><td>
+		{if($this_limit->chk_act("edit"))}
+		<input type="button" value="编辑" onclick="thisjs.open({$item['menu_id']});" class="btn1">&nbsp;{/if}
+		{if($this_limit->chk_act("delete"))}
+		<input type="button" value="删除" onclick="thisjs.del({$item['menu_id']});" class="btn2">
+		{/if}
+		</td></tr>
+		{/foreach}
+	</table>
+	<div class="page">
+		{if($arr_list['pagebtns']['start']!=1)}<li><a href="{fun_get::url(array('page'=>''))}&page=1">1</a></li>{/if}
+		{if($arr_list['pagebtns']['start']>2)}
+			<li class="xnone"><font>...</font></li>
+		{/if}
+		{foreach($arr_list['pagebtns']['list'] as $item)}
+		<li{if(fun_get::get('page',1)==$item)} class="xsel"{/if}><a href="{fun_get::url(array('page'=>''))}&page={$item}">{$item}</a></li>
+		{/foreach}
+		{if($arr_list['pagebtns']['end']<$arr_list['pageinfo']['pages']-1)}
+			<li class="xnone"><font>...</font></li>
+		{/if}
+		{if($arr_list['pagebtns']['end']<$arr_list['pageinfo']['pages'])}
+		<li><a href="{fun_get::url(array('page'=>''))}&page={$arr_list['pageinfo']['pages']}">{$arr_list['pageinfo']['pages']}</a></li>
+		{/if}
+		</li>
+	</div>
+</div>
+</div>
+<div class="main" id="id_search" style="display:none">
+<form name="frmSearch" method="post" action="{fun_get::url()}">
+<table class="cinfotab">
+<tr><td class="x1"><span>分&nbsp;组：</span></td><td>
+	{$s_group_html}
+</td></tr>
+<tr><td class="x1"><span>关 键 字：</span></td><td>
+	<input type="text" id="s_key" name="s_key" value="{fun_get::get('s_key')}">
+</td></tr>
+</table>
+<div class='btn-2' style="width:60%;margin:20px 20% 0px 20%"><input type="button" name="btn_saveinfo" value="查 找" class="xbtn1" onclick="thisjs.search();"><input type="button" name="btn_saveinfo" value="清 空" class="xbtn2" onclick="thisjs.clear();"></div>
+</div>
+{include(label.footer)}
+<script>
+var thisjs = new function() {
+	this.open = function(id) {
+		window.open("?app_module=shop&app=menu&app_act=edit&id="+id,"_self");
+	}
+	this.del = function(id) {
+		kj.ajax("{fun_get::url(array('app_act'=>'delete','id'=>''))}&id=" + id , function(data) {
+			var objdata = kj.json(data);
+			if(objdata.isnull) {
+				alert("系统繁忙");
+				return;
+			}
+			if(objdata.code == '0') {
+				kj.alert.show("成功删除" , function(){
+					location.reload(true);
+				});
+			} else {
+				alert(objdata.msg);
+			}
+		});
+	}
+	this.show_search = function() {
+		this.pagetit = kj.obj("#id_pagetit").innerHTML;
+		kj.set("#id_pagetit","innerHTML" , "搜索");
+		kj.show("#id_search");
+		kj.hide(".Tlist");
+		this.back_url = kj.obj("#id_url_back").href;
+		kj.obj("#id_url_back").href="javascript:thisjs.back_search()";
+	}
+	this.back_search = function() {
+		kj.obj("#id_url_back").href=this.back_url;
+		kj.set("#id_pagetit","innerHTML" , this.pagetit);
+		kj.show(".Tlist");
+	}
+	this.search = function() {
+		var arr = [];
+		arr[0] = 's_group_id='+document.frmSearch.s_group_id.value;
+		arr[1] = 's_key='+document.frmSearch.s_key.value;
+		var url = kj.urlencode("{fun_get::url()}" , arr);
+		window.open(url,"_self");
+	}
+	this.clear = function() {
+		var arr = [];
+		arr[0] = 's_group_id=';
+		arr[1] = 's_key=';
+		var url = kj.urlencode("{fun_get::url()}" , arr);
+		window.open(url,"_self");
+	}
+
+}
+</script>
+</body>
+</html>

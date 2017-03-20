@@ -1,0 +1,28 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>{$shopinfo['shop_name']}-{cfg:(site_name,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{fun_format::len($shopinfo['shop_desc'],50)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+</head>
+<body>
+{include(label.header)}
+<script src="index.js"></script>
+<div class="top">
+	<h1>{$shopinfo['shop_name']}</h1>
+	<a href="?" class="x1"><img src="images/home.png"></a>
+	<a href="?app_act=shop.detail&shop_id={$shopinfo['shop_id']}" id="id_top_back" class="x2"><img src="images/back.png"></a>
+</div>
+<div class="main">
+<div class="newstit">商家介绍</div>
+<div class="newsc">
+	{$shopinfo['shop_intro']}
+</div>
+</div>
+{include(label.footer)}
+</body>
+</html>

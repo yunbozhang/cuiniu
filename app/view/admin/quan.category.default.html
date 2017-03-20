@@ -1,0 +1,88 @@
+{include(header)}
+<style>
+.me_pic_view{position:absolute;}
+.me_pic_sel{float:left;width:500px;text-align:left}
+.me_pic_sel li{float:left}
+.me_pic_sel .x1{width:350px}
+.me_pic_sel .x2{width:100px}
+.me_pic_sel .x2 img{width:100px;height:100px}
+</style>
+<input type="hidden" value="{$this_pid}" name="url_pid" id="id_url_pid">
+<div class="pMenu" id="id_pMenu">
+	<li class="sel">管理</li>
+	<li onclick="admin.table.row_insert()" class="x_btn">添加</li>
+</div>
+<div class="pMain_1" id="id_pMain_1">
+	<div class="pPath">路径：<a href="javascript:kj.set('#id_url_pid','value','0');admin.refresh();">顶级</a>{$this_path}</div>
+</div>
+<div class="pMain" id="id_main">
+<div class="pTableBox" id="id_table_box">
+	<div class='pTableTit' id="id_table_title">
+		<li><span class="x_tit" style="width:35px">ID</span></li>
+		{foreach($arr_list["tabtit"] as $item)}
+			<li><span class="x_tit"{if($item["w"]>0)} style="width:{$item["w"]}px"{/if} onclick="admin.table.list1.sort('{$item['key']}')">{$item["name"]}
+			{if(isset($arr_list['sort'][$item['key']]))}<img src="images/sort_{$arr_list['sort'][$item['key']]}.png">{/if}</span><span class="x_split"></span></li>
+		{/if}
+		<li><span class="x_tit" style="cursor:none;width:80px">操作</span></li>
+	</div>
+	<div class="pTableList" id="id_table_list">
+		<div class='pTable' id="id_table">
+			<div class='pTabRow' style="display:none">
+				<li><input type="hidden" name="category_id[]" value=""></li>
+				{foreach($arr_list["tabtd"] as $field)}
+					<li><input type="text" name="{$field}[]" value="" class="autosize"></li>
+				{/foreach}
+				<li>
+					<a href="javascript:kj.remove('#THISID');">删除</a>
+				</li>
+			</div>
+			{foreach($arr_list['list'] as $item)}
+			<div class='pTabRow' id="id_tabrow_{$item['category_id']}">
+				<li><input type='hidden' name='category_id[]' value="{$item['category_id']}">{$item['category_id']}</li>
+				{foreach($arr_list["tabtd"] as $field)}
+					<li><input type="text" name="{$field}[]" value="{$item[$field]}" class="autosize"></li>
+				{/foreach}
+				<li>
+				<a href="javascript:kj.set('#id_url_pid','value','{$item['category_id']}');admin.refresh();">下级</a>
+				{if($this_limit->chk_act("delete"))}&nbsp;&nbsp;<a href="javascript:thisjs.remove('{$item['category_id']}');">删除</a>{/if}
+				</li>
+			</div>
+			{/foreach}
+		</div>
+	</div>
+</div>
+</div>
+<div class="pFootAct" id="id_pFootAct">
+	<li>{if($this_limit->chk_act("save"))}<input type="button" name="btnExe" value="保存" onclick="admin.frm_ajax('save');" class="pBtn">{/if}</li>
+</div>
+<script src="admin.table.js"></script>
+<script>
+//初始化表格控件
+kj.onload(function(){
+admin.table.list1.init('#id_table_title' , '#id_table');
+});
+//自动保存
+admin.table.list1.save_resize = function() {
+	var lng_w = (kj.w(this.field));
+	kj.ajax.get("common.php?app=config&app_module=user&dir={$app_dir}&app_act=save_resize&filename=quan&key=quan.category&index=" + this.fieldsindex + "&w=" + lng_w , function(data){
+		//alert(data);
+	});
+}
+admin.table.list1.sort = function(key) {
+	kj.ajax.get("common.php?app=config&app_module=user&dir={$app_dir}&app_act=sort&key=quan.category&filename=quan&sortby=" + key , function(data){
+			var obj_data=kj.json(data);
+			if(!obj_data.isnull) {
+				admin.refresh();
+			}
+	});
+}
+
+//当前页面js对象
+var thisjs = new function() {
+	this.pic_selhtml = '';
+	this.remove = function(id) {
+		admin.ajax_delete( id , true , function() {kj.remove("#id_tabrow_" + id);} );
+	}
+}
+</script>
+{include(footer)}

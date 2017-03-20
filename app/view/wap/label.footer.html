@@ -1,0 +1,75 @@
+<div style="float:left;width:100%;height:60px">&nbsp;</div>
+<script src="meal.js"></script>
+{if(cls_obj::get("cls_session")->get("weixin")==1)}
+<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+<script>
+var wxshare = new function() {
+	this.wx_share = function() {
+		var url = location.href.split('#')[0];
+		kj.ajax.get("index.php?app_act=wx.share&url="+encodeURIComponent(url) , function(data) {
+			var obj = kj.json(data);
+			if(obj.isnull) {
+				//alert("系统繁忙");
+				return;
+			}
+			if(obj.code == '0') {
+				var arr = kj.obj(":description");
+				var description = (arr.length>0) ? arr[0].content : "";
+				if("undefined" == typeof obj_share || !obj_share) {
+					obj_share = {'title':document.title,'desc':description,'pic':'{fun_get::html_url("/webcss/wap/images/share_logo.jpg",1)}'};
+				}
+				if(!('title' in obj_share)) obj_share.title = document.title;
+				if(!('desc' in obj_share)) obj_share.desc = description;
+				if(!('pic' in obj_share)) obj_share.pic = '{fun_get::html_url("/webcss/wap/images/share_logo.jpg",1)}';
+				if(!('url' in obj_share)) obj_share.url = "{cfg:(domain,base)}{fun_get::url()}";
+				wx.config({
+					appId: obj.appid, // 必填，公众号的唯一标识
+					timestamp: obj.timestamp, // 必填，生成签名的时间戳
+					nonceStr: obj.noncestr, // 必填，生成签名的随机串
+					signature: obj.sign,// 必填，签名，见附录1
+					jsApiList: ['onMenuShareTimeline','onMenuShareAppMessage'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
+				});
+				wx.ready(function(){
+					<?php $share_url = fun_get::url();?>
+					var url1 = kj.urlencode(obj_share.url,"inviteid={cls_obj::get('cls_user')->uid}&invitetype=wx.share&share.key=<?php echo cls_obj::get('cls_user')->uid.'.'.TIME?>");
+					var url2 = kj.urlencode(obj_share.url,"inviteid={cls_obj::get('cls_user')->uid}&invitetype=wx.tj&share.key=<?php echo cls_obj::get('cls_user')->uid.'.'.TIME?>");
+					wx.onMenuShareTimeline({
+						title: obj_share.title, // 分享标题
+						link: url1, // 分享链接
+						imgUrl: obj_share.pic, // 分享图标
+						success: function () { 
+							kj.alert.show('谢谢分享',function(){
+								kj.ajax.get("common.php?app=other&app_act=share&key=<?php echo cls_obj::get('cls_user')->uid.'.'.TIME;?>&type=wx.share&url={$share_url}");
+							});
+						},
+						cancel: function () { 
+							//alert('分享失败');
+						}
+					});
+					wx.onMenuShareAppMessage({
+						title: obj_share.title, // 分享标题
+						desc: obj_share.desc, // 分享描述
+						link: url2, // 分享链接
+						imgUrl: obj_share.pic, // 分享图标
+						type: 'link', // 分享类型,music、video或link，不填默认为link
+						dataUrl: '', // 如果type是music或video，则要提供数据链接，默认为空
+						success: function () { 
+							kj.alert.show('谢谢推荐',function(){
+								kj.ajax.get("common.php?app=other&app_act=share&key=<?php echo cls_obj::get('cls_user')->uid.'.'.TIME;?>&type=wx.tj&url={$share_url}");
+							});
+						},
+						cancel: function () { 
+							//alert('发送失败');
+						}
+					});
+				});
+			} else {
+				//alert(obj.msg);
+			}
+			
+		});
+	}
+}
+wxshare.wx_share();
+</script>
+{/if}

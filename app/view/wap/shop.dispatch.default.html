@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>配送范围-{cfg:(site_title,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+<style>
+#id_pic_view img{max-width:100px;max-height:100px}
+.meselect select{width:260px;float:left;margin:5px 0px 3px 0px;clear:both}
+</style>
+</head>
+<body>
+{include(label.header)}
+<div class="top">
+	<h1>配送范围</h1>
+	<a href="?" class="x1"><img src="images/home.png"></a>
+	<a href="{if(count($arr_path)<1)}?app=shop{else}{if(count($arr_path)>1)}{fun_get::url(array('url_pid'=>$arr_path[count($arr_path)-2]['area_id']))}{else}{fun_get::url(array('url_pid'=>''))}{/if}{/if}" id="id_top_back" class="x2"><img src="images/back.png"></a>
+</div>
+<div class="main">
+<form name="frm_main" action="{fun_get::url(array('app_act'=>'save'))}" method="post">
+<div class="shopedit">
+{foreach($arr_list['area'] as $item)}
+	<div class="xtitle Tobj{$item['area_id']}"><div>{$item['area_name']}</div><span><a href="{fun_get::url(array('url_pid'=>$item['area_id'],'topid'=>$topid))}">下级</a>{if($this_limit->chk_act("delete"))}&nbsp;&nbsp;<input type="button" name="btnExe[]" value="删除" onclick="thisjs.remove('' , '{$item['area_id']}');" class="btn2">{/if}</span></div>
+{/foreach}
+{foreach($arr_list['list'] as $item)}
+	<div class="xtitle Tobj{$item['dispatch_id']}"><div>{$item['area_name']}</div>{if($this_limit->chk_act("delete"))}<span><input type="button" name="btnExe[]" value="删除" onclick="thisjs.remove('{$item['dispatch_id']}');" class="btn2"></span>{/if}</div>
+	<div class="xtext Tobj{$item['dispatch_id']}">
+	{foreach($arr_list["tabtd"] as $ii=>$field)}
+		{if($field!='area_name')}
+		<li><span class="x35">{$arr_list['tabtit'][$ii]['name']}：</span><span class="x65"><input type="text" name="{$field}[]" value="{$item[$field]}"></span></li>
+		{/if}
+	{/foreach}
+	<input type='hidden' name='dispatch_id[]' value="{$item['dispatch_id']}">
+	</div>
+{/foreach}
+	<a href="?app_module=shop&app=dispatch&app_act=add" class="xadd">添加</a>
+	{if($this_limit->chk_act("save"))}<div class="xbtn" style="margin:20px 0px 0px 0px"><input type="button" name="btn_saveinfo" value=" 保 存 " class="btn1" onclick="thisjs.on_save();"></div>{/if}
+</div>
+</form>
+</div>
+{include(label.footer)}
+</body>
+</html>
+<script>
+var thisjs = new function() {
+	this.on_save = function() {
+		kj.ajax.post(document.frm_main , function(data) {
+			var objdata = kj.json(data);
+			if(objdata.isnull) {
+				alert("系统繁忙");
+				return;
+			}
+			if(objdata.code == '0') {
+				kj.alert.show("保存成功");
+			} else {
+				alert(objdata.msg);
+			}
+		});
+	}
+	this.remove = function(id , pid) {
+		if(!pid) {
+			url = '{fun_get::url(array("app_act"=>"delete","pid"=>"","id"=>""))}&id=' + id;
+		} else {
+			url = '{fun_get::url(array("app_act"=>"delete","pid"=>"","id"=>""))}&pid=' + pid;
+		}
+
+		kj.ajax.post(url , function(data) {
+			var objdata = kj.json(data);
+			if(objdata.isnull) {
+				alert("系统繁忙");
+				return;
+			}
+			if(objdata.code == '0') {
+				kj.alert.show("删除成功",function(){
+					kj.remove(".Tobj" + objdata.id);
+				});
+			} else {
+				alert(objdata.msg);
+			}
+		});
+
+	}
+}
+</script>

@@ -1,0 +1,80 @@
+{include(header)}
+<div class="pMenu" id="id_pMenu">
+	<li class="sel" onclick="admin.edittabel(0);">账号信息</li>
+	<li onclick="admin.edittabel(1);">基本信息</li>
+	<li class = "x_btn"><a href="javascript:parent.thisjs.klkkdj_open('注册用户-帮助','app=service&app_act=help&key=help.sys.user');" title="帮助"><img src="images/faq.gif"></a></li>
+</div>
+<div class="pMain" id="id_main">
+<table class='pEditTable'>
+<tr class='pTabTitRow'><td class='pTabTitCol' colspan="2"></td></tr>
+<tr>
+	<td class="pTabColName">类 型：</td>
+	<td class="pTabColVal">
+		<select name="user_type">
+		{foreach($arr_user_type as $item=>$key)}
+			<option value="{$key}"{if($key==$editinfo['user_type'])} selected{/if}>{$item}</option>
+		{/foreach}
+		</select>
+	</td></tr>
+<tr>
+	<td class="pTabColName">管理组：</td>
+	<td class="pTabColVal">
+		{$editinfo["html_group"]}
+	</td></tr>
+<tr>
+	<td class="pTabColName">状 态：</td>
+	<td class="pTabColVal">
+		<select name="user_state">
+		{foreach($arr_user_state as $item=>$key)}
+			<option value="{$key}"{if($key==$editinfo['user_state'])} selected{/if}>{$item}</option>
+		{/foreach}
+		</select>
+	</td></tr>
+<tr>
+	<td class="pTabColName">用户名：</td><td class="pTabColVal"><input type="text" name="user_name" value="{$editinfo['user_name']}" class='pTxt1 pTxtL150'{if(!empty($editinfo['user_id']))} disabled{else} ruletips="用户名不能为空或格式不对"  rule='uname' ruletipsmode=1 required{/if}>{if(!empty($editinfo['user_id']))}&nbsp;&nbsp;<span class="pBeta">不能修改</span>{else}&nbsp;<span style="color:#ff0000">*</span>{/if}</td></tr>
+<tr>
+	<td class="pTabColName">密&nbsp;&nbsp;码：</td><td class="pTabColVal"><input type="password" name="user_pwd" value="" class='pTxt1 pTxtL150'>{if(!empty($editinfo['user_id']))}&nbsp;&nbsp;<span class="pBeta">为空则不修改密码</span>{else}&nbsp;<span style="color:#ff0000">*</span>{/if}</td>
+	</tr>
+<tr>
+	<td class="pTabColName">邮&nbsp;&nbsp;箱：</td><td class="pTabColVal"><input type="text" name="user_email" value="{$editinfo['user_email']}" class='pTxt1 pTxtL150' ruletips="邮箱格式不对"  rule='email' ruletipsmode=1></td></tr>
+<tr>
+	<td class="pTabColName">昵&nbsp;&nbsp;称：</td><td class="pTabColVal"><input type="text" name="user_netname" value="{$editinfo['user_netname']}" class='pTxt1 pTxtL150'></td></tr>
+</table>
+<!--label 1 end-->
+<!--label 2 start-->
+<table class='pEditTable' style='display:none'>
+<tr class='pTabTitRow'><td class='pTabTitCol' colspan="2"></td></tr>
+<tr>
+	<td class="pTabColName">所属部门：</td>
+	<td class="pTabColVal">
+		{$editinfo["html_depart"]}
+	</td></tr>
+<tr>
+	<td class="pTabColName">姓名：</td><td class="pTabColVal"><input type="text" name="user_realname" value="{$editinfo['user_realname']}" class='pTxt1 pTxtL150'></td></tr>
+<tr>
+	<td class="pTabColName">性别：</td><td class="pTabColVal">
+	<select name='user_sex'>
+	<option value=''></option>
+	<option value='1'{if($editinfo['user_sex']==1)} selected{/if}>男</option>
+	<option value='2'{if($editinfo['user_sex']==2)} selected{/if}>女</option></select></td></tr>
+<tr>
+	<td class="pTabColName">出生日期：</td><td class="pTabColVal"><input type="text" name="user_birthday" value="{$editinfo['user_birthday']}" class='pTxt1 pTxtL150' ruletips="出生日期格式不对"  rule='date' ruletipsmode=1></td></tr>
+<tr>
+	<td class="pTabColName">籍贯：</td><td class="pTabColVal"><input type="text" name="user_house_location" value="{$editinfo['user_house_location']}" class='pTxt1 pTxtL150'></td></tr>
+<tr>
+	<td class="pTabColName">所在地：</td><td class="pTabColVal"><input type="text" name="user_location" value="{$editinfo['user_location']}" class='pTxt1 pTxtL150'></td></tr>
+<tr>
+	<td class="pTabColName">电话：</td><td class="pTabColVal"><input type="text" name="user_tel" value="{$editinfo['user_tel']}" class='pTxt1 pTxtL150' ruletips="电话格式不对"  rule='tel' ruletipsmode=1></td></tr>
+<tr>
+	<td class="pTabColName">手机：</td><td class="pTabColVal"><input type="text" name="user_mobile" value="{$editinfo['user_mobile']}" class='pTxt1 pTxtL150' ruletips="手机格式不对"  rule='mobile' ruletipsmode=1></td></tr>
+<tr>
+	<td class="pTabColName">详细地址：</td><td class="pTabColVal"><input type="text" name="user_address" value="{$editinfo['user_address']}" class='pTxt1 pTxtL200'></td></tr>
+</table>
+<!--label 2 end-->
+</div>
+<div class="pFootAct" id="id_pFootAct">
+	<li>
+	<input type="button" name="dosubmit" value="保存" onclick="admin.frm_ajax('save');" class="pBtn">
+	</li>
+</div>
+{include(footer)}

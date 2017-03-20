@@ -1,0 +1,133 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>{$gift_info['gift_name']}-{cfg:(site_name,sys)}</title>
+<meta name="keywords" content="{$gift_info['gift_name']},{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+</head>
+<body>
+{include(header)}
+<div class="gift">
+	<div class="giftleft">
+		<li class="xtit">礼品兑换排行榜</li>
+		{foreach($arr_top10 as $item)}
+		<li><span class="xpic"><a href="{fun_get::url(array('id'=>$item['gift_id']))}"><img src="{$item['gift_pic']}"></a></span>
+		<span class="xname"><a href="{fun_get::url(array('id'=>$item['gift_id']))}">{$item['gift_name']}</a></span>
+		<span class="xscore">{$item['gift_score']}积分</span>
+		<span class="xnum">已兑换：{$item['gift_num']}份</span>
+		</li>
+		{/if}
+	</div>
+	<div class="giftright">
+		<div class="xpic"><table><tr><td valign="middle"><img src="{$gift_info['gift_pic']}"></td></tr></table></div>
+		<div class="xtit">【{$gift_info['gift_name']}】</div>
+		<div class="xinfo">
+			<li>单价：<font style="font-size:30px">{$gift_info['gift_score']}</font>&nbsp;积分</li>
+			<li>{if(!empty($gift_info['gift_total']))}总数量：{$gift_info['gift_total']}份，{/if}已兑换：{$gift_info['gift_num']}份</li>
+			{if(!empty($gift_info['gift_total_day']))}<li>今日限兑：{$gift_info['gift_total_day']}份，今日已兑：{$gift_info['gift_num_today']}份</li>{/if}
+			{if(!empty($gift_info['opentime']))}<li><span style="float:left">兑换时间：</span><span style="float:left;">
+			{foreach($gift_info['opentime'] as $item=>$key)}
+			{$key}<br>
+			{/foreach}
+			</span></li>{/if}
+		</div>
+		<div class="xinfo2">
+			{if(cls_obj::get("cls_user")->is_login())}
+			<li>您当前还有：{$userscore} 积分</li>
+			{else}
+			<li style="color:#ff0000">您还没有登录</li>
+			{/if}
+			<li class="y1">
+				<span class="btn-s1">
+				<input type="button" name="btnjian" class="xbtnjian" onclick="thisjs.addnum(-1);">
+				<input type="text" name="num" value="1" class="xnum" onkeydown="thisjs.keydown();" onkeyup="thisjs.keyup();" id="id_num">
+				<input type="button" name="btnjia" class="xbtnjia" onclick="thisjs.addnum(1);">
+				</span>
+				<span>&nbsp;&nbsp;需要<font id="id_needscore" style="color:#ff0000">{$gift_info['gift_score']}</font>积分</font></li>
+		</div>
+		<div class="xbtn">
+		{if(cls_obj::get("cls_user")->is_login())}
+		<input type="button" name="btnok" value="立即兑换" class="btn-1" onclick="thisjs.showinfo();">
+		{else}
+		<input type="button" name="btnok" value="点击登录" class="buttbtn-2on3" onclick="jsheader.showlogin();">
+		{/if}
+		&nbsp;&nbsp;&nbsp;&nbsp;<input type="button" name="btnback" value="返回" class="btn-2" onclick="window.open('?app=act.gift','_self');"></div>
+		<div class="xtit1">&nbsp;&nbsp;礼品详情</div>
+		<div class="xcont">{$gift_info['gift_desc']}</div>
+	</div>
+</div>
+<script>
+var thisjs = new function() {
+	this.num = 1;
+	this.showinfo_html = '';
+	this.addnum = function(val) {
+		var num = kj.toint(kj.obj("#id_num").value);
+		num += val
+		if(num<1) return;
+		//if(num>
+		kj.obj("#id_num").value = num;
+		this.needscore();
+	}
+	this.keyup = function() {
+		var num = kj.toint(kj.obj("#id_num").value);
+		if(num<1) {
+			kj.obj("#id_num").value = this.num;
+		} else {
+			this.needscore();
+		}
+	}
+	this.keydown = function() {
+		this.num = kj.obj("#id_num").value;
+	}
+	this.needscore = function() {
+		kj.obj("#id_needscore").innerHTML = kj.toint("{$gift_info['gift_score']}") * kj.toint(kj.obj("#id_num").value);
+	}
+	this.submit = function() {
+		var data = {'num' : kj.obj("#id_num").value,'linkname' : kj.obj("#id_linkname").value , "tel" : kj.obj("#id_tel").value , "address" : kj.obj("#id_address").value}
+		if(data.linkname == '') {
+			alert("请填写收货人姓名");
+			return;
+		}
+		if(data.tel == '') {
+			alert("请填写收货人联系电话，以便我们寄送礼品");
+			return;
+		}
+		if(data.address == '') {
+			alert("请填写收货地址");
+			return;
+		}
+		if(kj.obj("#id_gift_verifycode")) data.verifycode = kj.obj("#id_gift_verifycode").value;
+		kj.ajax.post("?app=act.gift&app_act=change&id={$gift_info['gift_id']}", data , function(data) {
+				var obj = kj.json(data);
+				if(obj.isnull) return;
+				if(obj.code != '0') {
+					('msg' in obj)? alert(obj.msg) : alert("兑换失败");
+					return;
+				}
+				('msg' in obj) ? kj.alert(obj.msg) : kj.alert("兑换成功,我们将尽快为您寄出礼品");
+				window.location.reload();
+		});
+	}
+	this.showinfo = function() {
+		if(this.showinfo_html == '') {
+			this.showinfo_html = kj.obj("#id_ginfo").innerHTML;
+			kj.remove("#id_ginfo");
+		}
+		kj.dialog({'html':this.showinfo_html,'id':'showinfo','type':'html','title':'填写收货信息','w':400,'showbtnmax':false,'showbtnhide':false});
+	}
+}
+</script>
+<div id="id_ginfo"  style="display:none">
+	<div class="giftinfo">
+		<li><span class="xcol1">收 货 人：</span><span class="xcol2"><input type="text" name="linkname" value="{$record_info['linkname']}" class="x1" id="id_linkname"></span></li>
+		<li><span class="xcol1">联系电话：</span><span class="xcol2"><input type="text" name="tel" value="{$record_info['tel']}" class="x1" id="id_tel"></span></li>
+		<li><span class="xcol1">收货地址：</span><span class="xcol2"><input type="text" name="address" value="{$record_info['address']}" class="x2" id="id_address"></span></li>
+		{if($is_verify)}<li><span class="xcol1">验证码：</span><span class="xcol3"><input name="verifycode" type="text" class="x1" id="id_gift_verifycode"/></span><span class="col4"><img src="{cfg:(dirpath,base)}/common.php?app=sys&app_act=verifycode&app_contenttype=img" onclick="this.src='{cfg:(dirpath,base)}/common.php?app=sys&app_act=verifycode&app_contenttype=img&app_rnd='+Math.random();"></span></li>{/if}
+		<li><span class="xcol1">&nbsp;</span><span class="xcol2"><input type="button" name="btnok" value=" 确 定 " class="btn-3" onclick="thisjs.submit();"></span></li>
+	</div>
+</div>
+{include(footer)}
+</body>
+</html>

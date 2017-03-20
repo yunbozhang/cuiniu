@@ -1,0 +1,40 @@
+<div style="display:none">
+<!-- hidden 不支持 reset() 所以用  display:none 方法-->
+<input type="text" name="app_module" value="{$app_module}">
+<input type="text" name="app" value="{$app}">
+<input type="text" name="app_act" value="{$app_act}">
+<input type="text" name="app_ajax" value="">
+<input type="text" name="page" value="{fun_get::get('page')}">
+<input type="text" name="id" value="{$get_id}">
+</div>
+</form>
+<div class="faction" id="id_faction" onmouseover="kj.show(this);" onmouseout="kj.hide(this);" style="display:none">
+</div>
+<script>
+kj.handler("#id_table .pTabRow li","mouseover",function(){
+	if(kj.obj("#id_main").style.overflowX!='scroll') return;
+	var arr = kj.obj("li" , this.parentNode);
+	if(!arr || arr.length<1) return;
+	var arrx = kj.obj("input" , arr[arr.length-1]);
+	if(arr[arr.length-1]==this) return;
+	if(!arrx || arrx.length<1) return;
+	var offset = kj.offset(this);
+	var obj = kj.obj("#id_faction");
+	var html = '';
+	for(var i = 0 ; i < arrx.length ; i ++) {
+		x = kj.getAttribute(arrx[i],'onclick');
+		html += '<a href="javascript:'+x+'">'+arrx[i].value+'</a>';
+	}
+	obj.innerHTML = '<ul id="id_faction_ul">' + html + '</ul>';
+	kj.show("#id_faction");
+	kj.set("#id_faction" , "style.left" , offset.left+'px');
+	kj.set("#id_faction" , "style.top" , (offset.top+offset.height)+'px');
+	var offset2 = kj.offset("#id_faction_ul");
+	kj.set("#id_faction" , "style.width" , offset2.width+'px');
+	//kj.set("#id_faction" , "style.height" , offset2.height+'px');
+});
+kj.handler("#id_table","mouseout",function(){
+	kj.hide("#id_faction");
+});
+</script>
+</body></html>

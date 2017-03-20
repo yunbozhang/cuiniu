@@ -1,0 +1,192 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>{$shopinfo['shop_name']}-{cfg:(site_name,sys)}</title>
+<meta name="keywords" content="{$shopinfo['shop_name']},{cfg:(keywords,sys)}"/>
+<meta name="description" content="{fun_format::len($shopinfo['shop_desc'],50)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+<script src="{cfg:(dirpath,base)}/common.php?app=sys&app_act=web.config&app_ajax=1"></script>
+<script src="/common/js/kj.js"></script>
+<script src="/common/js/kj.dialog.js?rand=Math.random()"></script>
+<script src="/common/js/kj.ajax.js"></script>
+</head>
+<body>
+	<div class="shopcate">
+		<li class="x3">
+		{foreach($arr_menu["list"] as $item)}
+			<a href="javascript:void(0);" onclick="jsshop.movecate(this,{$item['id']});">{$item['name']}</a>
+		{/foreach}
+		</li>
+	</div>
+	<div class="atitle"{if(empty($arr_menu["tj"]))} style="background:#fff;border:0px"{/if} id="id_menu_list">
+	<li class="xtit"{if(!empty($arr_menu["tj"]))} kjdata='本店推荐'{/if}>{if(!empty($arr_menu["tj"]))}本店推荐{/if}</li>
+	<li class="xact" id="id_menu_sort"><font>排序：</font><span class="xsel" onclick="jsshop.sort('',this);">默认</span><span onclick="jsshop.sort('sold',this);">销量<i></i></span><span onclick="jsshop.sort('comment',this);" style="display:none">好评<i></i></span><span onclick="jsshop.sort('price',this);">价格<i></i></span></li>
+	<li class="xcate" onmouseover="jsshop.show_cate2(this);" onmouseout="kj.hide('#id_shopcate2');" style="display:none"><font>全部分类</font><i></i></li>	
+	</div>
+	<div id="id_alllist" style="float:left;width:724px;padding-bottom:50px">
+	{include(index.shop.list)}
+	</div>
+<div class='cart_menu' id="id_cart_menu" style="display:none">
+	<div class="x_list" id="id_cart_box"></div>
+</div>
+<div class='cart_menu' id="id_cart_menutit" style="z-index:10;display:none">
+	<div class="x_top">
+		<li class="x_3" onclick="jsshop.showcart_fixed(kj.obj('#id_btn_fixed'));">￥0</li>
+		<li class="x_2" onclick="jsshop.showcart_fixed(kj.obj('#id_btn_fixed'));"></li>
+		<li class="x_6" onclick="jsshop.showcart_fixed(this);" id="id_btn_fixed"></li>
+		<li class="x_5" onclick="jsshop.cart_submit();">{if(isset($table_reserve))}点好了{else}立即结算{/if}</li>
+	</div>
+</div>
+<div style="float:left;width:100%;height:20px;">&nbsp;</div>
+<?php $weekday = date("w");?>
+{if($shopinfo['shop_day_limit']>0 && $shopinfo['shop_day_sold']>=$shopinfo['shop_day_limit'])}
+<div class="shop_tips" id="id_shop_tips" style="display:none">
+<ul>
+<li><h1>今日已售完，明天继续</h1></li>
+<li style="margin-top:50px"><input type="button" name="btn" value="返回" class="button4" onclick="window.open('?','_self');">&nbsp;&nbsp;<input type="button" name="btn" value="看一下" class="button4x" onclick="kj.event('#id_bglayer','click');"></li>
+<ul>
+</div>
+{else if($shopinfo['shop_state']==-1 || empty($cfg_opentime['list']))}
+<div class="shop_tips" id="id_shop_tips" style="display:none">
+<ul>
+<li><h1>{if(empty($shopinfo['shop_close_tips']))}东家有事，暂停营业{else}{$shopinfo['shop_close_tips']}{/if}</h1></li>
+<li style="margin-top:50px"><input type="button" name="btn" value="返回" class="button4" onclick="window.open('?','_self');">&nbsp;&nbsp;<input type="button" name="btn" value="看一下" class="button4x" onclick="kj.event('#id_bglayer','click');"></li>
+<ul>
+</div>
+{else if($cfg_opentime['nowindex']<=0 || (!empty($shopinfo['extend']['weekday']) && !in_array($weekday,$shopinfo['extend']['weekday'])))}
+<div class="shop_tips" id="id_shop_tips" style="display:none">
+<ul>
+<li><h1>{$shopinfo['shop_name']}送餐时间</h1>
+	{if(!empty($shopinfo['extend']['weekday']))}
+	<h2>每周：{$shopinfo['extend']['weekdayshow']} </h2>
+	{/if}
+	{foreach($shopinfo['extend']['arr_opentime'] as $item=>$key)}
+	<h2>{$key}</h2>
+	{/foreach}
+</li>
+<li style="margin-top:20px"><input type="button" name="btn" value="返回" class="button4" onclick="window.open('?','_self');">&nbsp;&nbsp;<input type="button" name="btn" value="看一下" class="button4x" onclick="kj.event('#id_bglayer','click');"></li>
+<ul>
+</div>
+{/if}
+<div class="guige" id="id_guige" style="display:none">
+	<div class="x1"><img src="images/close.jpg" onclick="jsshop.guige_close();"></div>
+	<div class="x2">
+		<li><label>规格：</label><span style="margin-top:-12px" id="id_guige_list"><font class="xsel">小份</font><font>中份</font><font>大份</font></span></li>
+		<li><label>单价：</label><span>{cfg:(coinsign,sys)}<i class="Tprice"></i></span></li>
+		<li><label>数量：</label><span><i class="xjian" onclick="jsshop.guige_num(-1);"></i><font class="xnum" id="id_guige_num">1</font><i class="xjia" onclick="jsshop.guige_num(1);"></i></span></li>
+		<li><input type="button" name="btnok" value="加入到购物车" class="xbtn" onclick="jsshop.guige_add();"></li>
+	</div>
+</div>
+<div class="shopcate2" id="id_shopcate2" onmouseover="kj.show('#id_shopcate2');" onmouseout="kj.hide('#id_shopcate2');" style="display:none">
+	<i></i>
+	<li>
+	{foreach($arr_menu["list"] as $item)}
+		<a href="javascript:void(0);" onclick="jsshop.movecate(this,{$item['id']});">{$item['name']}</a>
+	{/foreach}
+	</li>
+</div>
+<script src="shop.default.js"></script>
+<script>
+jsshop.mintotal = kj.toint('{$shopinfo["shop_dispatch_price"]}');//最低起送价
+jsshop.tempurl = "{$temp_url}";
+jsshop.shopid =  kj.toint('{$shopinfo["shop_id"]}');
+jsshop.menutype = kj.toint("{$arr_menu['type']}");
+jsshop.cart_init = function() {
+	{foreach($arr_menu['cart'] as $cart)}
+		{foreach($cart as $menu)}
+			{if(isset($arr_menu["cart_menu"]["id_".$menu]))}
+			this.cart_add({id:'{$arr_menu["cart_menu"]["id_".$menu]['menu_id']}',name:'{$arr_menu["cart_menu"]["id_".$menu]['menu_title']}',pic:'{$arr_menu["cart_menu"]["id_".$menu]['menu_pic_small']}',price:'{$arr_menu["cart_menu"]["id_".$menu]['menu_price']}',type:'{$arr_menu["cart_menu"]["id_".$menu]['menu_type']}'},true);
+			{/if}
+			{if(isset($arr_menu['abount_cart']['id_'.$menu]))}
+			this.cart_add({id:'{$arr_menu["abount_cart"]["id_".$menu]['menu_id']}',name:'{$arr_menu["abount_cart"]["id_".$menu]['menu_title']}',pic:'',price:'{$arr_menu["abount_cart"]["id_".$menu]['menu_price']}',type:''},true);
+			{/if}
+		{/foreach}
+	{/foreach}
+}
+{if(isset($table_reserve))}
+jsshop.cart_submit = function() {
+	var i,val,j,arr_1=[];
+	obj = kj.obj("#id_cart_box :cartid[]");
+	for(i = 0 ; i < obj.length ; i++ ) {
+		val = kj.toint(kj.obj("#id_cart_num_"+obj[i].value).value);
+		for(j=0;j<val;j++) {
+			arr_1[arr_1.length] = obj[i].value;
+		}
+	}
+	var xid = this.shopid;
+	if(this.menutype!=1) xid = xid + '-' + this.menutype;
+	if(arr_1.length>0) {
+		var str_ids = xid + ":" + arr_1.join("|");
+	} else {
+		alert("请选择商品再来提交");return;
+	}
+
+	kj.ajax.get("{fun_get::url(array('app_act'=>'shop.table.reserve.save','app'=>'ajax','cart_ids'=>''))}&cart_ids="+str_ids,function(data) {
+		var obj = kj.json(data);
+		if(obj.isnull) {
+			alert("系统繁忙");
+			return;
+		}
+		if(obj.code == '0') {
+			jsshop.clear();
+			jsshop.save_cookie();
+			{if(fun_get::get("iscall"))}
+				parent.location.reload(true);
+				parent.kj.dialog.close("#winaddmenu");
+			{else if(fun_get::get("rid")!='')}
+				window.open("?app=member","_self");
+			{else}
+				window.open("master.php?app_module=meal&app=table&app_act=reserve&id={fun_get::get('tableid')}","_self");
+			{/if}
+		} else {
+		}
+	});
+}
+{/if}
+jsshop.resize = function(){
+	var h = document.documentElement.clientHeight;
+	var offset = kj.offset("#id_menu_list");
+	kj.set("#id_cart_menu" , 'style.top' , (h-32) + "px");
+	kj.set("#id_cart_menutit" , 'style.top' , (h-32) + "px");
+	var left = document.documentElement.scrollLeft || document.body.scrollLeft;
+	kj.set("#id_cart_menu" , 'style.left' , (offset.left+offset.width-282) + "px");
+	kj.set("#id_cart_menutit" , 'style.left' , (offset.left+offset.width-282) + "px");
+	//定位label
+	kj.set("#id_cart_menutit .x_top .x_4" , 'className' , 'x_6');
+	this.cart_show = 0;
+}
+
+jsshop.cart_init();
+jsshop.resize();
+kj.onload(function(){
+	kj.handler(".alist li" ,"mouseover",function(e){
+		kj.addClassName(this , "xact");
+	});
+	kj.handler(".alist li" ,"mouseout",function(e){
+		kj.delClassName(this , "xact");
+	});
+	kj.show("#id_cart_menu");
+	kj.show("#id_cart_menutit");
+	var arr = kj.obj(".Tatitle");
+	var offset,arrx,name;
+	for(var i = 0 ; i < arr.length ; i++) {
+		offset = kj.offset(arr[i]);
+		arrx = kj.obj("li",arr[i]);
+		name = (arrx && 'length' in arrx && arrx.length>0) ? arrx[0].innerHTML : '';
+		jsshop.objcate[jsshop.objcate.length] = {'name':name,'top':offset.top};
+	}
+});
+{if(($shopinfo['shop_day_limit']>0 && $shopinfo['shop_day_sold']>=$shopinfo['shop_day_limit']) || $shopinfo['shop_state']==-1 || $cfg_opentime['nowindex']<=0 || (!empty($shopinfo['extend']['weekday']) && !in_array($weekday,$shopinfo['extend']['weekday'])))}
+kj.bglayer('id_shop_tips','#000',0.5);
+kj.show("#id_shop_tips");
+var lng_left = kj.w()/2-kj.w("#id_shop_tips")/2;
+kj.set("#id_shop_tips",'style.left',lng_left+'px');
+{/if}
+jsshop.obj_guige = {fun_format::json($arr_menu['abount_menu'])};
+</script>
+<script src = "{cfg:(dirpath,base)}/index.php?app=js&app_act=shop.hit&shop_id={$shopinfo['shop_id']}"></script>
+<script src="/common/js/kj.slider.js"></script>
+
+</body>
+</html>

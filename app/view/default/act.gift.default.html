@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>礼品兑换-{cfg:(site_name,sys)}</title>
+<meta name="keywords" content="礼品兑换,{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+</head>
+<body>
+{include(header)}
+<div class="giftpic"><img src="images/jfbannerblack.png"></div>
+<div class="gifttitle"><a href="{fun_get::url(array('group'=>''))}"{if(fun_get::get('group')=='')} class="xsel"{/if}><font>全部礼品</font></a>
+{foreach($arr_group as $item)}
+<a href="{fun_get::url(array('group'=>$item))}"{if(fun_get::get('group')==$item)} class="xsel"{/if}><font>{$item}</font></a></span>
+{/foreach}
+</div>
+<div class="giftlist">
+<ul>
+{foreach($arr_gift['list'] as $item)}
+	<li>
+	<p class="xtit">【{$item['gift_name']}】</p>
+	<p class="xpic"><a href="{cfg:(dirpath,base)}/index.php?app=act.gift&app_act=view&id={$item['gift_id']}"><img src="{$item['gift_pic']}"></a></p>
+	<p><span><font style="font-size:30px">{$item['gift_score']}</font>&nbsp;积分</span><span class="xbtn"><a href="{cfg:(dirpath,base)}/index.php?app=act.gift&app_act=view&id={$item['gift_id']}" class="btn-a1"><font>兑换</font></a></span></p>
+	</p>
+	</li>
+{/foreach}
+</ul>
+</div>
+<div class="page">
+	<li{if($arr_gift['pagebtns']['pre']<1)} class="xnone"{/if}><a href="{if($arr_gift['pagebtns']['pre']<1)}javascript:void(0);{else}{fun_get::url(array('page'=>''))}&page={$arr_gift['pagebtns']['pre']}{/if}">上一页</a></li>
+	{if($arr_gift['pagebtns']['start']!=1)}<li><a href="{fun_get::url(array('page'=>''))}&page=1">1</a></li>{/if}
+	{if($arr_gift['pagebtns']['start']>2)}
+		<li class="xnone"><font>...</font></li>
+	{/if}
+	{foreach($arr_gift['pagebtns']['list'] as $item)}
+	<li{if(fun_get::get('page',1)==$item)} class="xsel"{/if}><a href="{fun_get::url(array('page'=>''))}&page={$item}">{$item}</a></li>
+	{/foreach}
+	{if($arr_gift['pagebtns']['end']<$arr_gift['pageinfo']['pages']-1)}
+		<li class="xnone"><font>...</font></li>
+	{/if}
+	{if($arr_gift['pagebtns']['end']<$arr_gift['pageinfo']['pages'])}
+	<li><a href="{fun_get::url(array('page'=>''))}&page={$arr_gift['pageinfo']['pages']}">{$arr_gift['pageinfo']['pages']}</a></li>
+	{/if}
+	<li{if($arr_gift['pagebtns']['next']<1)} class="xnone"{/if}><a href="{if($arr_gift['pagebtns']['next']<1)}javascript:void(0);{else}{fun_get::url(array('page'=>''))}&page={$arr_gift['pagebtns']['next']}{/if}">下一页</a></li>
+	</li>
+</div>
+{include(footer)}
+</body>
+</html>

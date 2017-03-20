@@ -1,0 +1,822 @@
+@import "main.css";
+.area1{float:left;width:100%;border:1px #CCC solid;height:46px;overflow:hidden;margin-top:20px}
+.area1 font{float:left;margin:14px 0px 0px 18px;font-weight:bold;font-size:14px}
+.area1 i{float:right;margin:21px 18px 0px 0px;width:9px;height:5px;background:url(ico4.png)}
+.area2{float:left;width:100%}
+.area2 ul{float:left;width:100%;margin-top:20px}
+.area2 ul li{float:left;width:33.33%;text-align:center;margin:20px 0px}
+.area2 ul li span{float:left;width:100%;}
+.area2 ul li span img{width:100px;height:100px;border-radius:50px}
+.area2 ul li font{float:left;width:100%;margin-top:10px}
+#id_dialogbox{float:left;width:100%;border:1px #CCC solid;padding:0px;border-top:0px;padding-top:10px}
+.areadlg{float:left;width:100%;padding:0px}
+.areadlg ul{float:left;width:100%}
+.areadlg .x2{background:#fff}
+.areadlg .x2 li{float:left;width:100%}
+.areadlg .x2 .y1{background:#fff}
+.areadlg .x2 .stable{float:left;overflow:hidden}
+.areadlg .x2 .stable td{text-align:left;padding:5px 0px}
+.areadlg .x2 .stable .jian{float:left;text-align:center;font-size:16px}
+.areadlg .x2 .y1 a{float:left;width:auto;margin:0px 5px 10px 5px;font-size:14px}
+.areadlg .x2 .stable a{color:#666;text-decoration:none;white-space:nowrap;float:left;margin-right:20px}
+.areadlg .x2 .stable .rowsel{}
+.areadlg .x2 .stable .rowsel td{}
+.areadlg .x2 .stable .rowsel .jian{background:#fff}
+.areadlg .x2 .stable .rowsel a{color:#000}
+.areadlg .x2 .stable .rowsel a:hover{color:#77AC26}
+.areadlg .x2 .y2{padding:5px 0px 5px 0px;margin:10px 0px}
+.areadlg .x2 .y2 a{float:left;padding-left:13px;background:url(arrow.png) no-repeat 0px center;height:15px;font-size:16px;margin:0px 10px 0px 0px;text-decoration:none}
+.areadlg .x2 .y2 span{float:left;font-size:16px;padding:0px 5px 0px 0px;margin-left:15px;color:#77AC26}
+.areadlg .x3{background:#fff;height:300px;overflow-y:scroll}
+.areadlg .x3 a{float:left;width:100%;text-decoration:none;font-size:14px}
+
+.area3{position:absolute}
+.area3 ul{float:left;background:#fff;border:1px #ccc solid;border-top:0px;overflow:hidden;margin:0px;padding:0px;width:100%}
+.area3 ul a{float:left;width:100%;padding:10px 0px;font-size:14px;font-weight:bold}
+.area3 ul a font{float:left;margin-left:18px}
+.area3 ul .xsel{color:#77AC26}
+
+.category2{float:left;width:100%;border:1px #efefef solid;border-left:0px;border-right:0px;margin-top:10px}
+.category2 div{margin:0px auto;width:165px}
+.category2 a{float:left;padding:15px 0px 15px 0px;line-height:20px;font-size:12px}
+.category2 .x0{border-bottom:1px #efefef solid;border-right:1px #efefef solid}
+.category2 .x1{border-bottom:1px #efefef solid}
+.category2 .x0 a{float:left;}
+.category2 a span{float:left;width:105px;margin:5px 0px 0px 5px;color:#888}
+.category2 a font{font-weight:bold;color:#333;}
+.category2 a img{width:50px;height:50px;float:left;margin-left:5px;}
+.category2 .x1 a{float:left}
+.category2 .x2 a{float:left;width:25%;text-align:center;}
+.category2 .x2 img{width:30px;height:30px;float:none;margin:0px}
+
+.box3{float:left;width:100%}
+.box3 td{border-right:1px #ccc solid;width:33.3%;border-bottom:1px #ccc solid}
+.box3 .x1{border-right:0px}
+.box3 li{float:left;padding:11px 0px;width:100%;text-align:center;font-size:14px;font-weight:bold}
+.box3 li i{float:right;width:9px;height:5px;background:url(ico4.png) no-repeat;margin:5px 20px 0px 0px}
+
+#id_shopall{float:left;width:100%;margin-top:5px}
+#id_shopall .xnone{float:left;width:100%;border:1px #ccc dotted;padding:8px 0px;text-align:center;color:#ff0000}
+#id_shopall a{float:left;width:100%;border-bottom:1px #efefef solid;padding-top:8px;color:#333}
+#id_shopall .Tclose li{color:#aaa}
+#id_shopall .ximg{float:left;width:80px;margin-left:8px}
+#id_shopall .ximg img{width:80px;height:80px}
+#id_shopall .xinfo{float:left;width:100%;margin:-80px 0px 0px 95px}
+#id_shopall .xinfo font{float:left;}
+#id_shopall .xinfo li{float:left;width:100%;margin-bottom:6px;color:#666;font-size:12px}
+#id_shopall .xinfo li .xtit{font-weight:bold;width:150px;font-size:16px}
+#id_shopall .xinfo li i{float:right;margin-right:100px;font-size:10px;color:#888;background:url(position.png) no-repeat left center;padding:3px 0px 0px 15px;height:13px}
+#id_shopall .xh1{height:80px}
+#id_shopall .xh2{height:100px}
+#id_shopall .collect1{float:right;width:50px;height:50px;clear:both;background:url(collect1.png) no-repeat center;padding-left:18px;margin:-70px 0px 0px 0px;cursor:pointer}
+#id_shopall .collect2{float:right;clear:both;width:50px;height:50px;background:url(collect2.png) no-repeat center;padding-left:18px;margin:-70px 0px 0px 0px;cursor:pointer}
+#id_shopall .xoff1{width:100%;height:55px;background:url(transparent.png);color:#fff;font-weight:bold;font-size:16px;text-align:center;margin-top:-85px;float:left;padding-top:30px}
+#id_shopall .xoff2{width:100%;height:75px;background:url(transparent.png);color:#fff;font-weight:bold;font-size:16px;text-align:center;margin-top:-105px;float:left;padding-top:30px}
+
+#id_typelist{position:absolute;border:1px #ccc solid;border-top:0px}
+#id_typelist ul{float:left;width:100%;background:#fff}
+#id_typelist ul a{float:left;width:100%;padding:12px 0px;text-align:center;font-size:14px;font-weight:bold}
+#id_typelist ul .xsel{color:#77AC26}
+#id_typelist ul a i{float:right;width:17px;height:8px;margin:3px 14px 0px 0px}
+
+#id_condition{position:absolute;border:1px #ccc solid;border-top:0px;background:#fff}
+#id_condition ul{margin:0px auto;width:110px}
+#id_condition li{float:left;padding:3px 0px 0px 30px;background:url(ico2.png) no-repeat 5px center;height:21px;margin:8px 0px 8px 15px;clear:both}
+#id_condition .xsel{background:url(ico1.png) no-repeat 5px center;}
+
+
+#id_act_sort{position:absolute;border:1px #ccc solid;border-top:0px;border-left:0px}
+#id_act_sort ul{float:left;width:100%;background:#fff}
+#id_act_sort ul li{float:left;width:100%;padding:12px 0px;text-align:center;font-size:14px;font-weight:bold}
+#id_act_sort ul li i{float:left;width:17px;height:8px;margin:5px 0px 0px 0px}
+#id_act_sort ul li div{width:60px;margin:0px auto}
+#id_act_sort ul li div font{float:left}
+#id_act_sort ul .xsel{color:#77AC26}
+#id_act_sort ul .sortup{background:url(sort_up.png) no-repeat right center}
+#id_act_sort ul .sortdown{background:url(sort_down.png) no-repeat right center}
+
+.box4{float:left;width:100%;margin-top:1px;border-collapse: collapse;}
+.box4 td{width:33%;margin:0px;padding:0px}
+.box4 .xsel li{border-bottom:1px #ff6900 solid;font-weight:bold;color:#ff6900}
+.box4 .xmid{width:34%}
+.box4 li{float:left;padding:10px 0px;width:100%;text-align:center;font-size:14px;border-bottom:1px #ddd solid}
+.box5{float:left;width:100%;margin-top:1px;border-collapse: collapse;}
+.box5 td{width:25%;margin:0px;padding:0px}
+.box5 .xsel li{border-bottom:1px #ff6900 solid;font-weight:bold;color:#ff6900}
+.box5 li{float:left;padding:10px 0px;width:100%;text-align:center;font-size:14px;border-bottom:1px #ddd solid}
+.table2{float:left;width:100%;margin:1px 0px 30px 0px}
+.table2 td{padding:0px;margin:0px}
+.catebox{float:left;overflow:hidden}
+.catebox2{position:fixed;overflow:hidden}
+.mlist{float:left;width:100%;overflow:hidden}
+.mlist ul{float:left;width:100%}
+.mlist li{float:left;width:100%;padding:9px 0px 15px 0px;border-bottom:1px #eee solid}
+.mlist li .xinfo{float:left;margin-left:5%;width:95%}
+.mlist li .xinfo h2{margin:0px 0px 5px 0px;padding:0px;float:left;width:100%;font-size:14px}
+.mlist li .xinfo h2 a{float:left;}
+.mlist li .xinfo h2 font{float:left;background:#d80616;color:#fff;padding:1px 3px;border-radius:5px;font-size:12px;margin:-5px 0px 0px 3px;font-weight:200}
+.mlist li .xinfo p{margin:3px 0px 3px 0px;padding:0px;float:left;width:100%}
+.mlist li .xinfo .xbeta{color:#888;margin-top:6px}
+.mlist li .xinfo .xprice{color:#ff0000}
+.mlist li .xinfo .xprice font{font-size:16px;font-weight:bold}
+.mlist li .xbtn{float:right;margin:-50px 20px 0px 0px;padding-bottom:7px}
+.mlist li .xbtn font{color:#888}
+.mlist li .xbtn i{float:left;margin-right:5px;color:#aaa;font-size:11px;margin-top:3px}
+.mlist li .xpic{float:left;width:100%}
+.mlist li .xpic .yimg{width:30%;text-align:center;}
+.mlist li .xpic .yimg img{width:60px;height:60px}
+.mlist li .xpic h2{margin:0px;padding:0px;float:left;width:60%;font-size:14px}
+.mlist li .xpic h2 a{float:left}
+.mlist li .xpic h2 font{float:left;background:#d80616;color:#fff;padding:1px 3px;border-radius:5px;font-size:12px;margin:-5px 0px 0px 3px;font-weight:200}
+.mlist li .xpic p{margin:3px 0px 3px 0px;padding:0px;float:left;width:60%}
+
+.bcart{position:fixed;bottom:0px;width:100%}
+.bcart ul{float:left;width:100%;height:50px;border-top:1px #d80616 solid;background:#fff url(cart.png) no-repeat 10px center;}
+.bcart ul p{float:left;width:auto;margin:16px 0px 0px 50px}
+.bcart ul p .xp{color:#ff0000}
+.bcart ul .xbtn{float:right;background:#d80616;color:#fff;border:0px;height:50px;width:80px}
+.bcart ul .xnone{float:right;background:#aaa;color:#fff;border:0px;height:50px;padding:0px 10px}
+#id_categorybox{width:70px;background:#f8f8f8;}
+#id_categorybox ul{float:left;width:100%}
+#id_categorybox ul li{float:left;width:70px;text-align:center;margin:0px;padding:12px 0px;border-bottom:1px #eee solid;height:20px;overflow:hidden}
+#id_categorybox ul li span{position:relative;border-radius: 5px;padding:0px 3px;font-size:11px;z-index:1;background:#d80616;color:#fff}
+#id_categorybox ul .xsel{background:#FFF}
+#id_category_btn font{float:left;background:#FF6600;border-radius:15px;padding:5px 0px;font-size:14px;color:#fff;width:46px}
+.batnjian{width:30px;height:29px;background:url(jian.jpg) no-repeat}
+.batnjia{width:30px;height:29px;background:url(jia.jpg) no-repeat}
+
+
+.btn-s1 .xbtnjian{float:left;width:25px;height:24px;background:url(jian.jpg);border:0px}
+.btn-s1 .xnum{float:left;width:24px;border:0px;border-top:1px #c3c3c3 solid;border-bottom:1px #c3c3c3 solid;height:20px;text-align:center}
+.btn-s1 .xbtnjia{float:left;width:25px;height:24px;background:url(jia.jpg);border:0px}
+.btn-2{float:left;width:100%;margin-top:10px}
+.btn-2 .xbtn1{background:#76AC25;padding:10px 25px;border:0px;color:#fff;font-weight:bold;width:40%;float:left}
+.btn-2 .xbtn2{background:#C5C5C5;padding:10px 25px;border:0px;color:#fff;font-weight:bold;width:40%;float:right}
+.btn-2 .xbtn{background:#76AC25;padding:10px 25px;border:0px;color:#fff;font-weight:bold;width:100%;float:left}
+
+.shoph{float:left;width:100%;margin-top:5px}
+.shoph .ximg{float:left;width:80px;height:80px}
+.shoph .ximg img{width:80px;height:80px}
+.shoph .xinfo{float:left;margin:10px 0px 0px 10px;color:#888}
+.shoph .xinfo p{float:left;clear:both;margin:3px 0px 2px 0px;font-size:12px}
+.shoph .xinfo p label{margin-top:3px}
+.shoph .xinfo p i{float:left;margin-left:10px;font-size:12px}
+.shoph .xinfo h2{font-size:14px;float:left;margin:0px}
+.shoph .collect1{float:left;height:13px;background:url(collect1.png) no-repeat;margin:1px 0px 0px 15px;width:16px}
+.shoph .collect2{float:left;height:13px;background:url(collect2.png) no-repeat;margin:1px 0px 0px 15px;width:16px}
+.shoph .xstate{float:right;width:16px;background:#7DB724 url(bg3.png) no-repeat 0px bottom;padding:6px 10px 30px 10px;color:#fff;font-weight:bold;text-align:center}
+.shoph .xstate2{float:right;width:36px;background:#717171 url(bg3.png) no-repeat 0px bottom;}
+.shoptit{float:left;width:100%;margin-top:15px}
+.shoptit i{float:left;width:5px;height:10px;background:#E62528;margin-top:5px}
+.shoptit font{float:left;margin-left:10px;color:#333;font-weight:bold;margin-top:2px}
+.shopli{float:left;width:100%;border-bottom:1px #CCC solid;padding-bottom:10px}
+.shopli a{color:#888;font-size:12px}
+.shopli p{float:left;margin:5px 0px 5px 15px;clear:both;width:100%}
+.shopli p span{float:left;}
+.shopli p span a{color:#0000ff}
+.shopcont{float:left;width:96%;margin:10px 2%;line-height:20px;color:#888}
+.pcart{float:left;width:100%;margin-top:5px;padding-bottom:20px}
+.pcart .xgoods{float:left;width:100%;background:#fff;margin-top:10px}
+.pcart .xgoods li{float:left;width:100%;border-top:1px #ddd dotted;margin:-1px 0px 5px 0px;padding-top:5px;font-size:12px}
+.pcart .xgoods li .ybtn{float:left;width:15%;overflow:hidden;text-align:center;margin-top:15px}
+.pcart .xgoods li .xinfo{float:left;width:60%}
+.pcart .xgoods li h3{float:left;width:100%;font-weight:200;margin:5px 0px 0px 5px;color:#666}
+.pcart .xgoods li font{float:left;width:100%;margin:3px 0px 0px 5px}
+.pcart .xgoods li .btn-s1{float:left;margin:10px 0px 10px 0px;width:25%}
+.pcart .xarea{float:left;width:100%;overflow:visible;margin-top:7px;background:#fff url(border.png) repeat-x -12px -78px}
+.pcart .xarea ul{float:left;width:100%;padding:10px 0px}
+.pcart .xarea p{float:left;margin-left:10px;line-height:20px;width:100%;height:40px;color:#666;font-size:12px}
+.pcart .xarea p .Tname{float:left;width:50%}
+.pcart .xarea p .Ttel{float:left;width:50%}
+.pcart .xarea p .Tarea{float:left;margin-top:5px}
+.pcart .xarea p .Taddress{float:left;margin:5px 0px 0px 8px}
+.pcart .xarea i{float:right;background:url(bg2.png) no-repeat;width:8px;height:12px;margin:-23px 10px 0px 0px}
+.pcart .xarea span{float:right;margin:-40px 10px 0px 0px;padding:8px 10px}
+.pcart .xarea span .yedit{float:left;width:30px;height:30px;background:url(edit.png) no-repeat center}
+.pcart .xarea span .ydel{float:left;width:30px;height:30px;background:url(del.png) no-repeat center;margin-left:15px}
+.pcart .xpay{float:left;width:100%;margin-top:8px;background:#fff}
+.pcart .xpay li{float:left;width:100%;border-top:1px #ddd dotted;margin-top:-1px;padding:5px 0px}
+.pcart .xpay .ytit{float:left;width:18%;padding:5px 0px;font-size:12px;margin-left:2%}
+.pcart .xpay .xradio{float:right;padding:5px 20px 5px 0px;background:url(arrow-right.png) no-repeat right center;background-size:16px;margin-right:6px;color:#ff6900}
+.pcart .xpay .xinput{float:right;padding:5px 0px;font-size:12px;text-align:right;line-height:22px;color:#888;width:76%;margin-right:4%}
+.pcart .xpay .xinput input{border:0px;float:right;text-align:right;width:100%;font-size:12px}
+.pcart .xpay .ytime{float:left;width:100%}
+.pcart .xpay .ytime select{padding:5px;border:1px #ccc solid;float:left;margin-left:10px}
+.pcart .xpay .Tsendprice{color:#999}
+.pcart .xbeta{float:left;width:100%;border-bottom:1px #ddd solid;margin-top:20px}
+.pcart .xbeta .y1{float:left;width:98%;border:0px;padding:3px 2px}
+.pcart .xtotal{float:right;margin-top:10px;clear:both;color:#666}
+.pcart .xtotal li{float:right}
+.pcart .xtotal span{float:left}
+.pcart .xtotal h1{float:left;color:#c91800;font-size:14px;font-weight:200}
+.pcart .xbtn{float:left;width:100%;margin-top:15px}
+.pcart .xarea .xnew{float:left;width:100%;border:1px #ff3300 dotted;padding:10px 0px;margin-top:10px;text-align:center;color:#ff3300}
+.pcart .xtit{float:left;margin:10px 0px 5px 0px;border-bottom:1px #ddd solid;padding-bottom:5px;width:100%}
+.pcart .xtit font{float:left;font-weight:bold;color:#666}
+.pcart .xli{float:right;margin:5px 5px 5px 0px;clear:both}
+.pcart .xli li{float:right;clear:both;margin-top:5px}
+.pcart .xli li p{float:left;margin:3px 0px 0px 3px;color:#666}
+.pcart .xli li span{float:left;}
+.pcart .xli li span input{width:40px;text-align:center;border:0px;border-bottom:1px #ddd solid}
+.pcart .xact{float:right;clear:both;border:1px #86C840 dotted;margin:10px 5px 0px 0px;padding:2px 5px;}
+.pcart .xact li{float:left;clear:both;width:100%;color:#86C840;margin:3px 0px}
+
+.login{float:left;width:100%;margin-top:15px;overflow:visible}
+.login .xtit{float:left;width:100%}
+.login .xtit a{float:left;width:50%;text-align:center;padding:8px 0px;border-bottom:2px #ddd solid;}
+.login .xtit .xsel{border-bottom:2px solid #ff3c25;color:#ff3c25}
+.login .xli{float:left;width:100%;margin-top:20px;overflow:visible}
+.login .xli p{float:left;width:100%;border:1px #ddd solid;padding:4px 0px;margin:10px 0px}
+.login .xli i{float:left;width:18%;height:30px;}
+.login .xli input{float:left;width:82%;border:0px;margin:5px 0px 0px 0px;padding:0px;height:20px}
+.login .xli .xname i{background:url(login1.png) no-repeat center center;background-size:16px}
+.login .xli .xpwd i{background:url(login2.png) no-repeat center center;background-size:16px}
+.login .xli .xtel i{background:url(login3.png) no-repeat center center;background-size:14px}
+.login .xli .xemail i{background:url(login4.png) no-repeat center center;background-size:16px}
+.login .xcode{float:left;width:100%;margin-top:10px}
+.login .xcode span{float:left;width:18%;height:50px;}
+.login .xcode font{float:left;width:82%;color:#888}
+.login .xcode img{float:left;margin-top:5px}
+.loginf{float:left;width:100%;margin-top:10px}
+.loginf a{float:right}
+.loginf div{float:left}
+
+.btn-a1{float:left;width:100%;background:#d80616;color:#fff;border-radius:2px;padding:8px 0px;text-align:center}
+.btn-a1 font{color:#fff}
+.btn-a2{float:left;width:100%;background:#efefef;border-radius:2px;padding:8px 0px;text-align:center}
+.btn-a2 font{color:#333;}
+
+.cinfotab{float:left;width:100%;margin:10px 0px 0px 0px;border:1px #ccc solid}
+.cinfotab .x1{width:84px}
+.cinfotab .x1 span{float:left;width:70px;text-align:right;padding-right:5px;border-right:1px #ccc solid;margin:2px 8px 0px 0px}
+.cinfotab td{padding:5px 0px;border-bottom:1px #ccc solid}
+.cinfotab td input[type="text"]{height:25px}
+#id_edit_info .xbtn1{background:#76AC25;padding:10px 25px;border:0px;color:#fff;font-weight:bold}
+#id_edit_info .xbtn2{background:#C5C5C5;padding:10px 25px;border:0px;color:#fff;font-weight:bold}
+.cinfotab .xtxt{float:left;width:100%;border:0px;padding:7px 0px;outline:0px;margin-top:2px}
+#id_edit_info .xtxt{float:left;width:100%;border:0px;padding:7px 0px;outline:0px;margin-top:2px}
+#id_edit_info select{border:1px #ccc solid;width:100%;outline:0px;float:left;margin:5px 0px 3px 0px}
+#id_edit_info .xtit{float:left;clear:both;font-weight:bold;margin:15px 0px 8px 15px}
+#id_edit_info .xselect{float:left;width:100%}
+#id_edit_info .xbtn{float:left;width:100%;margin:10px 0px 0px 0px}
+#id_edit_info .xbtn .xbtn1{width:100%;float:left}
+#id_edit_info .xbeta{float:left;width:100%;margin:5px 0px;color:#666}
+#id_edit_info{position:absolute;z-index:9;background:#fff;width:100%}
+
+.cartok{float:left;width:100%;overflow:visible;margin-top:15px}
+.cartok .xtit{border:1px #ff8800 solid;color:#ff3300;text-align:center;padding:5px 0px;width:100%}
+.cartok .xli{float:left;width:100%;margin-top:10px}
+.cartok .xli ul{width:300px;margin:0px auto}
+.cartok .xli ul li{float:left;width:100%;margin:5px 0px}
+
+.cartok .xli .xbtn1 p{float:left;width:50%}
+.cartok .xli .xbtn1 p a{width:98%;background:#c91800;color:#fff;border-radius:2px;padding:8px 0px;text-align:center;display:block}
+.utop{float:left;width:100%;height:145px;background-image:url(ubg.jpg);-webkit-background-size:contain; -moz-background-size:contain; background-size:contain; background-repeat:no-repeat;background-attachment:fixed;}
+.utop .x1{float:left;width:100%;height:90px;padding-top:5px;margin-top:10px}
+.utop .x1 p{float:left;}
+.utop .x1 p span{float:left;margin:3px 0px 5px 10px;clear:both;color:#fff;font-weight:bold}
+.utop .x1 .ypic{margin:0px;width:90px;text-align:center;}
+.utop .x1 .ypic img{width:80px;height:80px;border-radius:40px}
+.utop .x2{float:left;width:100%;height:40px;background:url(bg.png)}
+.utop .x2 a{float:left;width:25%;color:#fff;text-align:center;line-height:18px;margin:0px;padding-top:5px;background:url(bg5.png) no-repeat right top;}
+.ubox1{float:left;width:100%;background:#fff}
+.ubox1 a{float:left;width:33%;border-left:1px #efefef solid;border-top:1px #efefef solid;margin:-1px 0px 0px -1px;height:100px}
+.ubox1 a span{float:left;width:100%;text-align:center;height:80px}
+.ubox1 a span img{width:60px;height:60px}
+.ubox1 a font{float:left;width:100%;margin-top:-10px;text-align:center}
+.ubox1 a .xm1{background:url(me1.png) no-repeat center center;background-size:30px}
+.ubox1 a .xm2{background:url(me2.png) no-repeat center center;background-size:30px}
+.ubox1 a .xm3{background:url(me3.png) no-repeat center center;background-size:30px}
+.ubox1 a .xm4{background:url(me4.png) no-repeat center center;background-size:30px}
+.ubox1 a .xm5{background:url(me5.png) no-repeat center center;background-size:30px}
+.ubox1 a .xm6{background:url(me6.png) no-repeat center center;background-size:30px}
+.ubox1 a .xm7{background:url(me7.png) no-repeat center center;background-size:30px}
+.ubox1 a .xm8{background:url(me8.png) no-repeat center center;background-size:30px}
+.ubox1 a .xm9{background:url(me9.png) no-repeat center center;background-size:30px}
+.ubox2{float:left;width:100%;border-bottom:1px #eee solid;background:#fff;margin-top:15px}
+.ubox2 a{float:left;width:100%;padding:8px 0px}
+.ubox2 a span{float:left;width:100%;text-align:center;height:80px}
+.ubox2 a font{float:left;width:100%;text-align:center}
+.ubox2 a i{float:right;margin-right:10px;background:url(arrow-right.png) no-repeat;width:8px;height:12px;background-size:8px}
+.ubox2 a .xs1{background:url(shop1.png) no-repeat center center;background-size:30px}
+.ubox1 a .xs2{background:url(shop2.png) no-repeat center center;background-size:30px}
+.ubox1 a .xs3{background:url(shop3.png) no-repeat center center;background-size:30px}
+.ubox1 a .xs4{background:url(shop4.png) no-repeat center center;background-size:30px}
+.ubox1 a .xs5{background:url(shop5.png) no-repeat center center;background-size:30px}
+.ubox1 a .xs6{background:url(shop6.png) no-repeat center center;background-size:30px}
+.ubox1 a .xs7{background:url(shop7.png) no-repeat center center;background-size:30px}
+.ubox1 a .xs8{background:url(shop8.png) no-repeat center center;background-size:30px}
+.ubox1 a .xs9{background:url(shop9.png) no-repeat center center;background-size:30px}
+.ubox1 a .xs10{background:url(shop10.png) no-repeat center center;background-size:30px}
+
+.page{float:left;width:100%;margin:10px 0px}
+.page li{float:left;}
+.page li a{float:left;padding:3px 8px;font-size:14px;border:1px #eee solid;background:#f8f8f8;margin:0px 2px;color:#888}
+.page li a:hover{background:#d80616;color:#fff;text-decoration:none;}
+.page .xsel a{background:#d80616;color:#fff;text-decoration:none;}
+.page .xnone{float:left;color:#888;font-weight:bold;letter-spacing:5px}
+.page .xnone font{float:left;padding:5px 8px}
+.page .xnone a{color:#ccc;background:#f8f8f8;cursor:default}
+.page .xnone a:hover{color:#ccc;background:#f8f8f8;cursor:default}
+
+.olist{float:left;width:100%;background:#fff;margin-bottom:15px}
+.olist li{float:left;width:100%;border-bottom:1px #efefef solid;padding-bottom:8px}
+.olist li p{float:left;width:100%;margin:5px 0px}
+.olist .x1{text-align:center;padding-top:8px;color:#666}
+.olist .x2{color:#888}
+.olist .x2 .xtit{font-weight:bold;color:#333}
+.olist .x3{margin:8px 0px 0px 0px}
+.olist .xtable{margin-top:3px;color:#888}
+.olist font{float:left;color:#ff3300}
+.olist span{float:right}
+.olist .xbtn{margin-top:8px;border-bottom:0px}
+.olist .xbtn .y1{float:left;background:#77AC26;color:#fff;padding:3px 5px}
+.olist .xbtn .y2{float:left;background:#D80C25;color:#fff;padding:3px 5px}
+.olist .xbtn .y3{float:left;background:#77AC26;color:#fff;padding:3px 5px}
+
+.box11{float:left;width:100%;}
+.box11 li{float:left;width:100%}
+.box11 .xtit{font-weight:bold;background:#F2F2F2;padding:8px 0px}
+.box11 .xtit font{float:left;font-size:14px;margin-left:8px}
+.box11 .xtit span{float:right;margin-right:5px}
+.box11 .xinfo{margin:0px 0px 15px 0px}
+.box11 .xinfo p{float:left;margin:3px 0px 1px 10px;clear:both}
+.box11 .xinfo .xprice{font-weight:bold;color:#ff0000}
+.box11 .xinfo .xstate{font-weight:bold;font-size:14px}
+.box11 .xbtn{}
+.box11 .xbtn a{float:left;margin:0px 15px 0px 0px;background:#686868;color:#fff;padding:3px 5px}
+
+.box12{float:left;width:100%;border:1px #76AC23 solid;margin-top:15px}
+.box12 td{border-top:1px #E5E5E5 solid;padding:8px 10px}
+.box12 .xtit{font-weight:bold}
+.box12 .xtit td{border-top:0px}
+
+.mdetail{float:left;width:100%;margin:0px}
+.mdetail .x1{float:left;width:100%;padding:8px 0px}
+.mdetail .x1 p{float:left;width:100%;margin:7px 0px}
+.mdetail .x1 p span{float:left;font-weight:bold;width:75%}
+.mdetail .x1 p .y1{width:25%;text-align:right;font-weight:200}
+.mdetail .x2{float:left;width:100%;padding:5px 0px;font-weight:bold}
+.mdetail .x2 p{float:left;;margin:3px 0px;margin-right:10px;clear:both}
+.mdetail .x2 .xtotal{float:right}
+.mdetail .x2 .xtotal font{font-size:18px;color:#ff3300}
+.mdetail .x1 .xstate{color:#ff3300}
+.mdetail .x1 .xstate font{font-weight:200;}
+.mdetail .x2 .xtips{float:right;}
+.mdetail .x2 .xtips a{float:right;background:#77AC26;color:#fff;padding:5px 8px;margin-top:-5px}
+.mdetail .x4{float:left;width:100%}
+.mdetail .x4 span{float:left;padding:2px 3px;border:1px #ffac00 dotted;color:#d80616;margin:3px 5px}
+
+.uexpertit{float:left;width:100%}
+.uexpertit p{float:left;margin:5px 0px 3px 10px;line-height:18px}
+.uexpertit p .xorange{color:#ff6600}
+.uexper{float:left;width:100%;background:#fff}
+.uexper li{float:left;width:100%;padding:5px 0px;border-top:1px #ddd dotted;margin:5px 0px}
+.uexper li p{float:left;margin:5px 0px 0px 10px;clear:both}
+.uexper li p b{color:#666}
+.uexper li p .xred{color:#ff0000}
+.uexper li p .xorange{color:#ff6600}
+.uexper li p .xblue{color:#86c840}
+.orange{color:#ff8800}
+
+.mymsg{float:right;width:100%;border:1px solid #cccccc;margin:10px 0px 10px 0px}
+.mymsg .info{float:left;width:100%;padding:8px 0px;text-align:left;font-weight:bold;background:#F1F1F1;color:555}
+.mymsg .beta{float:left;width:100%;text-align:left;margin-bottom:10px;margin-top:5px;color:#888888}
+.mymsg .content{float:left;width:100%;text-align:left;padding:8px 0px 5px 0px}
+.mymsg .act{float:left;width:100%;text-align:left;padding:8px;border-bottom:1px #cccccc solid}
+.mymsg .return{float:left;width:100%;text-align:left;padding:0px 0px 5px 0px}
+.mymsg p{margin:0px 0px 0px 10px}
+.mymsg .return .return_content{text-align:left;float:left;padding:5px 0px;width:680px;color:#ff8800}
+.mymsg .return .return_beta{width:100%;text-align:left;float:left;padding:5px 0px 0px 0px;color:#888888}
+.mymsg .info p{width:100%;margin:0px}
+.mymsg .info p font{float:left;margin-left:10px}
+.mymsg .info p span{float:right;margin-right:10px}
+
+.uinfo{float:left;width:100%;overflow:visible;margin-top:10px}
+.uinfo ul{float:left;width:100%;margin:10px 0px 0px 0px}
+.uinfo ul .xbox{float:left;width:100%;padding:7px 0px;border:1px #e5e5e5 solid;margin-bottom:8px}
+.uinfo ul .xico{width:0px;height:0px;float:right;margin:-30px 80px 0px 0px}
+.uinfo .xsel .xbox{;border:1px #ff3300 solid}
+.uinfo .xsel i{background:url(ico1.png) no-repeat right center;width:20px;height:17px;float:left}
+.uinfo .xsel .xico{width:20px;height:17px}
+.uinfo li{float:left;width:100%;padding:3px 0px}
+.uinfo li font{float:left}
+.uinfo li .xtit{margin-left:20px;font-weight:bold}
+.uinfo li .xtel{margin-left:20px;font-weight:bold}
+.uinfo li .xarea{margin-left:20px;color:#666}
+.uinfo li .xlou{color:#666}
+.uinfo .xnew .xbox{text-align:center;border:1px #D5E9B8 solid;color:#76AB25}
+.uinfo ul .xbtn{float:right;margin:-43px 20px 0px 0px;}
+
+.news{float:left;width:100%;margin-top:20px;}
+.news a{float:left;width:100%;margin:5px 0px;padding:8px 0px;background:url(bg2.png) no-repeat right center;border-top:1px #ddd dotted;margin-top:-1px}
+
+.newstit{float:left;width:100%;margin:10px 0px;border-bottom:1px #ddd dotted;font-weight:bold;text-align:center;padding-bottom:8px}
+.newsc{float:left;width:100%;line-height:20px}
+.newsc img{max-width:100%;max-height:100%}
+
+.listpic{float:left;width:100%}
+.listpic li{float:left;width:50%;margin:5px 0px}
+.listpic .x1{float:right}
+.listpic li div{width:96%;margin:0px auto;overflow:visible}
+.listpic li a{float:left;width:100%;background:#fff;padding-bottom:5px;border:1px #ddd solid}
+.listpic li a .xpic{float:left;width:100%;height:150px;text-align:center;line-height:150px;margin-top:5px}
+.listpic li a .xpic img{max-width:150px;max-height:150px}
+.listpic li a h3{float:left;width:100%;margin:5px 0px;height:36px;line-height:18px;overflow:hidden;text-align:center;}
+.listpic li a h3 font{font-weight:200;color:#555;font-size:14px}
+.listpic li a .xprice{float:left;width:100%;color:#ff3300;margin:0px}
+.listpic li a .xprice font{float:left;margin-left:5px}
+.listpic li a .xprice label{float:right;margin-right:5px;background:#ff6600;border-radius: 2px;padding:2px 3px;color:#fff}
+.listpic li .btn-s1{float:right;margin:-25px 5px 0px 0px}
+
+.gift{float:left;width:100%;margin-top:10px;color:#555}
+.gift .xpic{float:left;width:100%;text-align:center}
+.gift .xpic img{max-width:290px;max-height:290px;}
+.gift .xtit{float:left;width:100%;border-bottom:1px #ddd dotted;padding:5px 0px 10px 0px;font-weight:bold;text-align:center}
+.gift .xinfo{float:left;width:100%;border-bottom:1px #ddd dotted;padding-bottom:10px}
+.gift .xinfo font{color:#ff8800}
+.gift .xinfo li{float:left;width:100%;margin:5px 0px 3px 0px}
+.gift .xinfo2{float:left;width:100%}
+.gift .xinfo2 li{float:left;width:100%;margin:5px 0px 5px 0px}
+.gift .xinfo2 .y1{}
+.gift .xinfo2 .y1 input{text-align:center}
+.gift .xinfo2 .y1 span{float:left;}
+.gift .xtit1{float:left;width:100%;margin:20px 0px 10px 0px;border-top:2px #666666 solid;border-bottom:1px #ccc solid;padding:5px 0px 3px 0px;color:#333;font-weight:bold;font-size:14px}
+.gift .xbtn{float:left;width:100%;margin-top:10px}
+.gift .xcont{float:left;width:100%;padding:10px;line-height:20px}
+.giftinfo{float:left;width:100%;}
+.giftinfo li{float:left;width:100%;padding:8px 0px 5px 0px}
+.giftinfo .xcol1{float:left;width:20%;text-align:right}
+.giftinfo .xcol2{float:left;width:80%}
+.giftinfo .xcol2 .x1{border:1px #000 solid;height:23px;line-height:23px;width:120px;padding:1px}
+.giftinfo .xcol2 .x2{border:1px #000 solid;height:23px;line-height:23px;width:200px;padding:1px}
+
+.init{float:left;width:100%;height:50px;}
+.init li{width:100px;margin:25px auto}
+.init img{float:left;margin-right:5px}
+.init font{float:left}
+
+.tips{float:left;width:100%;border:1px #ff3300 solid;border-radius:5px;color:#ff3300;padding:8px 0px;text-align:center;margin-top:20px}
+
+.init{float:left;width:100%;height:50px;}
+.init li{width:100px;margin:25px auto}
+.init img{float:left;margin-right:5px}
+.init font{float:left}
+
+.cmsg{float:left;width:100%;margin:10px 0px 0px 10px}
+.cmsg .xcol1{width:100px;text-align:right;padding-right:8px}
+.cmsg td{padding:5px 0px}
+.cmsg td .xbtn1{background:#d80616;padding:10px 25px;border:0px;color:#fff;font-weight:bold}
+.cmsg td .xbtn2{background:#d80616;padding:10px 25px;border:0px;color:#fff;font-weight:bold}
+.cmsg td .xtxt{width:250px;border:1px #ccc solid;padding:7px 3px}
+.cmsg select{border:1px #ccc solid;padding:5px}
+
+.btn1{background:#d80616;padding:5px 10px;border:0px;color:#fff;font-weight:bold}
+.btn2{background:#ccc;padding:5px 10px;border:0px;color:#fff;font-weight:bold}
+.Actcheck{float:left;cursor:pointer;line-height:normal}
+.Actcheck span{float:left;width:50px;border:1px #666 solid;padding:3px;border-radius:10px}
+.Actcheck span i{float:left;background:#555;width:15px;height:15px;border-radius:7px}
+.Actcheck font{float:left;margin:5px 0px 0px 10px;}
+.Actcheck .xon{border:1px #ee783a solid}
+.Actcheck .xon i{float:right;background:#ee783a}
+
+.shopedit{float:left;width:100%;padding-bottom:10px}
+.shopedit .xtext{float:left;width:100%;margin:10px 0px 0px 30px;line-height:30px}
+.shopedit .xtext input{width:200px;height:20px;padding:3px 3px}
+.shopedit .xtext font{color:#888}
+.shopedit .xtext li{float:left;width:100%}
+.shopedit .x35{float:left;width:35%}
+.shopedit .x65{float:left;width:65%}
+.shopedit .xtxt{width:95%;border:1px #ccc solid;padding:7px 3px}
+.shopedit .xtime{float:left;width:100%;margin:10px 0px 0px 30px}
+.shopedit .xtime .xtxt1{width:60px}
+.shopedit .xtime ul{float:left;width:100%}
+.shopedit .xtime li{float:left;clear:both;margin:5px 0px 3px 0px;border:1px #ddd dotted;padding:10px;line-height:30px}
+.shopedit .xtime li input{padding:3px 2px;height:20px}
+.shopedit .xtime a{float:left;background:url(add.gif) no-repeat;padding-left:18px;clear:both;margin-top:10px}
+.shopedit .xtitle{float:left;width:100%;border-bottom:1px #ddd solid;padding:5px 0px;font-weight:bold;color:#888;margin-top:10px}
+.shopedit .xtitle font{font-weight:200}
+.shopedit .xtitle span{float:right}
+.shopedit .xtitle div{float:left;margin-top:5px}
+.shopedit .xbtn{float:left;width:100%;margin:10px 0px 0px 30px}
+.shopedit .xpic{float:left;width:100%;}
+.shopedit .xpic img{float:left;width:80px;height:80px;margin:10px 10px 0px 0px}
+.shopedit .xpic li{float:left;width:90px;text-align:center;margin:5px 10px 5px 0px}
+.shopedit .xpic li i{float:right;width:20px;height:20px;background:url(close.png) no-repeat;margin-top:-90px}
+.shopedit .xlabel{float:left;width:100%;margin:10px 0px 0px 30px}
+.shopedit .xlabel label{float:left;margin:5px 15px 5px 0px}
+.shoptable{float:left;width:100%;border:1px #ddd solid;margin-top:10px}
+.shoptable td{padding:8px 5px;border-bottom:1px #ddd dotted}
+.shoptable .xtit{font-weight:bold;color:#555}
+.shoptable .xtit td{border-bottom:1px #ddd solid}
+.shopedit .xadd{float:left;background:url(add.gif) no-repeat;padding-left:18px;clear:both;margin-top:10px}
+
+.spath{float:right;width:100%;padding:5px 0px 3px 0px;border-bottom:1px #cccccc solid;color:#666666}
+.spath li{float:left;padding:5px 10px 0px 5px}
+
+.mstep{float:left;width:250px;margin:15px 0px 10px 30px;overflow:visible;padding-bottom:10px}
+.mstep li{float:left;width:245px;border-left:5px #d4ee9b solid;overflow:visible}
+.mstep li i{float:left;width:26px;height:26px;background:url(step.png) no-repeat;margin-left:-15px}
+.mstep li span{float:left;width:200px;margin:5px 0px 0px 10px}
+.mstep li .xx1{padding:30px 0px}
+.mstep li .xx1 .y1{float: left;background: #77AC26;color: #fff;padding: 3px 5px;}
+.mstep li .xx1 .y2{float: left;background: #D80C25;color: #fff;padding: 3px 5px;}
+.mstep .xoff{border-left:5px #e5e5e5 solid;color:#888}
+.mstep .xoff i{background:url(step.png) no-repeat 0px -26px}
+.mstep .xclose{border-left:5px #e5e5e5 solid;color:#888}
+.mstep .xclose i{background:url(step.png) no-repeat 0px -52px}
+.mstep .nobg{border-left:5px #fff solid;}
+
+.neworder{float:left;width:100%;margin:10px 0px;font-size:12px}
+.neworder ul{float:left;width:100%}
+.neworder .xbtn li{float:left;margin:0px 5px}
+.neworder .xbtn button{border:0px;background:#333;color:#fff;padding:8px 12px}
+.neworder .xbtn .Actcheck{margin:7px 0px 0px 20px}
+.neworder .xli li{float:left;width:100%;margin:7px 0px;border-bottom:1px #ddd dotted;padding-bottom:5px}
+.neworder .state2{color:#999}
+.neworder .state1{font-weight:bold}
+.red{color:#ff0000}
+
+.findpwd{float:left;width:100%;}
+.findpwd .x_div1{float:left;width:100%;margin-top:30px}
+.findpwd .x_div1 div{float:left;width:100%;height:32px;border-top:1px #ddd solid;border-bottom:1px #ddd solid;}
+.findpwd .x_div1 div li{float:left;width:33%;padding-top:8px;height:24px}
+.findpwd .x_div2{}
+.findpwd .x_div2 .y1{background:#efefef;color:#333}
+.findpwd .x_div2_1{}
+.findpwd .x_div2_1 .y1{background:#efefef;color:#333}
+.findpwd .x_div2_1 .y2{background:#efefef;color:#333}
+.findpwd .x_div2_2{}
+.findpwd .x_div2_2 .y1{background:#efefef;color:#333}
+.findpwd .x_div2_2 .y2{background:#efefef;color:#333}
+.findpwd .x_div2_2 .y3{background:#efefef;color:#333}
+.findpwd .x_div1 li{float:left;width:252px;text-align:center;padding-top:8px;font-size:14px;color:#888888}
+.findpwd .x_div3{float:left;width:100%;margin-top:20px}
+.findpwd .x_div3 li{float:left;margin:8px 0px 5px 0px;text-align:left;width:100%}
+.findpwd .x_div3 .x_1{float:left;width:100px;text-align:right;padding-top:8px}
+.findpwd .x_div3 .x_2{float:left;}
+.findpwd .txt1{width:200px;height:25px;border:1px #000 solid}
+.findpwd .txt2{width:60px;height:25px;border:1px #000 solid}
+.findpwd .txt3{border:1px #000 solid}
+.findpwd .pBeta{color:#888}
+
+.findpwd .tipsright{float:left;width:220px;padding:10px 10px 10px 80px;background:url(right.png) no-repeat 20px center}
+.findpwd .tipserror{float:left;width:220px;padding:10px 10px 10px 80px;background:url(error.png) no-repeat 20px center}
+.findpwd .tipsright li,.tipserror li{float:left;width:100%;padding:8px 0px 5px 0px;margin:0px;font-size:14px;color:#333}
+
+.gpic{float:left;width:100%;}
+.gpic img{width:100%;}
+.ginfo{float:left;width:100%;}
+.ginfo .xtit{float:left;width:100%;padding:5px 0px;line-height:18px}
+.ginfo .xprice{float:left;width:100%;margin:5px 0px;color:#ff3300;border-bottom:1px #ccc dotted;padding-bottom:10px}
+.ginfo .xprice font{float:left;font-size:22px}
+.ginfo .xguige{float:left;width:100%;margin:5px 0px}
+.ginfo .xguige label{float:left;margin-top:5px;color:#888}
+.ginfo .xguige span{float:left;}
+.ginfo .xguige span font{float:left;margin:0px 5px;border:1px #ccc solid;padding:5px;cursor:pointer;border-radius:5px}
+.ginfo .xguige span .xsel{border:1px #ff2b4b solid;background:#ff2b4b;color:#fff}
+.ginfo .xprice label{float:right}
+.ginfo .xbtn{float:left;width:50%}
+.ginfo .xbtn .ynum{float:left;width:40px;text-align:center;margin-top:2px}
+.ginfo .xbeta font{color:#888}
+.ginfo .xbeta{float:left;width:100%;color:#888}
+.ginfo .xbtn div{width:98%;margin:0px auto}
+.ginfo .xbtn .xjian{float:left;width:30px;height:29px;background:url(jian2.jpg) no-repeat;border:0px}
+.ginfo .xbtn .xjia{width:30px;height:29px;background:url(jia2.jpg) no-repeat;float:left;border:0px}
+.ginfo .xbtn p{width:130px;margin:0px auto}
+.ginfo .xbtn .xnum{float:left;width:40px;margin:0px auto;border:1px #ccc solid;margin:0px 5px;text-align:center}
+.ginfo .xformat{float:left;margin:0px 0px 8px 0px;padding:8px 0px;width:100%;border-bottom:1px #ccc dotted}
+.ginfo .xformat p{float:left;width:100%;margin:0px}
+.ginfo .xformat p b{float:left;margin-top:5px;width:100%}
+.ginfo .xformat p span{float:left;margin:5px;border:1px #ccc solid;padding:5px 8px;}
+.ginfo .xformat p .xsel{border:1px #ff3300 solid;}
+.ginfo .xformat p .xnone{border:1px #eee solid;color:#ccc}
+.ginfo .xactive{border:1px #ff3300 solid;}
+.ginfo .xactive p{float:right;width:96%}
+.gmore{float:left;width:100%;margin-top:20px;border-top:1px #ddd solid;}
+.gmore a{float:left;width:100%;border-bottom:1px #ddd solid;padding:8px 0px}
+.gmore a font{float:left;margin-left:10px}
+.gmore a span{float:right;background:url(bg2.png) no-repeat right center;height:16px;margin-right:10px;padding-right:15px;color:#666}
+.gmore .starbg{float:left;margin:0px 5px 0px 8px;width:85px;background:url(star.png) 0px -17px repeat-x;height:16px;padding:0px}
+.gmore .starbg font{float:left;background:url(star.png) repeat-x;height:16px;margin:0px}
+.gcont{float:left;width:100%;margin-top:10px}
+.gcont{float:left;width:100%;line-height:20px;background:#fff}
+.gcont img{max-width:100%;}
+.gcont p img{max-width:100%;}
+.gcont td img{max-width:100%;}
+.starbg{float:left;margin:0px auto;width:50px;background:url(star2.png) 0px -13px repeat-x;height:10px;padding:0px}
+.starbg font{float:left;background:url(star2.png) repeat-x;height:10px;margin:0px}
+
+.shop_comment{float:left;width:98%;margin:10px 1% 0px 1%}
+.shop_comment .xtotal{float:left;width:100%}
+.shop_comment .xtotal .x1{border-left:0px;padding:15px 0px;width:50%}
+.shop_comment .xtotal .x1 p{float:left;width:100%;text-align:center;margin-top:8px}
+.shop_comment .xtotal .x1 h1{float:left;width:100%;text-align:center}
+.shop_comment .xtotal .x1 h1 font{font-size:16px}
+.shop_comment .xtotal .starbg{float:none;display:block;margin:0px auto;width:85px;background:url(star.png) 0px -17px repeat-x;height:16px}
+.shop_comment .xtotal .starbg font{float:left;background:url(star.png) repeat-x;height:16px}
+.shop_comment .xtotal .x1 .xnum{color:#ff8800;font-weight:bold;font-size:14px}
+.shop_comment .xtotal .x2{height:120px;text-align:center;border-left:1px #eee solid;width:50%}
+.shop_comment .xtotal .x2 p{float:left;width:100%;margin-bottom:8px;margin-left:20px}
+.shop_comment .xtotal .x2 p font{float:left;margin-top:2px}
+.shop_comment .xtotal .x2 p span{float:left;margin:3px 5px 0px 5px}
+.shop_comment .xtotal .x3{border-left:1px #eee solid}
+.shop_comment .xtotal .x3 p{float:left;width:100%;margin:0px 0px 8px 30px}
+.shop_comment .xtotal .x3 p font{float:left}
+.shop_comment .xtotal .x3 p span{float:left;margin:0px 5px;background-color:#FFF3E7;height:10px;width:85px}
+.shop_comment .xtotal .x3 p span font{height:10px;background-color:#FC9E58;margin:0px}
+.shop_comment .xtotal .x4{width:100%;border-top:1px #efefef dotted;padding-top:15px}
+.shop_comment .xtotal .x4 p{float:left;width:47%;margin:0px 0px 8px 3%;font-size:12px;color:#888}
+.shop_comment .xtotal .x4 p font{float:left}
+.shop_comment .xtotal .x4 p span{float:left;margin:3px 5px 0px 5px;background-color:#FFF3E7;height:10px;width:85px}
+.shop_comment .xtotal .x4 p span font{height:10px;background-color:#FC9E58;margin:0px}
+
+.shop_comment .xtit{float:left;width:98%;padding:5px 1%;background:#F4F4F4;margin-top:10px}
+.shop_comment .xlist{float:left;width:100%}
+.shop_comment .xlist ul{float:left;width:100%;margin:8px 0px 15px 0px;border-bottom:1px #ccc dotted;padding-bottom:8px}
+.shop_comment .xlist ul li{float:left;width:100%;margin:5px 0px 3px 0px}
+.shop_comment .xlist ul .xxtit{color:#666}
+.shop_comment .xlist ul .xxtit p{float:left;width:100%}
+.shop_comment .xlist ul .xxtit p .ydate{color:#aaa}
+.shop_comment .xlist ul .xxtit span{float:left;margin-right:8px}
+.shop_comment .xlist ul .xcont{float:left;margin-left:10px;width:96%;line-height:18px;}
+.shop_comment .xlist ul .xrecont{line-height:18px;border:1px #ff0000 dotted;padding:5px;color:#ff8800;width:96%;margin-left:10px}
+
+.shop_comment .xlist ul .xpic{float:left;width:96%;margin-left:10px}
+.shop_comment .xlist ul .xpic img{width:120px;height:100px;cursor:pointer}
+.shop_comment .xlist ul .xxtit .xstar{float:right;width:85px;background:url(star.png) 0px -17px repeat-x;height:16px}
+.shop_comment .xlist ul .xxtit .xstar font{float:left;margin:0px;background:url(star.png) 0px 0px repeat-x;height:16px}
+
+.comment{float:left;width:100%;padding:10px 0px;overflow:visible}
+.comment li{float:left;padding:5px 0px 5px 0px;color:#333;width:100%}
+.comment .xtit{width:100%;padding-left:0px;font-weight:bold;color:#000}
+.comment .col1{float:left;width:100px;margin-left:20px}
+.comment .col2{float:left;}
+.comment .col2 img{vertical-align:middle}
+.comment .col2 input{vertical-align:middle}
+.comment .xsel{background:#efefef}
+.comment textarea{width:98%;height:80px;background:#f8f8f8;border:1px #666 solid}
+.comment .good{color:#CC0000;background:url(images/comment1.png) no-repeat 20px}
+.comment .general{color:#78D417;background:url(images/comment2.png) no-repeat 20px}
+.comment .fail{color:#666666;background:url(images/comment3.png) no-repeat 20px}
+.comment .xinfo{margin:8px 0px;border:1px #ff8800 dotted;padding:5px 0px;color:#ff8800;width:100%}
+.comment .xinfo font{float:left;margin-left:10px}
+.comment .xpic{float:left;width:100%}
+.comment .xpic .xxpic{float:left;margin:5px 10px 5px 0px;width:80px}
+.comment .xpic .xxpic .img{width:80px;height:60px}
+.comment .xpic .xxpic .xdiv{position:relative;top:-15px;width:80px;height:15px;text-align:right;overflow:visible}
+.comment .xpic .xxpic .xdiv img{cursor:pointer}
+.comment .xupload{float:left;width:100%;margin-top:5px}
+.comment .xupload font{float:left;margin-top:3px}
+.comment .xupload iframe{float:left}
+.comment .xxbeta{float:left;width:80%;border:1px #ccc dotted;padding:5px 10px;line-height:18px;color:#aa8800;margin-left:30px}
+
+.star1{float:left;width:17px;height:16px;background:url(star.png) no-repeat 0px -17px;cursor:pointer}
+.star2{float:left;width:17px;height:16px;background:url(star.png) no-repeat 0px 0px;cursor:pointer}
+
+.shop_tips{width:300px;height:210px;background:url(tips_bg.png) no-repeat;position:fixed;top:60px;left:10px;z-index:5}
+.shop_tips ul{float:left;margin:60px 0px 0px 0px;background:url(tips_tags.png) no-repeat 10px top;padding-left:100px}
+.shop_tips li{float:left;width:200px;text-align:left}
+.shop_tips h1{color:#ff0000;font-size:18px}
+.shop_tips h2{font-size:16px}
+
+.order_verify{float:left;padding:10px;}
+.order_verify li{float:left;width:90%;}
+
+.ggk{width:96%;margin:0px auto}
+.ggk .xbox1{width:100%;background:#fff;border-radius:5px;margin:10px 0px 5px 0px;overflow:hidden;text-align:left}
+.ggk .xbox1 .xtit{float:left;width:80px;background:#B1540F;padding:5px 0px 5px 10px;margin:10px 0px 0px 10px;color:#fff}
+.ggk .xbox1 .xli{float:left;width:100%;line-height:25px;margin:0px 0px 0px 15px;padding:10px 0px}
+.ggk .xbox1 .xcont{float:left;width:100%;line-height:25px;margin:0px 0px 0px 15px;padding:10px 0px}
+.ggk .xerr{float:left;width:100%;background:#F8C129;border-radius:5px;padding:20px 0px;margin:10px 0px;text-align:center;color:#D54D00}
+.ggk .xval{float:left;width:100%;background:#F8C129;border-radius:5px;padding:20px 0px;margin:10px 0px;text-align:center;color:#D54D00}
+#bglottery{width:130px;cursor:pointer;margin:0px auto;padding:0px}
+#bglottery span{width:100%;height:58px;text-align:center;line-height:58px;float:left;margin:0px;padding:0px}
+.rotate{float:left;width:100%;margin:10px 0px}
+
+.neararea{margin:0px auto;width:90%;overflow:visible}
+.neararea a{width:100%;float:left;border:1px #ccc solid;border-radius:5px;padding:5px 0px;margin-top:20px}
+.neararea a span{float:left;margin-left:15px;color:#888}
+.neararea a span font{color:#ee783a}
+.neararea a i{float:right;margin:2px 10px 0px 0px;width:8px;height:12px;background:url(bg2.png) no-repeat}
+.title{float:left;width:100%;margin:10px 0px 0px 0px;font-weight:bold;font-size:14px;border-bottom:1px #eee solid;padding-bottom:8px}
+.title i{float:left;width:11px;height:16px;background:url(position.png) no-repeat;margin-left:5px}
+.title font{float:left;margin-left:10px}
+
+.search{float:left;width:100%;margin-top:15px}
+.search .xtxt{float:right;width:98%;border:1px #ddd solid;padding:3px 2px;background:#fff;height:20px;border-radius: 5px}
+.search .xbtn{width:20px;height:20px;background:url(s1.png) no-repeat center center;float:right;margin:-23px 10px 0px 0px;border:0px}
+.search span{float:left;width:100%}
+
+.swords{float:left;width:100%;margin-top:20px}
+.swords li{float:left;width:100%;margin:5px 0px}
+.swords .xtit{font-weight:bold;border-bottom:1px #ccc dotted;padding-bottom:8px;color:#888}
+.swords a{float:left;padding:3px 10px;}
+
+.shop_toptips{float:left;width:100%;color:#ff0000;background:#fcff0a;padding:10px 0px;font-size:14px;overflow:hidden}
+.shop_toptips i{float:left;width:16%;height:15px;font-weight:bold;text-align:center}
+.shop_toptips span{float:left;width:84%;height:16px;overflow:hidden;white-space:nowrap;}
+.shop_toptips span font{width:auto;height:16px}
+
+.kj_slider{float:left;width:100%;margin:0px;height:150px;overflow:hidden}
+.kj_slider .xli{float:left;width:100%}
+.kj_slider .xli li{float:left;width:100%}
+.kj_slider .xli li img{width:100%;height:150px}
+.kj_slider .xbtn{float:left;width:auto;margin-top:-20px}
+.kj_slider .xbtn a{float:left;width:10px;height:10px;background:#fff;border-radius:10px;margin-right:10px;box-shadow: 0 0 5px #666 inset;}
+.kj_slider .xbtn a:hover{background:#ff3300;box-shadow: 0 0 5px #ccc inset}
+.kj_slider .xbtn .xsel{background:#ff3300;box-shadow: 0 0 5px #ccc inset}
+
+.guige{position:fixed;width:100%;left:0px;bottom:0px;z-index:99}
+.guige .x1{float:left;width:100%;}
+.guige .x1 img{float:right}
+.guige .x2{float:left;width:100%;background:#fff;border-top:2px solid #ff2d4b;padding:10px;box-shadow: 0 0 5px 0 #e4e4e4;font-size:14px}
+.guige .x2 li{float:left;width:100%;margin:7px 0px}
+.guige .x2 li label{float:left;width:20%;text-align:center;color:#888}
+.guige .x2 li span{float:left;width:80%}
+.guige .x2 li span font{float:left;margin:7px 5px;padding:5px;border-radius:5px;cursor:pointer}
+.guige .x2 li span .xsel{background:#ff2b4b;color:#fff}
+.guige .x2 li .xjia{float:left;background:url(jia.jpg) no-repeat;width:20px;height:20px;background-size:20px;cursor:pointer}
+.guige .x2 li .xjian{float:left;background:url(jian.jpg) no-repeat;width:20px;height:20px;background-size:20px;cursor:pointer}
+.guige .x2 li .xnum{float:left;margin:-2px 5px 0px 5px;width:20px;text-align:center}
+.guige .xbtn{width:60%;margin:0px 20%;float:left;padding:5px 0px;background:#ff2d4b;color:#fff;border-radius:5px;border:0px}
+
+.gbig{background:#f6f6f6}
+
+.cartbtn{position:fixed;bottom:0px;background:#fff;border-top:1px #ddd solid;width:100%}
+.cartbtn span{float:right;margin:12px 20px 0px 0px;font-size:14px}
+.cartbtn span i{color:#c91800;font-size:18px;}
+.cartbtn .btn-a1{float:right;width:auto;padding:15px 15px;border-radius:0px;color:#fff}
+.cartbtn .btn-a2{float:right;width:auto;padding:15px 15px;border-radius:0px;color:#fff;background:#ccc}
+
+.scroll{overflow:scroll}
+.kjselbox{position:fixed;background:#fff;z-index:10}
+.kjselbox li{float:left;width:92%;padding:12px 4%;}
+.kjselbox li:hover{background:#efefef;color:#ff8800}
+.kjselbox ul{float:left;width:100%}
+.kjselbox .xtit{width:100%;float:left}
+.kjselbox .xtit .y1{float:left;width:92%;padding:8px 4%;border-bottom:1px #ddd solid;height:16px}
+.kjselbox .xtit .y2{float:left;width:94%;margin:-27px 3% 0px 3%;overflow:hidden}
+.kjselbox .xtit .y3{float:left;width:1000px;}
+.kjselbox .xtit a{float:left;margin:-1px 5px 0px 5px;font-size:14px;background:#fff;padding:3px 15px;border:1px #fff solid;}
+.kjselbox .xtit .ysel{border:1px #ddd solid;border-bottom:1px #fff solid;margin-top:0px}
+
+.shoptable2{float:left;width:96%;margin:0px 2%;overflow:visible}
+.shoptable2 li{float:left;margin:5px 0px 5px -1px;width:100%;border:1px #ccc solid;border-radius:7px;padding:10px 0px}
+.shoptable2 li span{display:block;width:50px;height:50px;border-radius:25px;background:#76AC25;border:1px #457896 dotted;margin-left:7px;margin:0px auto}
+.shoptable2 li label{float:left;margin:5px 0px 0px 0px;width:100%;border-bottom:1px #eee dotted;padding-bottom:5px;margin-left:10px}
+.shoptable2 li label i{color:#aaa;}
+.shoptable2 li font{float:left;width:100%;margin:6px 0px 0px 10px;font-size:16px;color:#76AC25}
+.shoptable2 .xnew{cursor:pointer}
+.shoptable2 .xnew span{background:#76AC25}
+.shoptable2 .xnew label{color:#555;border-bottom:0px;cursor:pointer}
+.shoptable2 .xyu{cursor:default}
+.shoptable2 .xyu span{background:#fff;border:1px #ccc dotted}
+.shoptable2 .xyu font{color:#999;cursor:default}
+.shoptable2 .xuse span{background:#ff8800}
+.shoptable2 .xuse font{color:#999}
+.shoptable2 .xtit{font-weight:bold;width:100%;border:0px;padding:5px 0px}
+.shoptable2 li .y1{float:left;width:30%;text-align:center}
+.shoptable2 li .y2{float:left;width:70%;}
+.shoptable2 .xmyyu span{background:#ff6900}
+.shoptable2 .xmyyu font{color:#ff6900}
+.shoptable2 .xmyyu label{color:#ff6900}
+.tabletips{float:left;width:100%;margin:20px 0px 5px 0px;font-size:14px}
+.tabletips label{float:left;margin-top:3px}
+.tabletips font{color:#76AC25;margin-left:20px;float:left;margin-top:3px}
+.tabletips a{float:left;margin-left:20px;background:#76AC25;color:#fff;padding:5px 18px;border-radius:5px;font-size:12px}
+
+.reserve{position:fixed;width:90%;background:#fff;padding:15px 0px;z-index:100;border-radius:7px;overflow:visible}
+.reserve .xclose{float:right;margin:-30px -5px 0px 0px}
+.reserve li{float:left;width:90%;margin:5px 5%}
+.reserve li label{float:left;width:20%;margin-top:3px;color:#999}
+.reserve li span{float:left;width:80%}
+.reserve li .xtxt{border:0px;border-bottom:1px #ddd solid;padding:5px 2px;width:100%}
+.reserve li .xbeta{border:0px;border-bottom:1px #ddd solid;padding:5px 2px;width:100%}
+.reserve .xpwd{}
+.reserve .xpwd input{width:18%;margin:0px 2%;text-align:center}
+.reserve .xtips{color:#ff8800;font-size:14px}
+.reserve .xtit{color:#76AC25;text-align:center;font-size:14px;font-weight:bold;margin-bottom:10px}
+.reserve .xtit2{color:#ff3300;text-align:center;font-size:14px;font-weight:bold;margin-bottom:10px}
+.reserve .xbtn{text-align:center;margin-top:20px;}
+.reserve .xbtn input{padding:5px 70px;background:#76AC25;color:#fff;border-radius:5px;color:#fff;text-align:center;border:0px}
+.reserve .xcode .ybtn1{float:left;border:0px;border-bottom:1px #ddd solid;padding:5px 2px;width:100%;height:20px}
+.reserve .xcode .ybtn2{float:right;background:#ff6900;color:#fff;padding:2px 5px;height:20px;margin:-22px 5px 0px 0px;border:0px;border-radius:5px;width:80px;text-align:center}
+.reserve .xcode .ybtn2x{float:right;background:#76AC25;color:#fff;padding:2px 5px;height:20px;margin:-22px 5px 0px 0px;border:0px;border-radius:5px;width:80px;text-align:center}
+.reserve_time{width:90%;margin:0px;position:fixed;background:#fff;z-index:100}
+.reserve_time .xtit{float:left;width:94%;padding:10px 3%;text-align:center;font-size:16px;color:#76AC25}
+.reserve_time .xli{float:left;width:94%;padding:10px 3%;}
+.reserve_time .xli li{float:left;width:50%}
+.reserve_time .xli .xday{font-size:14px}
+.reserve_time .xli .xday a{float:left;width:100%;text-align:left;padding:8px 5px}
+.reserve_time .xli .xday a font{float:left;}
+.reserve_time .xli .xday a:hover{color:#76AC25;background:#efefef}
+.reserve_time .xli .xday .xsel{background:#fff;color:#76AC25}
+.reserve_time .xli .xday .xsel i{float:right;margin:3px 15px 0px 0px;width:7px;height:9px;background: url(bg2.png) no-repeat right center}
+.reserve_time .xli .xtime{overflow-y:scroll;overflow-x:hidden;font-size:14px}
+.reserve_time .xli .xtime a{float:left;width:100%;text-align:left;padding:8px 5px}
+.reserve_time .xli .xtime a:hover{color:#76AC25;background:#efefef}
+.reserve_time .xli .xtime .xsel{background:#fff;color:#76AC25}
+.reserve_time .xli .xtime .xsel i{float:right;margin-right:5px;width:11px;height:11px;background: url(ico3.png) no-repeat right center}
+.reserve_time .xli .xbtn{width:100%;padding:0px;margin-top:15px}
+.reserve_time .xli .xbtn a{float:left;width:50%;margin:10px 25%;padding:7px 0px;background:#76AC25;color:#fff;border-radius:5px;text-align:center;letter-spacing:3px}

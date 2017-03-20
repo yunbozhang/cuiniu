@@ -1,0 +1,86 @@
+{include(header)}
+<div class="pMenu" id="id_pMenu">
+	<li class="sel" onclick="admin.edittabel(0);">基本信息</li>
+	<li onclick="admin.edittabel(1);">详细介绍</li>
+	<li class = "x_btn"><a href="javascript:parent.thisjs.klkkdj_open('积分兑换礼品-帮助','app=service&app_act=help&key=help.act.gift');" title="帮助"><img src="images/faq.gif"></a></li>
+</div>
+<div class="pMain" id="id_main">
+<table class='pEditTable'>
+<tr class='pTabTitRow'><td class='pTabTitCol' colspan="2"></td></tr>
+<tr>
+	<td class="pTabColName">名称：</td>
+	<td class="pTabColVal"><input type="text" name="gift_name" value="{$editinfo['gift_name']}" class='pTxt1 pTxtL200' ruletips="礼品名称不能为空" ruletipsmode=1 required> <span style="color:#ff0000">*</span></td></tr>
+<tr>
+	<td class="pTabColName">分&nbsp;&nbsp;组：</td>
+	<td class="pTabColVal">
+		<select name="gift_group">
+		{foreach($arr_group as $item=>$key)}
+			<option value="{$key}"{if($key==$editinfo['gift_group'])} selected{/if}>{$item}</option>
+		{/foreach}
+		</select>
+	</td></tr>
+<tr>
+	<td class="pTabColName">总量：</td>
+	<td class="pTabColVal"><input type="text" name="gift_total" value="{$editinfo['gift_total']}" class='pTxt1 pTxtL100'>&nbsp;&nbsp;<span class="pBeta">0表示可无限兑换</span>{if(!empty($editinfo['gift_num']))}&nbsp;&nbsp;&nbsp;已兑换：{$editinfo['gift_num']}{/if}</td></tr>
+<tr>
+	<td class="pTabColName">每天数量：</td>
+	<td class="pTabColVal"><input type="text" name="gift_total_day" value="{$editinfo['gift_total_day']}" class='pTxt1 pTxtL100'>&nbsp;&nbsp;<span class="pBeta">0表示不限，否则按总量限制,大于0表示每天最多可兑换数量，不能大于总量</span></td></tr>
+<tr>
+	<td class="pTabColName">每用户数量：</td>
+	<td class="pTabColVal"><input type="text" name="gift_user_num" value="{$editinfo['gift_user_num']}" class='pTxt1 pTxtL100'>&nbsp;&nbsp;<span class="pBeta">0表示不限</span></td></tr>
+<tr>
+	<td class="pTabColName">开始时间：</td>
+	<td class="pTabColVal"><input type="text" name="gift_starttime" value="{$editinfo['gift_starttime']}" class='pTxt1 pTxtL150' onfocus="new Calendar().show(this);" ruletips="开始时间不能为空或格式不对" rule='datetime' ruletipsmode=1 required> <span style="color:#ff0000">*</span></td></tr>
+<tr>
+	<td class="pTabColName">结束时间：</td>
+	<td class="pTabColVal"><input type="text" name="gift_endtime" value="{$editinfo['gift_endtime']}" class='pTxt1 pTxtL150' onfocus="new Calendar().show(this);" ruletips="结束时间不能为空或格式不对" rule='datetime' ruletipsmode=1 required> <span style="color:#ff0000">*</span></td></tr>
+<tr>
+	<td class="pTabColName">开放时间段：</td>
+	<td class="pTabColVal"><span style="float:left"><textarea name="gift_opentime" class="pTxt1" rows=3 cols=38>{$editinfo['gift_opentime']}</textarea></span><span style="float:left;padding-left:8px" class="pBeta">格式：900,1800=>9点到18点，多个以换行分隔</span></td></tr>
+<tr>
+	<td class="pTabColName">兑换积分：</td>
+	<td class="pTabColVal"><input type="text" name="gift_score" value="{$editinfo['gift_score']}" class='pTxt1 pTxtL100'>&nbsp;&nbsp;<span class="pBeta">兑换所需积分,为0则表示不需要积分也可以领</span></td></tr>
+<tr>
+	<td class="pTabColName">图片：</td><td class="pTabColVal"><input type="text" name="gift_pic" id="id_gift_pic" value="{$editinfo['gift_pic']}" class='pTxt1 pTxtL300'>&nbsp;<a href="javascript:kj.dialog({id:'dialog_attatch',title:'选择图片',url:'common.php?app=other&app_act=attatch&url_objid=id_gift_pic',w:600,showbtnhide:false,type:'iframe'});">选择</a><br><iframe name="frm_pic_url" src="common.php?app=other&app_act=upload&objid=id_gift_pic" width="300px" height="30px" frameborder=0 scrolling="no"></iframe></td>
+	</tr>
+<tr>
+	<td class="pTabColName">状&nbsp;&nbsp;态：</td>
+	<td class="pTabColVal">
+		<select name="gift_state">
+		{foreach($arr_state as $item=>$key)}
+			<option value="{$key}"{if($key==$editinfo['gift_state'])} selected{/if}>{$item}</option>
+		{/foreach}
+		</select>
+	</td></tr>
+</table>
+<table class='pEditTable' style='display:none'>
+<tr class='pTabTitRow'><td class='pTabTitCol' colspan="2"></td></tr>
+<tr>
+	<td class="pTabColVal"><textarea name="gift_desc" id="gift_desc" cols="60" rows="5" style="display:none">{$editinfo['gift_desc']}</textarea>{fun_get::editor('gift_desc','admin')}</td></tr>
+</table>
+</div>
+<div class="pFootAct" id="id_pFootAct">
+	<li>
+	<input type="button" name="dosubmit" value="保存" onclick="thisjs.get_cont();admin.frm_ajax('save' , function(){thisjs.clear_cont();});" class="pBtn">
+	</li>
+</div>
+<script>
+function attatch_callback() {
+	kj.dialog.close("#windialog_attatch");
+}
+var thisjs = new function() {
+	//因为这里用ajax，fckeditor不会取到内容，所以自己取
+	this.get_cont = function() {
+		kj.obj("#gift_desc").value = objEditor.getContent(); //这就是内容
+	}
+	//ajax 提交后，还得清空内容
+	this.clear_cont = function() {
+		//只有当添加时才要清空
+		{if(empty($editinfo['gift_id']))}
+			objEditor.setContent('');
+		{/if}
+	}
+
+}
+</script>
+{include(footer)}

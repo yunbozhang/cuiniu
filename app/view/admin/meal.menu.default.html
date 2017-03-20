@@ -1,0 +1,234 @@
+{include(header)}
+<div class="pMenu" id="id_pMenu">
+	<input type="hidden" value="{fun_get::get('url_type')}" name="url_type">
+	<li style="font-weight:bold"><input type="hidden" name="url_shop_id" value="{$admin_shop['id']}" id="id_url_shop_id"><span class="more1" onmouseover="kj.windiv({'id':'shop_user_windiv','fid':this,'src':'common.php?app=meal&app_act=shop1'});" id="id_shop_user">店铺：{if($admin_shop['id']<1)}请选择{else}{$admin_shop['name']}{/if}</span></li>
+	<li {if(fun_get::get("url_type")=='')} class="sel"{/if} onclick="document.frm_main.url_type.value='';admin.act('');">外送</li>
+	<li {if(fun_get::get("url_type")=='1')} class="sel"{/if} onclick="document.frm_main.url_type.value='1';admin.act('');">店内</li>
+	<li onclick="master_open({id:'add_config',title:'添加菜谱',url:'{fun_get::url(array('app_act'=>'edit','id'=>0))}',w:800});" class="x_btn">添加</li>
+	<li onclick="admin.menu_display(0);" class = "x_btn">查找</li>
+	<li class = "x_btn"><a href="javascript:parent.thisjs.klkkdj_open('菜品管理-帮助','app=service&app_act=help&key=help.meal.menu');" title="帮助"><img src="images/faq.gif"></a></li>
+	<li class="fdpic" onclick="master_open({url:'common.php?app=config&app_module=user&dir={$app_dir}&key=meal.menu&filename=meal',title:'设置字段',w:400});">&nbsp;</li>
+</div>
+<div class="btnMenuDiv" id="id_btnMenuDiv"{if($arr_list['issearch']==0)} style="display:none"{/if}>
+<li>分&nbsp;组：{$s_group_html}</li>
+<li>推&nbsp;荐：<select name="s_tj"><option value="0"></option><option value="1"{if(fun_get::get("s_tj")=='1')} selected{/if}>是</option><option value="-1"{if(fun_get::get("s_tj")=='-1')} selected{/if}>否</option></select></li>
+<li>状&nbsp;态：<select name="s_state">
+<option value="-999"></option>
+{foreach($arr_state as $item=>$key)}
+	<option value="{$key}"{if(fun_get::get("s_state")==$key)} selected{/if}>{$item}</option>
+{/foreach}
+</select></li>
+
+<li>价格：<input type="text" name="s_price1" value="" style="width:50px">&nbsp;至&nbsp;<input type="text" name="s_price2" value="" style="width:50px"></li>
+<li>关 键 字：<input type="text" id="s_key" name="s_key" value="{fun_get::get('s_key')}">　<input type="button" name="btn_s_ok" value="查找" class="pBtn" onclick="admin.search();"> 　<input type="button" name="btn_s_clear" value="清空" class="pBtn" onclick="admin.clear_search();"></li>
+</table>
+</div>
+<div class="pMain" id="id_main">
+<div class="pTableBox" id="id_table_box">
+	<div class='pTableTit' id="id_table_title">
+		<li><span class="x_tit" style="width:25px">&nbsp;</span></li>
+		{foreach($arr_list["tabtit"] as $item)}
+			<li><span class="x_tit"{if($item["w"]>0)} style="width:{$item["w"]}px"{/if} onclick="admin.table.list1.sort('{$item['key']}')">{$item["name"]}
+			{if(isset($arr_list['sort'][$item['key']]))}<img src="images/sort_{$arr_list['sort'][$item['key']]}.png">{/if}</span><span class="x_split"></span></li>
+		{/if}
+		<li><span class="x_tit" style="cursor:none;width:150px">操作</span></li>
+	</div>
+	<div class="pTableList" id="id_table_list">
+		<div class='pTable' id="id_table">
+			{foreach($arr_list['list'] as $item)}
+			<div class='pTabRow'>
+				<li><input type='checkbox' name='selid[]' value="{$item['menu_id']}"></li>
+				{foreach($arr_list["tabtd"] as $field)}
+					{if($field=='menu_sort')}
+					<li><input type='text' name='sortval_{$item['menu_id']}' value="{$item['menu_sort']}" style="width:20px" onblur="if(this.value!={$item['menu_sort']}){thisjs.sort_save({$item['menu_id']},this.value);}"></li>
+					{else}
+					<li>{if(empty($item[$field]))}&nbsp;{else}{$item[$field]}{/if}</li>
+					{/if}
+				{/foreach}
+				<li>
+				{if($app_act!='dellist')}
+					{if($this_limit->chk_act("edit"))}
+					<input type="button" name="btnedit" value="编辑" onclick="master_open({id:{$item['menu_id']},title:'编辑菜谱',w:800});" class="pBtn">
+					{/if}
+					{if($this_limit->chk_act("del"))}<input type="button" name="btnedit" value="删除" onclick="admin.ajax_url({app_act:'del',id:'{$item['menu_id']}'});" class="pBtn2">{/if}
+				{else}
+					{if($this_limit->chk_act("reback"))}<input type="button" name="btnedit" value="还原" onclick="admin.ajax_url({app_act:'reback',id:'{$item['menu_id']}'});" class="pBtn">{/if}
+					{if($this_limit->chk_act("delete"))}&nbsp;&nbsp;<input type="button" name="btnedit" value="彻底删除" onclick="admin.ajax_url({app_act:'delete',id:'{$item['menu_id']}'});" class="pBtn2">{/if}
+				{/if}
+				</li>
+			</div>
+			{/foreach}
+		</div>
+	</div>
+</div>
+</div>
+<div class="pPage" id="id_pPage">
+{$arr_list['pagebtns']}
+</div>
+<div id="id_selact_mode_day" style="display:none;position:absolute;width:100px;background:#fff;border:1px #cccccc solid">
+<div style="float:left;width:100%;text-align:left;overflow-y:scroll;height:300px">
+{for($i=1;$i<32;$i++)}
+<li style="float:left;width:90%"><label><input type="checkbox" name="mode_day[]" value="{$i}">{$i}号</label></li>
+{/for}
+</div>
+</div>
+<div id="id_selact_mode_week" style="display:none;position:absolute;width:100px;background:#fff;border:1px #cccccc solid">
+<div style="float:left;width:100%;text-align:left;overflow:hidden;height:170px">
+<li><label><input type="checkbox" name="mode_weekday[]" value="1" checked>周一</label></li>
+<li><label><input type="checkbox" name="mode_weekday[]" value="2" checked>周二</label></li>
+<li><label><input type="checkbox" name="mode_weekday[]" value="3" checked>周三</label></li>
+<li><label><input type="checkbox" name="mode_weekday[]" value="4" checked>周四</label></li>
+<li><label><input type="checkbox" name="mode_weekday[]" value="5" checked>周五</label></li>
+<li><label><input type="checkbox" name="mode_weekday[]" value="6" checked>周六</label></li>
+<li><label><input type="checkbox" name="mode_weekday[]" value="0" checked>周天</label></li>
+<li><label><input type="checkbox" name="mode_holiday" value="1" checked>节假日</label></li>
+</div>
+</div>
+
+<div class="pFootAct" id="id_pFootAct">
+<li>
+<label><input type='checkbox' name='selall' value='1'>全选</label>
+<select name="selact" onchange="thisjs.changeact(this.value)" id="id_selact">
+	<option value="">--操作--</option>
+	{if($app_act!='dellist')}
+		{if($this_limit->chk_act("excel"))}<option value="excel">导出Excel</option>{/if}
+		{if($this_limit->chk_act("mode"))}<option value="mode">提供模式</option>{/if}
+		{if($this_limit->chk_act("group"))}<option value="group">分组</option>{/if}
+		{if($this_limit->chk_act("type"))}<option value="type">分类</option>{/if}
+		{if($this_limit->chk_act("state"))}<option value="state">状态</option>{/if}
+		{if($this_limit->chk_act("tj"))}<option value="tj">推荐</option>{/if}
+		{if($this_limit->chk_act("delete"))}<option value="delete">删除</option>{/if}
+	{else}
+		{if($this_limit->chk_act("reback"))}<option value="reback">还原</option>{/if}
+		{if($this_limit->chk_act("delete"))}<option value="delete">彻底删除</option>{/if}
+	{/if}
+	</select>&nbsp;<span id="id_selact_group" style="display:none">
+	{$group_html}
+	</span>&nbsp;<span id="id_selact_state" style="display:none">
+	<select name="state_val">
+	{foreach($arr_state as $item=>$key)}
+	<option value="{$key}">{$item}</option>
+	{/foreach}
+	</select>
+	</span>
+	<span id="id_selact_tj" style="display:none">
+	<select name="tj_val">
+	<option value="1">是</option>
+	<option value="0">否</option>
+	</select>
+	</span>
+	<span id="id_selact_type" style="display:none">
+	<select name="type_val">
+		{foreach($arr_type as $item=>$key)}
+			<option value="{$key}">{$item}</option>
+		{/foreach}
+	</select>
+	</span>
+	<span id="id_selact_mode" style="display:none">
+	<label><input type="radio" name="mode_val" value="0" checked onclick="kj.hide('#id_selact_mode_week');kj.hide('#id_selact_mode_day');">每天</label>&nbsp;&nbsp;<label><input type="radio" name="mode_val" value="2" onclick="kj.hide('#id_selact_mode_week');kj.hide('#id_selact_mode_day');">自定义</label>&nbsp;&nbsp;<label><input type="radio" name="mode_val" value="1" onclick="thisjs.show_week(this);">按星期</label>&nbsp;&nbsp;<label><input type="radio" name="mode_val" value="3" onclick="thisjs.show_day(this);">按日期</label>
+	</span>
+	<span id="id_selact_excel" style="display:none">
+		导出名称：<input type="text" name="excel_name" value="商品">
+	</span>
+	&nbsp;<input type="button" name="btnExe" value="执行" onclick="thisjs.selact();" class="pBtn">
+</li>
+</div>
+<script src="admin.table.js"></script>
+<script>
+//店铺选择回调函数
+function shop1_callback(o) {
+	if("id" in o) {
+		kj.set("#id_url_shop_id" , "value" , o.id);
+		admin.refresh();
+	}
+}
+
+//初始化表格控件
+kj.onload(function(){
+	admin.table.list1.init('#id_table_title' , '#id_table');
+});
+	//自动保存
+admin.table.list1.save_resize = function() {
+	var lng_w = (kj.w(this.field));
+	kj.ajax.get("common.php?app=config&app_module=user&dir={$app_dir}&app_act=save_resize&filename=meal&key=meal.menu&index=" + this.fieldsindex + "&w=" + lng_w , function(data){
+		//alert(data);
+	});
+}
+admin.table.list1.sort = function(key) {
+	kj.ajax.get("common.php?app=config&app_module=user&dir={$app_dir}&app_act=sort&key=meal.menu&filename=meal&sortby=" + key , function(data){
+		var obj_data=kj.json(data);
+		if(!obj_data.isnull) {
+			admin.refresh();
+		}
+	});
+}
+//当前页面js对象
+var thisjs = new function() {
+	this.changeact = function(val) {
+		kj.obj("#id_selact_state").style.display = (val == "state") ? "" : "none";
+		kj.obj("#id_selact_group").style.display = (val == "group") ? "" : "none";
+		kj.obj("#id_selact_mode").style.display = (val == "mode") ? "" : "none";
+		kj.obj("#id_selact_tj").style.display = (val == "tj") ? "" : "none";
+		kj.obj("#id_selact_type").style.display = (val == "type") ? "" : "none";
+		kj.obj("#id_selact_excel").style.display = (val == "excel") ? "" : "none";
+		if(val=='sort') {
+			kj.show(".css_sort");
+		} else {
+			kj.hide(".css_sort");
+		}
+
+	}
+	this.show_day = function(obj) {
+		kj.hide('#id_selact_mode_week');
+		kj.show("#id_selact_mode_day");
+		var offset = kj.offset(obj);
+		var o = kj.obj("#id_selact_mode_day");
+		o.style.top = (offset.top-300)+"px";
+		o.style.left = offset.left+"px";
+	}
+	this.show_week = function(obj) {
+		kj.show('#id_selact_mode_week');
+		kj.hide("#id_selact_mode_day");
+		var offset = kj.offset(obj);
+		var o = kj.obj("#id_selact_mode_week");
+		o.style.top = (offset.top-170)+"px";
+		o.style.left = offset.left+"px";
+	}
+	this.sort_save = function(id,val) {
+		kj.ajax.get("{fun_get::url(array('app_act'=>'sort','id'=>'','val'=>''))}&id="+id+"&val="+val,function(data) {
+			var obj = kj.json(data);
+			if(obj.isnull) {
+				alert("系统繁忙");return;
+			}
+			if(obj.code=='0') {
+				kj.alert.show("保存成功");
+			} else {
+				alert(obj.msg);
+			}
+		});
+	}
+	this.selact = function() {
+		var act = kj.obj("#id_selact").value;
+		if(act == 'excel') {
+			document.frm_main.target='_blank';
+			document.frm_main.app_act.value=act;
+			document.frm_main.submit();
+			document.frm_main.target='_self';
+			document.frm_main.app_act.value = '';
+			return;
+		}
+		admin.selact();
+	}
+}
+{if($admin_shop['id']<1)}
+kj.onload(function(){
+	var objx = kj.obj("#id_shop_user");
+	kj.windiv({'id':'shop_user_windiv','fid':objx,'src':'common.php?app=meal&app_act=shop1&url_mode=2'});
+	kj.handler("#windivshop_user_windiv_body","mouseout",function() {
+		kj.show(this.parentNode);
+		return;
+	});
+});
+{/if}
+</script>
+{include(footer)}

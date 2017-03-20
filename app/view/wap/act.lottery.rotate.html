@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>{cfg:(site_title,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+<style>
+.pointer_pic{-webkit-transform: rotate(269deg);position:absolute;}
+</style>
+</head>
+<body class="gbig">
+{include(label.header)}
+<script src="/common/js/kj.rotate.js"></script>
+<div class="top">
+	<h1>幸运大转盘</h1>
+	<a href="?" id="id_top_back" class="x2"><img src="images/back.png"></a>
+</div>
+<div class="ggk">
+	<div class="rotate">
+		<canvas id="canvas" width="320px" height="320px"></canvas>
+		<img src="images/start.png" class="pointer_pic" onclick="thisjs.lottery();" id="id_start">
+	</div>
+	{if(!empty($award_log))}
+	<div class="xbox1">
+		<div class="xtit">中奖记录</div>
+		<div class="xcont">
+			{foreach($award_log as $item)}
+				Id：{$item['log_id']}，&nbsp;{$item['award_name']}，&nbsp;<font{if($item['log_state']==0)} style="color:#ff0000"{/if}>{$item['state']}</font><br>
+			{/foreach}
+		</li>
+	</div>
+	{/if}
+	<div class="xbox1">
+		<div class="xtit">活动介绍</div>
+		<div class="xcont">
+			{$lottery_info['lottery_desc']}
+		</li>
+	</div>
+	<div class="xbox1">
+		<div class="xtit">奖项设置</div>
+		<div class="xli">
+			{foreach($lottery_info['award_list'] as $item)}
+				{$item['award_name']}，数量：{$item['award_num_total']}<br>
+			{/foreach}
+		</li>
+	</div>
+</div>
+<script>
+kj.onload(function(){
+	kj.rotate.data = {$lottery_info['award']};
+	kj.rotate.load('#canvas','#id_start');
+});
+var thisjs = new function() {
+	this.lottery = function() {
+		kj.ajax.get("{fun_get::url(array('app_act'=>'lottery'))}",function(data) {
+			var objdata = kj.json(data);
+			if(objdata.isnull) {
+				alert("系统繁忙,稍后再试.");
+				return;
+			}
+			if(objdata.code == '0') {
+				kj.rotate.start(objdata.id);
+			} else {
+				alert(objdata.msg);
+			}
+		});
+	}
+}
+</script>
+{include(label.footer)}
+</body>
+</html>

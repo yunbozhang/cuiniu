@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>微信自定义菜单-商家管理-{cfg:(site_title,sys)}</title>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+</head>
+<body>
+{include(header)}
+{include(shop.header)}
+{include(shop.left)}
+<div class="uright">
+	<div class="pMain" id="id_main">
+		<div style="float:left;border:1px #ff8800 dotted;padding:3px;color:#ff8800;margin:10px 0px 0px 3px;width:680px">目前自定义菜单最多包括3个一级菜单，每个一级菜单最多包含5个二级菜单。一级菜单最多4个汉字，二级菜单最多7个汉字，多出来的部分将会以“...”代替</div>
+		<div class="pLayer" id="id_layer">
+		<li style="display:none" id="id_layer_default">
+			<span class="padding_1">&nbsp;<input type="hidden" name="" value="1"></span>
+			<span class="xx_1"><input type="hidden" name="menu_id[]" value=""><input type="hidden" name="menu_id_layer[]" value="id_layer_default"><input type="hidden" name="pid[]" value=""><input type="text" name="menu_sort[]" value="" class='pTxt1 pTxtL20'></span>
+			<span class="xx_1"><input type="text" name="menu_name[]" value="" class='pTxt1 pTxtL150'></span><span class="xx_1"><a href="javascript:kj.layer.add('#id_layer_default',50);"><img src="images/add.gif"></a>&nbsp;&nbsp;<a href="javascript:kj.layer.remove('id_layer_default');"><img src="images/romove.gif"></a></span></li>
+			{set $ii=0}
+		{foreach($arr_menu["list"] as $item)}
+			{if(empty($item['menu_pid']))}
+				{set $ii=$ii+1}
+			{/if}
+		<li id="id_layer_{$item['menu_id']}">
+			<span class="padding_1" style="width:{$item['layer']*50-50}px">&nbsp;<input type="hidden" name="" value="{$item['layer']}"></span>
+			<span class="xx_1"><input type="hidden" name="menu_id[]" value="{$item['menu_id']}"><input type="hidden" name="menu_id_layer[]" value="id_layer_{$item['menu_id']}"><input type="hidden" name="pid[]" value="{if($item['menu_pid']>0)}id_layer_{$item['menu_pid']}{/if}"><input type="text" name="menu_sort[]" value="{$item['menu_sort']}" class='pTxt1 pTxtL20'></span>
+			<span class="xx_1"><input type="text" name="menu_name[]" value="{$item['menu_name']}" class='pTxt1 pTxtL150'></span><span class="xx_1">{if(empty($item['menu_pid']))}<a href="javascript:master_open({id:'add_act',title:'添加二级菜单',url:'{fun_get::url(array('app_act'=>'edit','pid'=>$item['menu_id']))}',w:800});"><img src="images/add.gif"></a>&nbsp;&nbsp;{/if}<a href="javascript:kj.layer.remove('id_layer_{$item['menu_id']}');"><img src="images/romove.gif"></a>&nbsp;&nbsp;<a href="javascript:javascript:kj.dialog({id:'edit',title:'编辑菜单',url:'{fun_get::url(array('app_act'=>'menu.edit'))}&id={$item['menu_id']}',w:800,max_h:650,showbtnhide:false,type:'iframe'});">编辑</a></span></li>
+		{/foreach}
+		</div>
+		{if($ii<3)}
+			<div class="pLayerAdd"><a href="javascript:kj.dialog({id:'edit',title:'添加菜单',url:'{fun_get::url(array('app_act'=>'menu.edit'))}&id=',w:800,max_h:650,showbtnhide:false,type:'iframe'});"><img src="images/add.gif"> 添加菜单</a></div>
+		{/if}
+	</div>
+	<div class="pFootAct" id="id_pFootAct">
+	<li>
+	{if($this_limit->chk_act("save"))}&nbsp;<input type="button" name="dosubmit" value="保存并生成微信菜单" onclick="shop.frm_ajax('menu.save.exe');" class="btn-1">&nbsp;&nbsp;<span class="pBeta">这里保存后才会同步到微信那边</span>{/if}
+	</li>
+	</div>
+</div>
+{include(shop.footer)}
+{include(footer)}
+<script src="js.js"></script>
+<script src="shop.js"></script>
+<script src="/common/js/kj.layer.js"></script>
+<script>
+kj.layer.move = function(id) {
+	var obj = {};
+	obj.title='移动分组';
+	obj.type='iframe';
+	obj.top = kj.y;
+	obj.left = kj.x;
+	obj.h=100;
+	obj.w={$arr_menu["maxlayer"]*50+150};
+	if(obj.w < 200) obj.w=200;
+	obj.url = "?app={$app}&app_module={$app_module}&app_act=move_open&id=" + id;
+	obj.id = 'openmove_' + id;
+	//obj.showbtnhide=true;
+	kj.dialog(obj);
+}
+kj.onload(function(){
+	kj.handler(document.documentElement,"mousedown",function(e){
+		oEvent=e||event;
+		kj.x=oEvent.clientX;
+		kj.y=oEvent.clientY;
+	});
+});
+function site_callback(o) {
+	if("id" in o) {
+		kj.set("#id_url_site_id" , "value" , o.id);
+		admin.refresh();
+	}
+}
+
+</script>
+</body>
+</html>

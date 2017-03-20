@@ -1,0 +1,230 @@
+{include(header)}
+<style>
+.me_div{float:left;width:90%}
+.me_div li{float:left;margin:5px 0px 2px 5px;width:100%}
+.me_div li span{float:left}
+.me_div li input{float:left}
+.me_div li font{float:left;margin-top:2px;cursor:pointer;font-size:12px}
+.me_div li .xtit{font-weight:bold;margin-right:10px}
+.me_div li .x1{color:#888}
+.more1{float:left;margin-left:10px}
+.mecategory{float:left;width:90%;clear:both;color:#666;border-top:1px #ccc dotted;margin:8px 0px}
+.mecategory li{float:left;width:100%;margin:5px 0px 3px 10px}
+.mecategory span{float:left}
+.mecategory .xtit{font-weight:bold}
+#id_mediv{float:left;width:100%}
+#id_mediv ul{float:left;width:100%;margin-bottom:10px;border-bottom:1px #ccc dotted}
+#id_mediv ul li{float:left;width:100%;margin:5px 0px 3px 0px}
+#id_mediv ul li span{float:left}
+
+#id_award{float:left;width:100%}
+#id_award ul{float:left;width:100%;margin:5px 0px;border-bottom:1px #ccc dotted}
+#id_award ul li{float:left;width:100%;margin:5px 0px 3px 0px}
+#id_award ul li .pTxt1{height:20px}
+#id_award ul li span{float:left;margin-right:10px}
+.me_pic_view{position:absolute;}
+.me_pic_sel{float:left;width:500px;text-align:left}
+.me_pic_sel li{float:left}
+.me_pic_sel .x1{width:350px}
+.me_pic_sel .x2{width:100px}
+.me_pic_sel .x2 img{width:100px;height:100px}
+
+</style>
+<div class="pMenu" id="id_pMenu">
+	<li class="sel" onclick="admin.edittabel(0);">基本信息</li>
+	<li onclick="admin.edittabel(1);">活动描述</li>
+	<li onclick="admin.edittabel(2);">奖项设置</li>
+</div>
+<div class="pMain" id="id_main">
+<input type="hidden" name="attribute_name" value="{$editinfo['attribute_name']}" id="id_attribute_name">
+<table class='pEditTable'>
+<tr class='pTabTitRow'><td class='pTabTitCol' colspan="2"></td></tr>
+<tr>
+	<td class="pTabColName">活动类型：</td><td class="pTabColVal">
+	<select name="lottery_type">
+	{foreach($arr_type as $item=>$key)}
+	<option value="{$key}"{if($key==$editinfo['lottery_type'])} selected{/if}>{$item}</option>
+	{/foreach}
+	</select>
+	</td>
+	</tr>
+<tr>
+	<td class="pTabColName">标题：</td><td class="pTabColVal"><input type="text" name="lottery_title" value="{$editinfo['lottery_title']}" class='pTxt1 pTxtL300' ruletips="标题不能为空" ruletipsmode=1 required> <span style="color:#ff0000">* </span></td>
+	</tr>
+<tr>
+	<td class="pTabColName">活动时间：</td><td class="pTabColVal"><input type="text" name="lottery_starttime" value="{$editinfo['lottery_starttime']}" class='pTxt1 pTxtL150' onfocus="new Calendar().show(this);"> &nbsp;到&nbsp; <input type="text" name="lottery_endtime" value="{$editinfo['lottery_endtime']}" class='pTxt1 pTxtL150' onfocus="new Calendar().show(this);"></td>
+	</tr>
+<tr>
+	<td class="pTabColName">用户限制：</td><td class="pTabColVal"><input type="text" name="lottery_limit_user" value="{$editinfo['lottery_limit_user']}" class='pTxt1 pTxtL100'> <span class='pBeta'>每用户限制抽多少次，0 即不限制</span></td>
+	</tr>
+<tr>
+	<td class="pTabColName">所需要积分：</td><td class="pTabColVal"><input type="text" name="lottery_score" value="{$editinfo['lottery_score']}" class='pTxt1 pTxtL100'> <span class='pBeta'>每抽一次需要扣多少分</span></td>
+	</tr>
+<tr>
+	<td class="pTabColName">经验值要求：</td><td class="pTabColVal"><input type="text" name="lottery_experience" value="{$editinfo['lottery_experience']}" class='pTxt1 pTxtL100'> <span class='pBeta'>只有达到此经验值的用户才能参与，为0则不限制</span></td>
+	</tr>
+<tr>
+	<td class="pTabColName">抽奖频率：</td><td class="pTabColVal">每 <input type="text" name="lottery_interval" value="{$editinfo['lottery_interval']}" class='pTxt1 pTxtL60'> <select name="lottery_interval_unit"><option value="minute"{if($editinfo['lottery_interval_unit']=='minute')} selected{/if}>分</option><option value="hour"{if($editinfo['lottery_interval_unit']=='hour')} selected{/if}>小时</option><option value="day"{if($editinfo['lottery_interval_unit']=='day')} selected{/if}>天</option></select> <input type="text" name="lottery_interval_num" value="{$editinfo['lottery_interval_num']}" class='pTxt1 pTxtL60'> 次 <span class='pBeta'>两项都不为空时才有效</span></td>
+	</tr>
+<tr>
+	<td class="pTabColName">图片：</td><td class="pTabColVal"><span style="float:left"><input type="text" name="lottery_pic" id="id_lottery_pic" value="{$editinfo['lottery_pic']}" class='pTxt1 pTxtL300' onchange="kj.obj('#id_img_lottery_pic').src=kj.url_view(this.value);">&nbsp;<a href="javascript:kj.dialog({id:'dialog_attatch',title:'选择图片',url:'common.php?app=other&app_act=attatch&url_objid=id_lottery_pic',w:600,showbtnhide:false,type:'iframe'});">选择</a><br><iframe name="frm_article_pic_big" src="common.php?app=other&app_act=upload&small=1&small_w=353&small_h=212" width="300px" height="30px" frameborder=0 scrolling="no"></iframe></span><span style="float:left;margin-left:5px"><img src="{$editinfo['lottery_pic']}" width="60px" height="60px" id="id_img_lottery_pic" onclick="kj.pic.preview(this.src);" onerror="this.src='{$temp_baseurl}common/images/no_pic.jpg'"></span></td>
+	</tr>
+</table>
+<!--label 1 end-->
+<table class='pEditTable' style='display:none'>
+<tr class='pTabTitRow'><td class='pTabTitCol' colspan="2"></td></tr>
+<tr>
+	<td class="pTabColVal"><textarea name="lottery_desc" id="lottery_desc" cols="60" rows="5" style="display:none">{$editinfo['lottery_desc']}</textarea>{fun_get::editor('lottery_desc','admin',0,620)}</td></tr>
+</table>
+<!--label 1 end-->
+<table class='pEditTable' style='display:none'>
+<tr class='pTabTitRow'><td class='pTabTitCol' colspan="2"></td></tr>
+<tr>
+	<td class="pTabColName">机率基数：</td><td class="pTabColVal"><input type="text" name="lottery_rate" value="{$editinfo['lottery_rate']}" class='pTxt1 pTxtL100'> <span class='pBeta'>如下面的奖品机率为10，这里的基数为100,那么奖品的中奖机率为10/100，即100次有10次中</span></td>
+	</tr>
+<tr>
+	<td class="pTabColName">奖品：</td>
+	<td class="pTabColVal">
+	<div id="id_award">
+	{if(empty($editinfo['award']))}
+	<ul><li><input type="hidden" name="award_id[]" value=""><input type="hidden" name="award_num_exchange[]" value="0"><span>奖品：<input type="text" name="award_name[]" value="" class="pTxt1 pTxtL300" style="width:120px"></span><span>总量：<input type="text" name="award_num_total[]" value="" class="pTxt1 pTxtL300" style="width:40px"></span><span>中奖机率：<input type="text" name="award_rate[]" value="" class="pTxt1 pTxtL300" style="width:40px"></span><span>每用户限中数量：<input type="text" name="award_limit_user[]" value=""class="pTxt1 pTxtL300"  style="width:40px"></span><span><img src="images/image_s.gif" onerror="this.src='{$temp_baseurl}common/images/no_pic.jpg'" onmouseover="thisjs.pic_view(this,'');" onmouseout="thisjs.pic_view(this,'none');" onclick="thisjs.pic_sel(this);" title="单击选择"><input type="hidden" name="award_pic[]" value=""><div class="me_pic_view"></div></span><span style="margin:3px 0px 0px 8px;cursor:pointer;color:#ff8800" onclick="thisjs.taocan_del(this);">[删除]</span></li></ul>
+	{else}
+		{foreach($editinfo['award'] as $award)}
+			<ul><li><input type="hidden" name="award_id[]" value="{$award['award_id']}"><input type="hidden" name="award_num_exchange[]" value="{$award['award_num_exchange']}"><span>奖品：<input type="text" name="award_name[]" value="{$award['award_name']}" class="pTxt1 pTxtL300" style="width:120px"></span><span>总量：<input type="text" name="award_num_total[]" value="{$award['award_num_total']}" class="pTxt1 pTxtL300" style="width:40px"></span><span>中奖机率：<input type="text" name="award_rate[]" value="{$award['award_rate']}" class="pTxt1 pTxtL300" style="width:40px"></span><span>每用户限中数量：<input type="text" name="award_limit_user[]" value="{$award['award_limit_user']}" class="pTxt1 pTxtL300"  style="width:40px"></span><span><img src="images/image_s.gif" onerror="this.src='{$temp_baseurl}common/images/no_pic.jpg'" onmouseover="thisjs.pic_view(this,'');" onmouseout="thisjs.pic_view(this,'none');" onclick="thisjs.pic_sel(this);" title="单击选择"><input type="hidden" name="award_pic[]" value="{$award['award_pic']}"><div class="me_pic_view"></div></span><span style="margin:3px 0px 0px 8px;cursor:pointer;color:#ff8800" onclick="thisjs.taocan_del(this);">[删除]</span><span class="pBeta" style="margin:5px 0px 0px 50px">已抽出：{$award['award_num_exchange']}</span></li></ul>
+		{/foreach}
+	{/if}
+	</div>
+	<a href="javascript:thisjs.award_new();" style="float:left;clear:both;color:#ff8800">[+添加]</a>	
+	</td></tr>
+</table>
+</div>
+<div class="pFootAct" id="id_pFootAct">
+	<li>
+	<input type="button" name="dosubmit" value="保存" onclick="thisjs.get_cont();admin.frm_ajax('save' , function(){thisjs.clear_cont();});" class="pBtn">
+	</li>
+</div>
+<div id="id_print_html" style="display:none">
+<iframe src="#" width="100%" height="400px" frameborder=0 id="id_frame_print" style="border:0px"></iframe>
+</div>
+<div id="id_selpic_html" style="display:none">
+	<div class="me_pic_sel">
+	<li class="x1"><input type="text" name="pic_url" id="id_sel_pic" value="temp_urlvalue" class="pTxt1 pTxtL300">&nbsp;<a href="javascript:kj.dialog({id:'id_sel_pic',title:'选择图片',url:'common.php?app=other&app_act=attatch&url_objid=id_sel_pic&callback=pic_callback',w:600,showbtnhide:false,type:'iframe'});">选择</a><br><iframe name="frm_format_pic" src="common.php?app=other&app_act=upload" width="300px" height="30px" frameborder=0 scrolling="no"></iframe><br><input type="button" name="btn_pic_ok" value="确定" onclick="thisjs.pic_ok();" class="pBtn">&nbsp;&nbsp;<input type="button" name="btn_pic_cancel" value="取消" onclick="kj.dialog.close('#winpic_sel');" class="pBtn"></li><li class="x2"><img src = "temp_urlhtml" id="id_sel_pic_view"></li>
+	</div>
+</div>
+<script>
+//选择图片回调函数
+function attatch_callback(o) {
+	if('objid' in o) {
+		if(o.objid == 'id_lottery_pic') {
+			kj.obj("#id_img_lottery_pic").src = kj.url_view(kj.obj("#id_lottery_pic").value);
+		} else {
+			kj.obj("#id_img_lottery_pic_small").src = kj.url_view(kj.obj("#id_lottery_pic_small").value);
+		}
+	}
+	kj.dialog.close("#windialog_attatch");
+}
+function upload_callback(info){
+	var obj = kj.json(info);
+	if('url' in obj) {
+		kj.obj("#id_lottery_pic").value=obj.url;
+		kj.obj("#id_img_lottery_pic").src = kj.url_view(obj.url);
+	}
+	if('url_small' in obj && kj.obj("#id_lottery_pic_small").value=='') {
+		kj.obj("#id_lottery_pic_small").value = obj.url_small;
+		kj.obj("#id_img_lottery_pic_small").src = kj.url_view(obj.url_small);
+	}
+}
+//用户选择回调函数
+function shop1_callback(o) {
+	if("id" in o) kj.obj("#id_lottery_shop_id").value=o.id;
+	if("name" in o) kj.obj("#id_lottery_shop").innerHTML = o.name;
+	kj.hide("#windivlottery_shop_windiv");
+}
+var thisjs = new function() {
+	this.pic_selhtml = '';
+	this.xz_del = function(obj) {
+		var objp = kj.parent(obj , 'ul');
+		kj.remove(objp);
+	}
+	this.xz_new = function() {
+		var obj_div=document.createElement("ul");
+		obj_div.innerHTML = '<li><span>标题：</span><span><input type="text" name="beta_name[]" value="" class="pTxtL50"></span><span><a href="javascript:thisjs.xz_del(this);">删除</a></span></li><li><span>内容：</span><span><textarea name="beta_val" rows="3" cols="50"></textarea></span></li>';
+		kj.obj('#id_mediv').appendChild(obj_div);
+	}
+	this.taocan_del = function(obj) {
+		var objp = kj.parent(obj , 'ul');
+		kj.remove(objp);
+	}
+	this.award_new = function() {
+		var obj_div=document.createElement("ul");
+		obj_div.innerHTML = '<li><input type="hidden" name="award_id[]" value=""><input type="hidden" name="award_num_exchange[]" value="0"><span>奖品：<input type="text" name="award_name[]" value="" class="pTxt1 pTxtL300" style="width:120px"></span><span>总量：<input type="text" name="award_num_total[]" value="" class="pTxt1 pTxtL300" style="width:40px"></span><span>中奖机率：<input type="text" name="award_rate[]" value="" class="pTxt1 pTxtL300" style="width:40px"></span><span>每用户限中数量：<input type="text" name="award_limit_user[]" value=""class="pTxt1 pTxtL300"  style="width:40px"></span><span><img src="images/image_s.gif" onerror="this.src=\'{$temp_baseurl}common/images/no_pic.jpg\'" onmouseover="thisjs.pic_view(this,\'\');" onmouseout="thisjs.pic_view(this,\'none\');" onclick="thisjs.pic_sel(this);" title="单击选择"><input type="hidden" name="award_pic[]" value=""><div class="me_pic_view"></div></span><span style="margin:3px 0px 0px 8px;cursor:pointer;color:#ff8800" onclick="thisjs.taocan_del(this);">[删除]</span></li>';
+		kj.obj('#id_award').appendChild(obj_div);
+	}
+	//因为这里用ajax，fckeditor不会取到内容，所以自己取
+	this.get_cont = function() {
+		kj.obj("#lottery_desc").value = objEditor.getContent(); //这就是内容
+	}
+	//ajax 提交后，还得清空内容
+	this.clear_cont = function() {
+		//只有当添加时才要清空
+		{if(empty($editinfo['lottery_id']))}
+			objEditor.setContent('');
+		{/if}
+	}
+	//预览图片
+	this.pic_view = function(o,val) {
+		var obj = kj.parent(o , "span");
+		var arr = kj.obj("input" , obj);
+		var src = '';
+		if(arr && 'length' in arr & arr.length>0) src = arr[0].value;
+		if(src == '' ) {
+			src = '{$temp_baseurl}common/images/no_pic.jpg';
+		} else {
+			src = kj.url_view(src);
+		}
+
+		arr = kj.obj(".me_pic_view" , obj);
+		if(arr && 'length' in arr && arr.length>0) {
+			arr[0].innerHTML = '<img src'+'="' + src + '" class="img_w500">';
+			arr[0].style.display = val;
+		}
+	}
+	//图片选择框
+	this.pic_sel = function(o) {
+		var objcol = kj.parent(o , "li");
+		var arr = kj.obj(":award_pic[]" , objcol);
+		var url;
+		if(arr && 'length' in arr & arr.length>0) {
+			url = arr[0].value;
+			this.pic_obj = arr[0];
+		}
+		if(this.pic_selhtml == '') {
+			this.pic_selhtml = kj.obj("#id_selpic_html").innerHTML;
+			kj.remove("#id_selpic_html");
+		}
+		var html = this.pic_selhtml;
+		html = html.replace('temp_urlvalue' , url);
+		html = html.replace('temp_urlhtml' , kj.url_view(url));
+		kj.dialog({'html':html,'id':'pic_sel','type':'html','title':'选择图片','w':600,'h':160,'showbtnmax':false});
+	}
+	this.pic_ok = function() {
+		this.pic_obj.value = kj.obj("#id_sel_pic").value;
+		kj.dialog.close('#winpic_sel');
+	}
+}
+function pic_callback(o) {
+	if('objid' in o) {
+		kj.obj("#id_sel_pic_view").src = kj.url_view(kj.obj("#id_sel_pic").value);
+	}
+	kj.dialog.close("#winid_sel_pic");
+}
+function upload_callback(info){
+	var obj = kj.json(info);
+	if('url' in obj) {
+		kj.obj("#id_sel_pic").value=obj.url;
+		kj.obj("#id_sel_pic_view").src = kj.url_view(obj.url);
+	}
+}
+
+</script>
+{include(footer)}

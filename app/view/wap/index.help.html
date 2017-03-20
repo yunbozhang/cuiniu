@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>帮助中心-{cfg:(site_title,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+</head>
+<body>
+{include(label.header)}
+<script src="index.js"></script>
+<div class="top">
+	<h1>帮助中心</h1>
+	<a href="?" class="x1"><img src="images/home.png"></a>
+	<a href="{if(!fun_is::set("id"))}?{else}?app_act=help{/if}" id="id_top_back" class="x2"><img src="images/back.png"></a>
+</div>
+{if(!fun_is::set("id"))}
+<div class="news">
+<div class="main">
+	{foreach($arr_help as $item)}
+		<a href="{cfg:(dirpath,base)}/{cfg:(basename,base)}?app_act=help&id={$item['article_id']}">{$item['article_title']}</a>
+	{/foreach}
+	<a href="{cfg:(dirpath,base)}/{cfg:(basename,base)}?app_act=msg">顾客留言</a>
+	<a href="{cfg:(dirpath,base)}/{cfg:(basename,base)}?app_act=reg.shop">商家加盟</a>
+</div>
+</div>
+{else}
+<div class="main">
+<div class="newstit">{$thisinfo['article_title']}</div>
+<div class="newsc">
+	{$thisinfo['article_content']}
+</div>
+</div>
+{/if}
+{include(label.footer)}
+</body>
+</html>

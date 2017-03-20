@@ -1,0 +1,174 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>商家资料-{cfg:(site_title,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+<style>
+#id_pic_view img{max-width:100px;max-height:100px}
+.meselect select{width:260px;float:left;margin:5px 0px 3px 0px;clear:both}
+</style>
+</head>
+<body>
+{include(label.header)}
+<div class="top">
+	<h1>商家资料</h1>
+	<a href="?" class="x1"><img src="images/home.png"></a>
+	<a href="?app=shop" id="id_top_back" class="x2"><img src="images/back.png"></a>
+</div>
+<div class="main">
+<form name="frm_main" action="{fun_get::url(array('app_act'=>'info.save'))}" method="post">
+<input type="hidden" name="shop_progress" value="{$editinfo['shop_progress']}">
+	<table class="cmsg">
+	<tr><td>
+		<input type="text" class="xtxt" placeholder="店名" name="shop_name" value="{$editinfo['shop_name']}" ruletips='店名不能为空' required>&nbsp;*
+	</td></tr>
+	<tr><td>
+		<input type="text" class="xtxt" placeholder="联系人" name="shop_linkname" value="{$editinfo['shop_linkname']}" ruletips='联系人不能为空' required>&nbsp;*
+	</td></tr>
+	<tr><td>
+		<input type="text" class="xtxt" placeholder="联系人电话" name="shop_linktel" value="{$editinfo['shop_linktel']}" ruletips='联系电话不能为空' required>&nbsp;*
+	</td></tr>
+	<tr><td>
+		<input type="text" class="xtxt" placeholder="店铺电话" name="shop_tel" value="{$editinfo['shop_tel']}">
+	</td></tr>
+	<tr><td class="meselect">
+		<input type="hidden" name="shop_area_id" id="id_shop_area_id" value="{$editinfo['shop_area_id']}">
+		<input type="hidden" name="shop_area_allid" id="id_shop_area_allid" value="{$editinfo['shop_area_allid']}">
+		<input type="hidden" name="shop_area" id="id_shop_area" value="{$editinfo['shop_area']}">
+		<select name="area_id[]" onchange="thisjs.changearea(this.value,0);" id="id_area_0">
+			<option value=""></option>
+		{foreach($editinfo["area"]["default"] as $item)}
+			<option value="{$item['area_id']}"{if(in_array($item['area_id'] , explode("," , $editinfo['shop_area_allid']) ) )} selected{/if}>{$item['area_name']}</option>
+		{/foreach}
+		</select>
+		{for($i=1;$i<$editinfo["area"]["depth"];$i++)}
+			<select name="area_id[]" onchange="thisjs.changearea(this.value,{$i});" id="id_area_{$i}">
+			</select>
+		{/foreach}
+	</td></tr>
+	<tr><td>
+		<input type="text" class="xtxt" placeholder="店铺地址" name="shop_address" value="{$editinfo['shop_address']}" ruletips="店铺地址不能为空" required>
+	</td></tr>
+	<tr><td>
+		<div id="id_pic_view">
+		{if(!empty($editinfo['shop_pic']))}<img src = "{fun_get::html_url($editinfo['shop_pic'])}">{/if}
+		</div>
+		<input type="hidden" name="shop_pic" id="id_shop_pic" value="{$editinfo['shop_pic']}">
+		<input type="hidden" name="shop_pic_small" id="id_shop_pic_small" value="{$editinfo['shop_pic_small']}">
+		<iframe name="frm_article_pic_big" src="common.php?app=other&app_act=upload&small=1&hidebtn=1" width="300px" height="30px" frameborder=0 scrolling="no"></iframe>
+	</td></tr>
+	<tr>
+	<td valign="top"><input type="button" name="btn_saveinfo" value="提交" class="xbtn1" onclick="thisjs.on_save();"></td></tr>
+	</table>
+	</form>
+</div>
+{include(label.footer)}
+</body>
+</html>
+<script>
+var thisjs = new function() {
+	this.arealist = {$editinfo["area"]["list"]};//json格式，指定id包函的子地区
+	this.areainfo = {$editinfo["area"]["area"]};//对应id地区详细信息
+	this.depth = {$editinfo["area"]["depth"]};//当前地区深度
+	this.defaultval = "{$editinfo['shop_area_allid']}"//当前选择值
+	this.defaultval = this.defaultval.split(",");//格式化成数组
+	//地区下拉发生改变时触发
+	this.changearea = function(val , index) {
+		var obj,i,ii;
+		index++;
+		//当index大于深度时跳出
+		if(index>this.depth) return;
+		//发生改变后，重置之后的地区下拉
+		for(i = index ; i < this.depth; i++) {
+			obj = kj.obj("#id_area_" + i);
+			if(!obj) break;
+			obj.options.length = 0;
+			if(i>index) kj.hide(obj);
+		}
+		var key = "id_" + val;
+		if(!(key in this.arealist) || !("length" in this.arealist[key])) {
+			kj.hide("#id_area_" + index);
+			//跳出则刷新当前地区值
+			this.refresh_area_val();
+			return;
+		}
+		kj.show("#id_area_" + index);
+		kj.add_option("#id_area_" + index , '' , '');
+		for(i = 0 ; i < this.arealist["id_"+val].length ; i++ ) {
+			obj = kj.obj("#id_area_" + index);
+			ii = this.arealist["id_"+val][i];
+			if( !("id_" + ii in this.areainfo ) ) continue;
+			kj.add_option(obj , this.areainfo["id_" + ii]["area_name"] , ii);
+			//选中默认值
+			if(this.defaultval.length>index && obj.options[i+1].value == this.defaultval[index]) {
+				obj.options[i+1].selected=true;
+			}
+		}
+		this.changearea(obj.value , index);
+		this.refresh_area_val();
+	}
+	this.refresh_area_val = function() {
+		var obj = kj.obj(":area_id[]");
+		var arr_id = [];
+		var arr_val = [];
+		var id = 0;
+		for(var i = 0 ; i < obj.length ; i++) {
+			if(obj[i].value != '') {
+				if( !("id_" + obj[i].value in this.areainfo ) ) continue;
+				arr_id[arr_id.length] = obj[i].value;
+				arr_val[arr_val.length] = this.areainfo["id_" + obj[i].value]["area_val"];
+			} else {
+				break;
+			}
+		}
+		if(arr_id.length>0) {
+			kj.obj("#id_shop_area_id").value = arr_id[arr_id.length-1];
+		} else {
+			kj.obj("#id_shop_area_id").value = '';
+		}
+		kj.obj("#id_shop_area_allid").value = arr_id.join(",");
+		kj.obj("#id_shop_area").value = arr_val.join(" ");
+	}
+	this.on_save = function() {
+		if(kj.rule.form(document.frm_main) == false) {
+			return false;
+		}
+		kj.ajax.post(document.frm_main , function(data) {
+			var objdata = kj.json(data);
+			if(objdata.isnull) {
+				alert("系统繁忙");
+				return;
+			}
+			if(objdata.code == '0') {
+				kj.alert.show("保存成功");
+			} else {
+				alert(objdata.msg);
+			}
+		});
+	}
+}
+function attatch_callback(o) {
+	kj.dialog.close("#windialog_attatch");
+}
+function upload_callback(info){
+	var obj = kj.json(info);
+	if('url' in obj) {
+		kj.obj("#id_shop_pic").value = obj.url;
+		kj.obj("#id_shop_pic_small").value = obj.url_small;
+		kj.obj("#id_pic_view").innerHTML='<img src = "' + kj.url_view(obj.url) + '">';
+	}
+}
+kj.onload(function() {
+	//加载默认值选中
+	thisjs.changearea(kj.obj("#id_area_0").value,0);
+	{for($i=1;$i<$editinfo["area"]["depth"];$i++)}
+		thisjs.changearea(kj.obj("#id_area_{$i}").value,{$i});
+	{/foreach}
+});
+</script>
+<script src="/common/js/kj.pic.js"></script>

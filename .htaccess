@@ -1,0 +1,11 @@
+RewriteEngine On
+RewriteBase /
+# RewriteπÊ‘Ú
+
+RewriteRule ^index\.html$ index\.php
+RewriteRule ^([0-9]+)$ index.php\?app_act=shop&id=$1
+RewriteRule ^shop/view/([0-9]+)$ index.php\?app_act=shop.view&id=$1
+RewriteRule ^shop/info/([0-9]+)$ index.php\?app_act=shop.info&shop_id=$1
+RewriteRule ^help/([0-9]+)$ index.php\?app_act=help&id=$1
+RewriteRule ^help$ index.php\?app_act=help
+RewriteRule ^act/([a-zA-Z0-9.]+)$ index.php\?app_act=$1

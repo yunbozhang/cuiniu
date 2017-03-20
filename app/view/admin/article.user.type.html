@@ -1,0 +1,42 @@
+{include(header)}
+<input type="hidden" name="url_channel_id" value="{fun_get::get('url_channel_id')}" id="id_url_channel_id">
+<input type="hidden" name="url_folder_id" value="{fun_get::get('url_folder_id')}" id="id_url_folder_id">
+<input type="hidden" name="url_about_id" value="{fun_get::get('url_about_id')}" id="id_url_about_id">
+<div class="pMenu" id="id_pMenu">
+	<li onclick="admin.act('');" class="sel">选择</li>
+	{if($this_limit->chk_act("edit_article"))}<li onclick="master_open({id:'add_config',app_act:'edit_article',title:'添加文章',url:'{fun_get::url(array('app_act'=>'edit_article','id'=>0))}',w:1000});" class="x_btn">添加文章</li>{/if}
+</div>
+<div class="pMain" id="id_main">
+<div class="pTableBox" id="id_table_box">
+	<div class='pTableTit' id="id_table_title">
+		<li><span class="x_tit" style="width:25px">&nbsp;</span></li>
+		<li><span class="x_tit" style="width:600px">名称</span></li>
+		<li><span class="x_tit" style="cursor:none;width:100px">操作</span></li>
+	</div>
+	<div class="pTableList" id="id_table_list">
+		<div class='pTable' id="id_table">
+			{foreach($arr_list['list'] as $item)}
+			<div class='pTabRow'>
+				<li style="width:25px"></li>
+				<li style="width:600px">{$item["name"]}</li>
+				<li style="width:100px">
+						<input type="button" name="btnedit" value="打开" onclick="kj.obj('#id_url_about_id').value='{$item['id']}';admin.act('');" class="pBtn">
+				</li>
+			</div>
+			{/foreach}
+		</div>
+	</div>
+</div>
+</div>
+<div class="pPage" id="id_pPage">
+{$arr_list['pagebtns']}
+</div>
+<script src="admin.table.js"></script>
+<script>
+
+//初始化表格控件
+kj.onload(function(){
+	admin.table.list1.init('#id_table_title' , '#id_table');
+});
+</script>
+{include(footer)}

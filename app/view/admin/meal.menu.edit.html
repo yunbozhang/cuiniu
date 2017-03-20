@@ -1,0 +1,302 @@
+{include(header)}
+<style>
+.me_pic{float:left;width:95%}
+.me_pic li{float:left;width:95%;text-align:left;line-height:30px}
+.me_pic .x1{float:left;width:450px;padding-top:40px}
+.me_pic .x2{float:left;width:100px}
+.me_pic .x2 img{width:100px;height:100px}
+.me_picbtn{float:left;width:95%;text-align:left}
+.meguige1{float:left;width:100%}
+.meguige2{float:left;width:100%;margin-top:10px}
+.meguige2 li{float:left;width:100%;margin-top:10px}
+.meguige2 span{float:left;margin-right:20px}
+.meguige2 span input[type='text']{width:60px;}
+.meguige2 ul{float:left;margin:0px;padding:0px;width:100%}
+.meguige2 li a{float:left;}
+.meguige2 li img{float:left;cursor:pointer}
+.meguige2 li font{float:left;margin:2px 0px 0px 5px;color:#62b548}
+</style>
+<script>
+//保存时效验规则
+admin.rule['save'] =[
+];
+function upload_callback(info){
+	var obj = kj.json(info);
+	if('url' in obj) {
+		kj.obj("#id_menu_pic").value=obj.url;
+		kj.obj("#id_img_menu_pic").src = kj.url_view(obj.url);
+	}
+	if('url_small' in obj) {
+		kj.obj("#id_menu_pic_small").value = obj.url_small;
+		kj.obj("#id_img_menu_pic_small").src = kj.url_view(obj.url_small);
+	}
+}
+function upload_callback_small(info){
+	var obj = kj.json(info);
+	if('url' in obj) {
+		kj.obj("#id_menu_pic_small").value = obj.url;
+		kj.obj("#id_img_menu_pic_small").src = kj.url_view(obj.url);
+	}
+}
+function attatch_callback(o) {
+	if('objid' in o) {
+		if(o.objid == 'id_menu_pic') {
+			kj.obj("#id_img_menu_pic").src = kj.url_view(kj.obj("#id_menu_pic").value);
+		} else {
+			kj.obj("#id_img_menu_pic_small").src = kj.url_view(kj.obj("#id_menu_pic_small").value);
+		}
+	}
+	kj.dialog.close("#windialog_attatch");
+}
+//店铺选择回调函数
+function shop1_callback(o) {
+	if("id" in o) kj.obj("#id_menu_shop_id").value=o.id;
+	if("name" in o) kj.obj("#id_menu_shop").innerHTML = o.name;
+	kj.hide("#windivshop_id_windiv");
+}
+
+</script>
+<div class="pMenu" id="id_pMenu">
+	<li class="sel" onclick="admin.edittabel(0);">基本信息</li>
+	<li onclick="admin.edittabel(1);">介绍</li>
+	<li onclick="admin.edittabel(2);">时间设置</li>
+	<li onclick="admin.edittabel(3);">相册图片</li>
+	<li class = "x_btn"><a href="javascript:parent.thisjs.klkkdj_open('菜品管理-帮助','app=service&app_act=help&key=help.meal.menu');" title="帮助"><img src="images/faq.gif"></a></li>
+</div>
+<div class="pMain" id="id_main">
+<table class='pEditTable'>
+<tr class='pTabTitRow'><td class='pTabTitCol' colspan="2"></td></tr>
+<tr>
+	<td class="pTabColName">所属店铺：</td><td class="pTabColVal">
+		<input type="hidden" name="menu_shop_id" value="{$editinfo['menu_shop_id']}" id="id_menu_shop_id">
+		<div class="more1" onmouseover="kj.windiv({'id':'shop_id_windiv','fid':this,'src':'common.php?app=meal&app_act=shop1&url_mode=1'});" id="id_menu_shop" onmouseout="kj.hide('#windivshop_id_windiv');">{if($editinfo["menu_shop_id"]==-999)}选择{else}{$editinfo["shop_name"]}{/if}</div>
+	</td>
+	</tr>
+<tr>
+	<td class="pTabColName">类&nbsp;&nbsp;型：</td>
+	<td class="pTabColVal">
+		{foreach($arr_type as $item=>$key)}
+			<label><input type="radio" name="menu_type" value="{$key}"{if($key==$editinfo['menu_type'])} checked{/if}>{$item}</label>&nbsp;&nbsp;
+		{/foreach}
+	</td></tr>
+<tr>
+	<td class="pTabColName">状&nbsp;&nbsp;态：</td>
+	<td class="pTabColVal">
+		<select name="menu_state">
+		{foreach($arr_state as $item=>$key)}
+			<option value="{$key}"{if($key==$editinfo['menu_state'])} selected{/if}>{$item}</option>
+		{/foreach}
+		</select>
+	</td></tr>
+<tr>
+	<td class="pTabColName">所 属 组：</td>
+	<td class="pTabColVal">
+		{$editinfo["html_group"]}
+	</td></tr>
+<tr>
+	<td class="pTabColName">名&nbsp;&nbsp;称：</td><td class="pTabColVal"><input type="text" name="menu_title" value="{$editinfo['menu_title']}" class='pTxt1 pTxtL300' ruletips="菜品名称不能为空" ruletipsmode=1 required>&nbsp;<span style="color:#ff0000">*</span></td>
+	</tr>
+<tr>
+	<td class="pTabColName">规&nbsp;&nbsp;格：</td><td class="pTabColVal">
+	<div class="meguige1"><label><input type="radio" name="menu_about_id" value="0" checked onclick="thisjs.guige(0);">单品</label>&nbsp;&nbsp;<label><input type="radio" name="menu_about_id" value="-1"{if($editinfo['menu_about_id']==-1)} checked{/if} onclick="thisjs.guige(1);">多规格</label></div>
+	<div class="meguige2" id="id_guige"{if($editinfo['menu_about_id']!=-1)} style="display:none"{/if}>
+		<ul id="id_guige_li">
+		{if(empty($editinfo['guige']))}
+		<li><input type="hidden" name="guige_id[]" value=""><span>名称：<input type="text" name="guige_name[]" value=""></span><span>价格：<input type="text" name="guige_price[]" value=""></span><span>数量：<input type="text" name="guige_num[]" value=""></span><img src="images/romove.gif" onclick="kj.remove(kj.parent(this,'li'));"></li>
+		{else}
+			{foreach($editinfo['guige'] as $guige)}
+			<li><input type="hidden" name="guige_id[]" value="{$guige['menu_id']}"><span>名称：<input type="text" name="guige_name[]" value="{$guige['menu_about_name']}"></span><span>价格：<input type="text" name="guige_price[]" value="{$guige['menu_price']}"></span><span>数量：<input type="text" name="guige_num[]" value="{$guige['menu_num']}"></span><img src="images/romove.gif" onclick="kj.remove(kj.parent(this,'li'));"></li>
+			{/foreach}
+		{/if}
+		</ul>
+		<ul><li><a href="javascript:thisjs.guige_add();"><img src="images/add.gif"><font>添加</font></a></li></ul>
+	</div>
+	</td></tr>
+<tr{if($editinfo['menu_about_id']==-1)} style="display:none"{/if} id="id_price">
+	<td class="pTabColName">价&nbsp;&nbsp;格：</td><td class="pTabColVal"><input type="text" name="menu_price" value="{$editinfo['menu_price']}" class='pTxt1 pTxtL60' ruletips="菜品价格不能为空" ruletipsmode=1 required> 元&nbsp;<span style="color:#ff0000">*</span></td></tr>
+<tr{if($editinfo['menu_about_id']==-1)} style="display:none"{/if} id="id_num">
+	<td class="pTabColName">数&nbsp;&nbsp;量：</td><td class="pTabColVal"><input type="text" name="menu_num" value="{$editinfo['menu_num']}" class='pTxt1 pTxtL150'><!--&nbsp;
+		<select name="menu_unit">
+		{foreach($arr_unit as $item=>$key)}
+			<option value="{$key}"{if($key==$editinfo['menu_unit'])} selected{/if}>{$item}</option>
+		{/foreach}
+		</select>-->&nbsp&nbsp;<span class="pBeta">每天允许订购的数量，为零则不限</span></td>
+	</tr>
+<tr>
+	<td class="pTabColName">编&nbsp;&nbsp;号：</td><td class="pTabColVal"><input type="text" name="menu_number" value="{$editinfo['menu_number']}" class='pTxt1 pTxtL150'></td></tr>
+<!-- tr>
+	<td class="pTabColName">主料：</td><td class="pTabColVal"><input type="text" name="menu_intro" value="{$editinfo['menu_intro']}" class='pTxt1 pTxtL150'></td>
+	</tr -->
+<tr>
+	<td class="pTabColName">属&nbsp;&nbsp;性：</td>
+	<td class="pTabColVal">
+	<select name="menu_attribute">
+	<option value=""></option>
+	{foreach($arr_attribute as $item=>$key)}
+		{if($key==$editinfo['menu_attribute'])}
+		<option value="{$key}" selected>{$item}</option>
+		{else}
+		<option value="{$key}">{$item}</option>
+		{/if}
+	{/foreach}
+	</select>
+	</td></tr>
+<tr>
+	<td class="pTabColName">图&nbsp;&nbsp;片：</td><td class="pTabColVal"><span style="float:left"><input type="text" name="menu_pic" id="id_menu_pic" value="{$editinfo['menu_pic']}" class='pTxt1 pTxtL300'>&nbsp;<a href="javascript:kj.dialog({id:'dialog_attatch',title:'选择图片',url:'common.php?app=other&app_act=attatch&url_objid=id_menu_pic',w:600,showbtnhide:false,type:'iframe'});">选择</a><br><iframe name="frm_article_pic_big" src="common.php?app=other&app_act=upload&small=1" width="300px" height="30px" frameborder=0 scrolling="no"></iframe></span><span style="float:left;margin-left:5px"><img src="{$editinfo['menu_pic']}" width="60px" height="60px" id="id_img_menu_pic" onclick="kj.pic.preview(this.src);"onerror="this.src='{$temp_baseurl}common/images/no_pic.jpg'"></span></td>
+	</tr>
+<tr>
+	<td class="pTabColName">小&nbsp;&nbsp;图：</td><td class="pTabColVal"><span style="float:left"><input type="text" name="menu_pic_small" id="id_menu_pic_small" value="{$editinfo['menu_pic_small']}" class='pTxt1 pTxtL300'>&nbsp;<a href="javascript:kj.dialog({id:'dialog_attatch',title:'选择图片',url:'common.php?app=other&app_act=attatch&url_objid=id_menu_pic_small',w:600,showbtnhide:false,type:'iframe'});">选择</a><br><iframe name="frm_article_pic" src="common.php?app=other&app_act=upload&callback=upload_callback_small" width="300px" height="30px" frameborder=0 scrolling="no"></iframe></span><span style="float:left;margin-left:5px"><img src="{$editinfo['menu_pic']}" width="60px" height="60px" id="id_img_menu_pic_small" onclick="kj.pic.preview(this.src);"onerror="this.src='{$temp_baseurl}common/images/no_pic.jpg'"></span></td>
+	</tr>
+<tr>
+	<td class="pTabColName">推&nbsp;&nbsp;荐：</td><td class="pTabColVal"><label><input type="radio" name="menu_tj" value="0" checked>否</label>&nbsp;&nbsp;<label><input type="radio" name="menu_tj" value="1"{if($editinfo['menu_tj']==1)} checked{/if}>是</label></td>
+	</tr>
+</table>
+<table class='pEditTable' style='display:none'>
+<tr>
+	<td class="pTabColVal"><textarea name="menu_cont" id="id_menu_cont" cols="60" rows="5" style="display:none">{$editinfo['menu_cont']}</textarea>{fun_get::editor('id_menu_cont','admin')}</td></tr>
+</table>
+<!--label 1 end-->
+<table class='pEditTable' style='display:none'>
+<tr class='pTabTitRow'><td class='pTabTitCol' colspan="2"></td></tr>
+<tr>
+	<td class="pTabColName">提供模式：</td><td class="pTabColVal"><label><input type="radio" name="menu_mode" value="0" checked onclick="thisjs.mode(0);">每天</label>&nbsp;&nbsp;<label><input type="radio" name="menu_mode" value="1"{if($editinfo['menu_mode']==1)} checked{/if} onclick="thisjs.mode(1);">按星期</label>&nbsp;&nbsp;<label><input type="radio" name="menu_mode" value="3"{if($editinfo['menu_mode']==3)} checked{/if} onclick="thisjs.mode(3);">按日期</label>&nbsp;&nbsp;<label><input type="radio" name="menu_mode" value="2"{if($editinfo['menu_mode']==2)} checked{/if} onclick="thisjs.mode(2);">自定义</label></td></tr>
+<tr style="{if($editinfo['menu_mode']!=0)} display:none{/if}" class="id_mode_0">
+	<td class="pTabColName"></td><td class="pTabColVal"><span class="pBeta">即每天都提供预订</span></td></tr>
+<tr style="{if($editinfo['menu_mode']!=2)} display:none{/if}" class="id_mode_2">
+	<td class="pTabColName"></td><td class="pTabColVal"><span class="pBeta">在当日商品自定义添加</span></td></tr>
+<tr style="{if($editinfo['menu_mode']!=1)} display:none{/if}" class="id_mode_1">
+	<td class="pTabColName">按 星 期：</td><td class="pTabColVal"><label><input type="checkbox" name="menu_weekday[]" value="1"{if(in_array('1',$editinfo['weekday']))} checked{/if}>周一</label>&nbsp;&nbsp;<label><input type="checkbox" name="menu_weekday[]" value="2"{if(in_array('2',$editinfo['weekday']))} checked{/if}>周二</label>&nbsp;&nbsp;<label><input type="checkbox" name="menu_weekday[]" value="3"{if(in_array('3',$editinfo['weekday']))} checked{/if}>周三</label>&nbsp;&nbsp;<label><input type="checkbox" name="menu_weekday[]" value="4"{if(in_array('4',$editinfo['weekday']))} checked{/if}>周四</label>&nbsp;&nbsp;<label><input type="checkbox" name="menu_weekday[]" value="5"{if(in_array('5',$editinfo['weekday']))} checked{/if}>周五</label>&nbsp;&nbsp;<label><input type="checkbox" name="menu_weekday[]" value="6"{if(in_array('6',$editinfo['weekday']))} checked{/if}>周六</label>&nbsp;&nbsp;<label><input type="checkbox" name="menu_weekday[]" value="0"{if(in_array('0',$editinfo['weekday']))} checked{/if}>周天</label>&nbsp;&nbsp;</td></tr>
+<!-- tr style="{if($editinfo['menu_mode']!=1)} display:none{/if}" class="id_mode_1">
+	<td class="pTabColName">节假日：</td><td class="pTabColVal"><label><input type="checkbox" name="menu_holiday" value="1"{if($editinfo['menu_holiday']==1)} checked{/if}></label></td></tr -->
+<tr style="{if($editinfo['menu_mode']!=3)} display:none{/if}" class="id_mode_3">
+	<td class="pTabColName">按 日 期：</td><td class="pTabColVal">
+	{for($i=1;$i<32;$i++)}
+	<label><input type="checkbox" name="menu_date[]" value="{$i}"{if(in_array($i,$editinfo['date']))} checked{/if}>{$i}号</label>&nbsp;&nbsp;
+	{/for}
+	</td></tr>
+</table>
+<!--label 2 end-->
+<table class='pEditTable' id="id_tab_pic" style='display:none'>
+<tr><td colspan=2>
+<div class="me_pic" id="id_pic1">
+<li style="display:none">
+<input type="hidden" name="pic1_id[]" value="">
+<span class="x1"><input type="text" name="pic1_url[]" id="url_THISID" value="" class='pTxt1 pTxtL300'>&nbsp;<a href="javascript:kj.dialog({id:'dialog_pic',title:'选择图片',url:'common.php?app=other&app_act=attatch&url_objid=url_THISID&callback=pic_callback',w:600,showbtnhide:false,top:0,type:'iframe'});">选择</a>&nbsp;&nbsp;[<a href="javascript:kj.remove('#THISID');">删除</a>]<br><iframe name="frm_THISID" src="common.php?app=other&app_act=upload&callback=pic_upload&url_objid=url_THISID" width="300px" height="30px" frameborder=0 scrolling="no"></iframe></span><span class="x2"><img src="" onclick="kj.pic.preview(this.src);" onerror="this.src = '{$temp_baseurl}common/images/no_pic.jpg'"></span></li>
+{foreach($editinfo['pics'] as $key=>$item)}
+<li id="id_pic_{$key}">
+<span class="x1"><input type="text" name="pic1_url[]" id="id_pic1_{$key}" value="{$item}" class='pTxt1 pTxtL300'>&nbsp;<a href="javascript:kj.dialog({id:'dialog_pic',title:'选择图片',url:'common.php?app=other&app_act=attatch&url_objid=id_pic1_{$key}&callback=pic_callback',w:600,showbtnhide:false,top:0,type:'iframe'});">选择</a>&nbsp;&nbsp;[<a href="javascript:kj.remove('#id_pic_{$key}');">删除</a>]<br><iframe name="frm_pic1_{$key}" src="common.php?app=other&app_act=upload&callback=pic_upload&url_objid=id_pic1_{$key}" width="300px" height="30px" frameborder=0 scrolling="no"></iframe>
+</span><span class="x2"><img src="{fun_get::html_url($item)}" onclick="kj.pic.preview(this.src);" onerror="this.src = '{$temp_baseurl}common/images/no_pic.jpg'"></span>
+</li>
+{/foreach}
+</div>
+<div class="me_picbtn"><input type="button" name="btn_pic_add" value=" 添加照片 " onclick="thisjs.pic_add();"></div>
+</td></tr>
+</table>
+<!--label 2 end-->
+</div>
+<div class="pFootAct" id="id_pFootAct">
+	<li>
+	<input type="button" name="dosubmit" value="保存" onclick="thisjs.get_cont();admin.frm_ajax('save' , function(){thisjs.clear_cont();});" class="pBtn">
+	</li>
+</div>
+<script>
+var thisjs = new function() {
+	this.guige = function(val) {
+		if(val==1) {
+			kj.show("#id_guige");
+			kj.hide("#id_num");
+			kj.hide("#id_price");
+		} else {
+			kj.hide("#id_guige");
+			kj.show("#id_num");
+			kj.show("#id_price");
+		}
+	}
+	this.guige_add = function() {
+		var html = '<input type="hidden" name="guige_id[]" value=""><span>名称：<input type="text" name="guige_name[]" value=""></span><span>价格：<input type="text" name="guige_price[]" value=""></span><span>数量：<input type="text" name="guige_num[]" value=""></span><img src="images/romove.gif" onclick="kj.remove(kj.parent(this,\'li\'));">';
+		var obj_div=document.createElement("li");
+		obj_div.innerHTML = html;
+		kj.obj("#id_guige_li").appendChild(obj_div);
+	}
+	this.mode = function(val) {
+		switch(val) {
+			case 0:
+				kj.show(".id_mode_0");
+				kj.hide(".id_mode_1");
+				kj.hide(".id_mode_2");
+				kj.hide(".id_mode_3");
+				break;
+			case 1:
+				kj.hide(".id_mode_0");
+				kj.show(".id_mode_1");
+				kj.hide(".id_mode_3");
+				kj.hide(".id_mode_2");
+				break;
+			case 2:
+				kj.hide(".id_mode_0");
+				kj.hide(".id_mode_1");
+				kj.hide(".id_mode_3");
+				kj.show(".id_mode_2");
+				break;
+			case 3:
+				kj.hide(".id_mode_0");
+				kj.hide(".id_mode_1");
+				kj.hide(".id_mode_2");
+				kj.show(".id_mode_3");
+				break;
+		}
+	}
+	//因为这里用ajax，fckeditor不会取到内容，所以自己取
+	this.get_cont = function() {
+		kj.obj("#id_menu_cont").value = objEditor.getContent(); //这就是内容
+	}
+	//ajax 提交后，还得清空内容
+	this.clear_cont = function() {
+		//只有当添加时才要清空
+		{if(empty($editinfo['menu_id']))}
+			objEditor.setContent('');
+		{/if}
+	}
+	this.pic_add = function(){
+		var arr = kj.obj("#id_pic1 li");
+		if(!arr) return;
+		if( !('length' in arr) || arr.length < 1 ) return;
+
+		var obj_div = document.createElement("li");
+		var str_id = "id" + Math.random();
+		str_id = str_id.replace(/\./g, "");
+		obj_div.id = str_id;
+		obj_div.className = arr[0].className;
+		obj_div.innerHTML = arr[0].innerHTML.replace(/THISID/g,obj_div.id);
+		kj.obj("#id_pic1").appendChild(obj_div);
+	}
+}
+
+//相册图片上传回调
+function pic_upload(o) {
+	o = kj.json(o);
+	if('url' in o && 'objid' in o) {
+		var obj = kj.obj("#" + o.objid);
+		if(!obj) return;
+		obj.value = o.url;
+		var obj_li = kj.parent("#"+o.objid , "li");
+		var obj_img = kj.obj("img" , obj_li);
+		if(obj_img.length>0) {
+			obj_img[0].src = kj.url_view(o.url);
+		}
+	}
+}
+//相册图片选择回调函数
+function pic_callback(o) {
+	if('objid' in o) {
+		var obj = kj.parent("#"+o.objid , "li");
+		var obj_img = kj.obj("img" , obj);
+		if(obj_img.length>0) {
+			obj_img[0].src = kj.url_view(kj.obj("#"+o.objid).value);
+		}
+	}
+	kj.dialog.close("#windialog_pic");
+}
+
+</script>
+{include(footer)}

@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>订购成功-{cfg:(site_title,sys)}</title>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+</head>
+<body>
+{include(header)}
+<div class="cartok">
+	<div class="xbox1">
+		<ul>
+		<li class="xtit">恭喜！您的订单已经提交！{$obj_order['order_pay_method']}</li>
+		<li>订单编号：<font>{$obj_order['order_id']}</font></li>
+		<li>订单金额：<font style="font-size:20px">{fun_kj::get_price($obj_order['order_total_pay'])}</font></li>
+		{if($obj_order['order_pay_method'] =='afterpayment')}
+		<li>支付方式：<font>货到付款</font></li>
+		<li>订单状态：<font>{$obj_order['state']}</font></li>
+		<li><a href="?app=member" class="btn-a1"><font>订单详情</font></a><a href="{cfg:(dirpath,base)}/" class="btn-a2"><font>返回首页</font></a><a href="?app_act=shop&id={$obj_order['order_shop_id']}" class="btn-a4"><font>再逛逛</font></a></li>
+		{else if($obj_order['order_pay_method'] == 'paymented')}
+		<li>支付方式：<font>抵扣</font><font style="color:#888888">(已支付)</font></li>
+		<li>订单状态：<font>{$obj_order['state']}</font></li>
+		<li><a href="?app=member" class="btn-a1"><font>查看详情</font></a><a href="{cfg:(dirpath,base)}/" class="btn-a2"><font>返回首页</font></a><a href="?app_act=shop&id={$obj_order['order_shop_id']}" class="btn-a4"><font>再逛逛</font></a></li>
+		{else}
+			{if( $obj_order['order_pay_val']>0 )}
+				<li>支付方式：<font>在线支付</font><font style="color:#888888">(已支付)</font></li>
+				{if(!empty($obj_order['state']))}<li>订单状态：<font>{$obj_order['state']}</font></li>{/if}
+				<li><input type="button" name="btn_detail" value="查看详情" class="button2" onclick="thisjs.detail();">&nbsp;&nbsp;<a href="{cfg:(dirpath,base)}/">首页</a>&nbsp;&nbsp;<a href="?app_act=shop&id={$obj_order['order_shop_id']}">再逛逛</a></li>
+			{else}
+				<li>支付方式：<font>在线支付</font></li>
+				{if($timeout == 1)}
+					<li class="tipsred">订单已过期，请重新点餐</li>
+					<li><input type="button" name="btn_pay" value="重新点餐" class="button2" onclick="window.open('{cfg:(dirpath,base)}/','_self');">&nbsp;&nbsp;<a href="javascript:thisjs.detail();">查看订单</a></li>
+				{else}
+					<li>订单状态：<font>{$obj_order['state']}</font></li>
+					<li>
+					{if($obj_order['order_state']==-2)}
+						<p><input type="button" name="btn_pay" value="立即支付" class="button2" onclick="thisjs.show_paymethod();">&nbsp;&nbsp;<a href="javascript:thisjs.detail();">查看订单</a></p>
+						<p class="tipsred">请在{$delay_time} 前完成支付，否则订单将被取消</p>
+					{else}
+						<p><input type="button" name="btn_pay" value="订单详情" class="button2" onclick="thisjs.detail();"></p>
+					{/if}
+					</li>
+				{/if}
+			{/if}
+		{/if}
+		{if($order_cancel>=0 && in_array($obj_order['order_state'],array(0,-2)) && $timeout != 1)}
+		<li class="xbeta" id="id_state_info">
+		{if($order_cancel>=0)}<p><a href="javascript:thisjs.cancel();" class="btn-a2"><font>我要取消订单</font></a></p>{/if}
+		{if($order_cancel>0)}<p class="tipsred">温馨提示：您可以在下单后{$order_cancel}分钟之内取消订单.</p>{/if}
+		</li>
+		{/if}
+		</ul>
+	</div>
+</div>
+{include(footer)}
+<script>
+var thisjs = new function() {
+	this.detail = function () {
+		window.open("{cfg:(dirpath,base)}/index.php?app=member","_self");
+	}
+	this.cancel = function() {
+		if( !confirm("确定要取消订单吗？") ) return;
+		kj.ajax.get("{cfg:(dirpath,base)}/index.php?app=member&app_act=order.cancel&id={$id}" , function(data) {
+			var obj_data = kj.json(data);
+			if(obj_data.isnull) {
+				alert("系统繁忙，请稍后再试");
+				return;
+			}
+			if(obj_data.code == "0") {
+				alert("成功取消");
+				kj.obj("#id_state_info").innerHTML = "您已取消当前订单，可以重新再点餐";
+			} else {
+				alert(obj_data.msg);
+			}
+		});
+	}
+	//显示支付方式选择框
+	this.show_paymethod = function() {
+		window.open("{cfg:(dirpath,base)}/index.php?app=member&app_act=order_pay&id={fun_get::get('id')}&pay_method=alipay" , "_blank");
+		//window.open("?app_act=cart.pay&id={$id}","_self");
+	}
+	//跳转支付
+	this.pay = function() {
+		var obj = kj.obj(":paymethod");
+		var pay_method = '';
+		for(var i = 0 ; i < obj.length ; i++) {
+			if(obj[i].checked) {
+				pay_method = obj[i].value;
+				break;
+			}
+		}
+		if(pay_method == '') {
+			alert("请选择支付方式");
+			return;
+		}
+		window.open("{fun_get::url(array('id'=>$id,'app_act'=>'order_pay'))}&pay_method=" + pay_method,'_self');
+	}
+
+}
+</script>
+</body>
+</html>

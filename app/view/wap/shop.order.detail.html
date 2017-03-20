@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>订单明细-{cfg:(site_title,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+<style>
+.me_div1{float:left;width:100%}
+.me_div1 li{float:left;width:100%}
+</style>
+</head>
+<body>
+{include(label.header)}
+{foreach($order_list["list"] as $item)}
+{if(fun_get::get("isdialog")=='')}
+<div class="top">
+	<h1>{$item['shop_name']}</h1>
+	<a href="?" class="x1"><img src="images/home.png"></a>
+	<a href="javascript:history.back();" id="id_top_back" class="x2"><img src="images/back.png"></a>
+</div>
+{/if}
+<div class="box11"{if(fun_get::get("isdialog")!='')} style="margin-top:10px"{/if}>
+	<li class='xtit'><font>订单号：{$item['order_id']}</font><span>{$item['order_addtime']}</span></li>
+</div>
+{/foreach}
+<div class="main">
+	<table class="box12">
+		{set $ii=0}
+		{foreach($item['menu'] as $menu)}
+		<tr><td class="xcol1"{if($ii==0)} style="border-top:1px #76AC23 solid"{/if}>
+		{set $price=0}
+		{foreach($menu['id'] as $item_menu)}
+			{set $price+=$order_list['price']['id_'.$item_menu]}
+			{$order_list['menu']['id_'.$item_menu]['menu_title']}&nbsp;&nbsp;
+		{/foreach}
+		</td>
+		<td style="color:#ff3300{if($ii==0)};border-top:1px #76AC23 solid{/if}">￥<?php echo $price;?></td>
+		<td{if($ii==0)} style="border-top:1px #76AC23 solid"{/if}>{$menu['num']}份</td>
+		</tr>
+		{set $ii=$ii+1}
+		{/foreach}
+	</table>
+	<div class="mdetail">
+		<li class='x2'>
+			<p class="xtotal">商品{fun_kj::get_price($item['order_total'])}{if($item['order_addprice']>0)} + 配送{fun_kj::get_price($item['order_addprice'])}{/if}{if($item['order_score_money']>0)} - 抵扣{fun_kj::get_price($item['order_score_money'])}{/if}{if($item['order_favorable']>0)} - 优惠{fun_kj::get_price($item['order_favorable'])}{/if}{if($item['order_repayment']>0)} - 预付款{fun_kj::get_price($item['order_repayment'])}{/if} = 结算：<font>{fun_kj::get_price($item['order_total_pay'])}</font></p>
+		</li>
+		<li class="x1">
+			<p><span class="y1">姓名：</span><span>{$item['order_name']}</span></p>
+			<p><span class="y1">电话：</span><span>{$item['order_mobile']}</span></p>
+			<p><span class="y1">地址：</span><span>{$item["order_area"]} — {$item['order_louhao1']}</span></p>
+			<p><span class="y1">付款方式：</span><span>{if($item['order_pay_method']=='paymented')}已抵扣{else if($item['order_pay_method']=='onlinepayment')}在线支付{else}货到付款{/if}</span></p>
+			{if(!empty($item["order_beta"]))}<p><span class="y1">备注：</span><span>{$item["order_beta"]}</span></p>{/if}
+			{if(!empty($item['order_act']))}
+				<p><span class="y1">优惠活动：</span><span>
+					<?php $str_act=implode("," , $item['order_act']);?>
+					{$str_act}
+				</span></p>
+			{/if}
+			<p><span class="y1">订单状态：</span><span class="xstate">{$item['state']}{if($item['order_state']==-1)}<font>({$item['order_state_beta']})</font>{/if}</span></p>
+		</li>
+	</div>
+	<div class="mstep" id="id_step_{$item['order_id']}">
+		{if($item['order_pay_method']=='onlinepayment')}
+		<li><i></i><span><p>订单提交成功，等待付款</p><p class="xx1"></p></span></li>
+		{if($item['order_state']==-2 || $item['order_state']>0)}<li{if($item['order_state']==-2)} class="xoff"{/if}><i></i><span><p>支付成功，等待商家接单</p><p class="xx1"></p></span></li>{/if}
+		{else}
+		<li><i></i><span><p>下单成功，等待商家接单</p><p class="xx1">{if($item['order_state']==0)}<input type="button" class="btn1" value="接收" name="btn" onclick="thisjs.state(1);">&nbsp;&nbsp;<input type="button" class="btn2" value="取消" name="btncancel" onclick="thisjs.show_cancel_box()">{/if}</p></span></li>
+		{/if}
+		{if($item['order_state']==1)}
+			<li><i></i><span><p>商家已接单，正在配送中</p><p class="xx1"></p></span></li>
+			<li class="nobg{if($item['order_comment']==0)} xoff{/if}"><i></i><span><p>订单完成</p><p class="xx1"></p></span></li>
+		{else if($item['order_state']==0 || $item['order_state']==-2)}
+			<li class="xoff"><i></i><span><p>商家已接单，正在配送中</p><p class="xx1"></p></span></li>
+			<li class="xoff"><i></i><span><p>订单完成</p></span></li>
+		{else}
+			<li class="xclose"><i></i><span><p>{$item['state']}</p></span></li>
+		{/if}
+	</div>
+</div>
+<div id="id_cancel_order_html" style="display:none">
+	<div class="me_div1">
+		<li style="line-height:30px">
+			输入取消原因<br>
+			<textarea name="x" cols=30 rows=5 id="id_cancel_beta"></textarea>
+		</li>
+		<li><input type="button" name="btn_cancel" value=" 确 定 " class="btn1" onclick="thisjs.state(0)"></li>
+	</div>
+</div>
+<script src="/common/js/kj.dialog.js"></script>
+<script>
+var thisjs = new function() {
+	this.state = function(val) {
+		var url = '';
+		var objdata = {};
+		if(val == 1) {
+			url = "{fun_get::url(array('app_act'=>'state_accept'))}";
+		} else {
+			var beta = kj.obj("#id_cancel_beta").value;
+			objdata = {'beta':beta};
+			url = "{fun_get::url(array('app_act'=>'state_refuse'))}";
+		}
+		kj.ajax.post(url , objdata , function(data) {
+			var obj_data = kj.json(data);
+			if(obj_data.isnull) {
+				alert("系统繁忙，请稍后再试");
+				return;
+			}
+			if(obj_data.code == "0") {
+				kj.alert.show("成功处理",function(){location.reload();});
+			} else {
+				alert(obj_data.msg);
+			}
+		});
+	}
+	this.cuidan = function(name,tel) {
+		var html = '<div style="padding:30px;font-size:16px;color:#ff8800">催单电话：'+tel+'</div>';
+		kj.dialog({'html':html,'id':'cuidan','type':'html','title':'商家：'+name,'w':300,'showbtnmax':false,'showbtnhide':false});
+	}
+	this.showdetail = function(id,o) {
+		id = "#id_detail_"+id;
+		if(kj.obj(id).style.display=='') {
+			kj.hide(id);
+			kj.set(kj.obj("span",o),"innerHTML","展开详情");
+			kj.delClassName(kj.obj("span",o) , "yopen");
+		} else {
+			kj.show(id);
+			kj.set(kj.obj("span",o),"innerHTML","收起详情");
+			kj.addClassName(kj.obj("span",o) , "yopen");
+		}
+	}
+	//显示修改密码窗口
+	this.show_cancel_box = function(id,mobile,tel) {
+		this.cancel_id = id;
+		var obj = kj.obj('#id_cancel_order_html');
+		if(obj) {
+			this.cancel_box_html = obj.innerHTML;
+			kj.remove(obj);
+		}
+		kj.dialog({'html':this.cancel_box_html,'id':'cancel_box','type':'html','title':'取消订单','w':300,'h':230,'showbtnmax':false});
+		if(mobile == '') {
+			kj.hide("#id_cancel_smstxt");
+			kj.hide("#id_checkbox_issms");
+			obj = kj.obj("#id_cancel_tel");
+			if(obj) obj.innerHTML = tel;
+		} else {
+			kj.hide("#id_cancel_teltxt");
+		}
+	}
+
+}
+</script>
+{include(label.footer)}
+</body>
+</html>

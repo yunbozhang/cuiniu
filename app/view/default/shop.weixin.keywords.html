@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>微信关键词-商家管理-{cfg:(site_title,sys)}</title>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+<style>
+body{background:#fff}
+.mtable{float:left;margin:10px;width:700px;border-collapse: collapse;clear:both;border:1px #ccc solid}
+.mtable td{text-align:center;text-align:left;padding:5px 0px 5px 10px}
+.mtable .xtit{border-bottom:1px #ccc dotted;font-size:14px;font-weight:bold}
+.mtable .xcol1{float:left}
+.mtable .xcol2{float:right;margin-right:10px}
+.mtable .recont{float:left;width:650px}
+.newsbox{float:left;width:360px;border:1px #ccc solid;border-radius:7px}
+.newsbox li{float:left;width:100%;border-top:1px #ccc solid}
+.newsbox .xtop{width:350px;margin:5px;border-top:0px;overflow:hidden}
+.newsbox .xtop div{width:100%;text-align:center}
+.newsbox .xtop .ximg{background:#efefef}
+.newsbox .xtop img{max-width:350px;_zoom:expression(function(x){ if(x.width>350){x.width=350;}}(this));max-height:200px;_zoom:expression(function(x){ if(x.height>200){x.height=200;}}(this));}
+.newsbox .xtop .xtit1{position:relative;height:14px;background:url(../admin/images/transparent.png);color:#fff;text-align:left;width:345px;padding:3px 0px 3px 5px;top:-20px}
+.newsbox .xtit2{float:left;width:280px;margin:15px 0px 0px 5px}
+.newsbox .ximg2{float:right;margin-right:5px}
+.newsbox .ximg2 img{width:40px;height:50px}
+.newsbox2{float:left;width:350px;border:1px #ccc solid;padding:5px;border-radius:7px;}
+.newsbox2 li{float:left;width:350px;text-align:left;color:#888;padding:5px 0px 3px 0px}
+.newsbox2 .xpic{background:#f8f8f8;text-align:center}
+.newsbox2 .xtit3{font-weight:bold;font-size:14px;color:#000}
+</style>
+</head>
+<body>
+{include(header)}
+{include(shop.header)}
+{include(shop.left)}
+<input type="hidden" name="group" value="{$group}">
+<div class="uright">
+	<div class="pMenu" id="id_pMenu">
+		<li onclick="window.open('{fun_get::url(array('app_act'=>'message'))}','_self');">被添加自动回复</li>
+		<li onclick="window.open('{fun_get::url(array('app_act'=>'message','group'=>1))}','_self');">消息自动回复</li>
+		<li class="sel">关键词自动回复</li>
+		<li onclick="kj.dialog({id:'add',title:'添加关键词',url:'{fun_get::url(array('app_act'=>'keywords.edit'))}',w:800,max_h:650,showbtnhide:false,type:'iframe'});" class="x_btn">添加</li>
+	</div>
+	{if(empty($arr_list))}
+		<div style="float:left;width:100%;margin:30px 0px;text-align:center">
+				<input type="button" name="btnwx" value="添加新关键词" class="button1" onclick="kj.dialog({id:'add',title:'添加关键词',url:'{fun_get::url(array('app_act'=>'keywords.edit'))}',w:800,max_h:650,showbtnhide:false,type:'iframe'});">
+		</div>
+	{/if}
+	{foreach($arr_list as $item)}
+	<table class='mtable'>
+	<tr class="xtit">
+		<td><span class='xcol1'>关键词：{$item['keywords_val']}</span><span class='xcol2'><a href="javascript:kj.dialog({id:'edit',title:'编辑关键词',url:'{fun_get::url(array('app_act'=>'keywords.edit'))}&id={$item['keywords_id']}',w:800,max_h:650,showbtnhide:false,type:'iframe'});"><img src="../admin/images/b_edit.png"></a>&nbsp;&nbsp;<a href="javascript:shop.ajax_url({'id':'{$item['keywords_id']}' , 'app_act':'keywords.delete'});"><img src="../admin/images/b_drop.png"></a></span></td>
+	</tr>
+	<tr>
+		<td>
+		<div style="float:left">回复：</div>
+		<div class="recont">
+		{if($item['message_type']=='image')}
+			<img src="{$item['media_url']}" width="50px" height="70px"><br>{$item['media_name']}
+		{else if($item['message_type']=='voice')}
+			<img src="images/mp3.png" style="width:auto;height:auto"><br>{$message['media_name']}
+		{else if($item['message_type']=='video')}
+			<img src="images/video.png" style="width:auto;height:auto"><br>{$message['media_name']}
+		{else if($item['message_type']=='news')}
+			{if(count($item['news'])>1)}
+				{set $ii=0}
+				<div class="newsbox">
+				{foreach($item['news'] as $new)}
+					{if($ii==0)}
+						<li class="xtop"><div class="ximg"><img src = "{$new['pic']}"></div><div class="xtit1">{$new['title']}</div></li>
+						{set $ii=1}
+					{else}
+						<li><div class="xtit2">{$new['title']}</div><div class="ximg2"><img src = "{$new['pic']}"></div></li>
+					{/if}
+				{/foreach}
+				</div>
+			{else}
+				{foreach($item['news'] as $new)}
+					<div class="newsbox2">
+						<li class="xtit3">{$new['title']}</li>
+						<li>{$nowdate}</li>
+						<li class="xpic"><img src="{$new['pic']}"></li>
+						<li>{$new['desc']}</li>
+					</div>
+				{/foreach}
+			{/if}
+		{else}
+			{$item['message_text']}
+		{/if}
+		</div></td></tr>
+	</table>
+	{/foreach}
+</div>
+<div id="id_weixin_ico" style="display:none">
+</div>
+{include(shop.footer)}
+{include(footer)}
+<script src="shop.js"></script>
+<script>
+kj.onload(function(){
+	var arr = kj.obj(".newsbox .xtop");
+	var h = 0;
+	for(var i = 0 ; i < arr.length; i++) {
+		arrdiv = kj.obj("div" , arr[i]);
+		h = kj.h(arrdiv[0]);
+		kj.set(arr[i],'style.height',h+'px');
+	}
+});
+</script>
+</body>
+</html>

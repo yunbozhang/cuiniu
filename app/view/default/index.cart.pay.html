@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>在线支付-{cfg:(site_title,sys)}</title>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+</head>
+<body>
+{include(header)}
+<div class="cartpay">
+	<form name="frmMain">
+	<div class="xinfo">
+		<li><b>订单编号：</b>{$obj_order['order_id']}&nbsp;&nbsp;&nbsp;&nbsp;<b>应付金额：</b><font>￥{$obj_order['order_total_pay']}</font></li>
+	</div>
+	<div class="xpay">
+		<li class="xlist Tlist2" style="display:" id="id_pay_method">
+			<label><input type="radio" value="alipay" name="bestbank"><span><img src="/components/pay/pay_alipay2.gif" title="支付宝"></span></label>
+		</li>
+		<li class="xtit2"><i></i><font>网上银行支付</font></li>
+		<li class="xtit Tlist1"><img src="/components/pay/chinabank_logo.gif" height="20px" style="float:left"><font style="float:left;margin:3px 0px 0px 5px">为您提供以下网上支付服务</font></li>
+		<li class="xlist Tlist1" id="id_list1">
+			<label><input type="radio" name="bestbank" value="ICBC"><img src="/components/pay/10.gif" title="工行"></label>
+			<label><input type="radio" name="bestbank" value="CCB"><img src="/components/pay/2.gif" title="建行"></label>
+			<label><input type="radio" name="bestbank" value="ABC"><img src="/components/pay/1.gif" title="农行"></label>
+			<label><input type="radio" name="bestbank" value="BOC"><img src="/components/pay/19.gif" title="中国银行"></label>
+			<label><input type="radio" name="bestbank" value="POST"><img src="/components/pay/28.gif" title="邮政银行"></label>
+			<label><input type="radio" name="bestbank" value="PAB"><img src="/components/pay/18.gif" title="平安银行"></label>
+			<label><input type="radio" name="bestbank" value="CEB"><img src="/components/pay/3.gif" title="光大银行"></label>
+			<label><input type="radio" name="bestbank" value="CMBC"><img src="/components/pay/4.gif" title="民生银行"></label>
+			<label><input type="radio" name="bestbank" value="BCOM"><img src="/components/pay/5.gif" title="交通银行"></label>
+			<label><input type="radio" name="bestbank" value="CITIC"><img src="/components/pay/7.gif" title="中信银行"></label>
+		</li>
+	</div>
+	<div class="xact">
+		<input type="button" name="btnok" value="立即支付" onclick="thisjs.on_pay();" class="btn-1">
+	</div>
+	</form>
+</div>
+{include(footer)}
+<script>
+var thisjs = new function() {
+	this.on_pay = function() {
+		var obj,bank_type,method;
+		obj = kj.radio(document.frmMain.bestbank);
+		if(!obj) {
+			alert("请选择支付方式");
+			return;
+		}
+		bank_type= obj.value;
+		method = 'alipay';
+		window.open("{cfg:(dirpath,base)}/index.php?app=member&app_act=order_pay&id={fun_get::get('id')}&pay_method="+method+"&bank_type="+bank_type , "_blank");
+	}
+}
+</script>
+</body>
+</html>

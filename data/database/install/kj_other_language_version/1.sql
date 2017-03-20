@@ -1,0 +1,1 @@
+alter table {DB_PRE}other_language_version engine innodb;

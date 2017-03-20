@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>{cfg:(site_title,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+</head>
+<body>
+{include(label.header)}
+<div class="top">
+	<h1>选择区域</h1>
+</div>
+<div class="main">
+	<div class="area1" id="id_xiala_tit" onclick="pageArea.xiala_open();" style="display:none"><font></font><i>&nbsp;</i></div>
+	<div class="neararea"><a href="javascript:pageArea.selnow();"><span>当前位置：<font id="id_neararea">{$area_name}</font></span><i></i></a></div>
+	<div class="area2" id="id_list">
+		<ul>
+			{foreach($arr_list as $item)}
+			<li onclick="pageArea.select({$item['area_id']},'{$item['area_name']}','{$item['area_childs']}','{$item['area_depth']}' ,true);" id="id_c_{$item['area_id']}">
+				<span><img src = "{if(empty($item['area_pic']))}http://mall.meal3.com/upload/attatch/1/area10.jpg{else}{$item['area_pic']}{/if}"></span>
+				<font>{$item['area_name']}</font>
+			</li>
+			{/foreach}
+		</ul>
+	</div>
+	<div id="id_dialogbox" style="display:none">
+		<div class="areadlg">
+			<ul class="x2" id="id_area_box">
+				<li id="id_path" class="y2"></li>
+				<li id="id_area_list" class="y1"></li>
+			</ul>
+		</div>
+	</div>
+</div>
+<div id="id_area" class="area3 dropdown" style="display:none">
+<ul>
+{foreach($arr_list as $item)}
+	<a href="javascript:void(0);" onclick="pageArea.select({$item['area_id']},'{$item['area_name']}','{$item['area_childs']}','{$item['area_depth']}' ,true);"><font id="id_xiala_{$item['area_id']}">{$item['area_name']}</font></a>
+{/foreach}
+</ul>
+</div>
+{include(label.footer)}
+</body>
+</html>
+<script src="page.area.js"></script>
+<script>
+pageArea.area_id = kj.toint("{$area_id}");
+pageArea.area_name = "{$area_name}";
+if(pageArea.area_id==0) {
+	pageArea.getLocation();
+}
+pageArea.depth = kj.toint('{cfg:(area_depth,meal)}');
+pageArea.load();
+</script>

@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>我的存款-{cfg:(site_title,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+<link rel="stylesheet" type="text/css" href="/common/images/emoji.css"/>
+</head>
+<body>
+{include(label.header)}
+<div class="top">
+	<h1>我的存款</h1>
+	<a href="?" class="x1"><img src="images/home.png"></a>
+	<a href="?app=member&app_act=main" id="id_top_back" class="x2"><img src="images/back.png"></a>
+</div>
+<div class="uexpertit">
+	<p>尊敬的 <b class="orange">{fun_format::toemoji(cls_obj::get("cls_user")->name,1)}</b>，您当前预付款为： <b class="orange">{$arr_list["repayment"]}</b></p>
+</div>
+<div class="uexper">
+	{set $repayment=0}
+	{foreach($arr_list['list'] as $item)}
+	<li>
+		<p><b>{$item["repayment_addtime"]}</b></p>
+		<p>存入：<b class="xred">{if($item["repayment_val"]>0)}+{$item["repayment_val"]}{/if}</b></p>
+		<p>消耗：<b class="xorange">{if($item["repayment_val"]<0)}{$item["repayment_val"]}{/if}</b></p>
+		<p>结余：<b class="xblue">{$arr_list["repayment"]-$repayment}</b></p>
+		<p>详情：{$item["beta"]}</p>
+		{set $repayment+=$item["repayment_val"]}
+	</li>
+	{/foreach}
+</div>
+<div class="page">
+	{if($arr_list['pagebtns']['start']!=1)}<li><a href="{fun_get::url(array('page'=>''))}&page=1">1</a></li>{/if}
+	{if($arr_list['pagebtns']['start']>2)}
+		<li class="xnone"><font>...</font></li>
+	{/if}
+	{foreach($arr_list['pagebtns']['list'] as $item)}
+	<li{if(fun_get::get('page',1)==$item)} class="xsel"{/if}><a href="{fun_get::url(array('page'=>''))}&page={$item}">{$item}</a></li>
+	{/foreach}
+	{if($arr_list['pagebtns']['end']<$arr_list['pageinfo']['pages']-1)}
+		<li class="xnone"><font>...</font></li>
+	{/if}
+	{if($arr_list['pagebtns']['end']<$arr_list['pageinfo']['pages'])}
+	<li><a href="{fun_get::url(array('page'=>''))}&page={$arr_list['pageinfo']['pages']}">{$arr_list['pageinfo']['pages']}</a></li>
+	{/if}
+	</li>
+</div>
+
+{include(label.footer)}
+</body>
+</html>

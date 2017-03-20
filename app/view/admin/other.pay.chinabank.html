@@ -1,0 +1,33 @@
+{include(header)}
+<input type="hidden" name="payname" value="{fun_get::get('payname')}">
+<div class="pMenu" id="id_pMenu">
+	<li class="sel" onclick="admin.edittabel(0);">账号信息</li>
+</div>
+<div class="pMain" id="id_main">
+<table class='pEditTable'>
+<tr class='pTabTitRow'><td class='pTabTitCol' colspan="2"></td></tr>
+<tr>
+	<td class="pTabColName">支付方式名称：</td>
+	<td class="pTabColVal"><input type="text" name="title" value="{$edit_info['title']}" class='pTxt1 pTxtL150'></td></tr>
+<tr>
+	<td class="pTabColName">交易货币类型：</td>
+	<td class="pTabColVal">人民币(￥)</td></tr>
+<tr>
+	<td class="pTabColName">网银ID：</td>
+	<td class="pTabColVal"><input type="text" name="mid" value="{$edit_info['mid']}" class='pTxt1 pTxtL150'></td></tr>
+<tr>
+	<td class="pTabColName">交易安全效验码：</td>
+	<td class="pTabColVal"><input type="text" name="key" value="{$edit_info['key']}" class='pTxt1 pTxtL300'></td></tr>
+<tr>
+	<td class="pTabColName">接口状态：</td>
+	<td class="pTabColVal"><select name="state"><option value="1">启用</option><option value="0"{if(empty($edit_info['state']))} selected{/if}>关闭</option></select></td></tr>
+
+</table>
+<!--label 1 end-->
+</div>
+<div class="pFootAct" id="id_pFootAct">
+	<li>
+	<input type="button" name="dosubmit" value="保存" onclick="admin.frm_ajax('save');" class="pBtn">
+	</li>
+</div>
+{include(footer)}

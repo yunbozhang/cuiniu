@@ -1,0 +1,61 @@
+{include(header)}
+<style>
+.mediv1{float:left;width:90%;margin:30px 5% 0px 5%}
+.mediv1 li{float:left;margin:10px 0px 5px 20px;border:1px #ddd solid}
+.mediv1 li span{float:left;width:20px;height:40px;background:#f7f7f7;border-right:#999 1px solid;cursor:pointer}
+.mediv1 li font{float:left;padding:12px 10px 0px 10px;color:#666;font-size:12px;cursor:default}
+.mediv1 li font i{color:#999}
+.mediv1 .xnew{padding:10px;height:20px;font-size:14px;color:#aaa;border:1px #ddd dotted;cursor:pointer}
+.mediv1 .xsel{border:1px #438eb9 solid}
+.mediv1 .xsel span{background:#438eb9;color:#fff;border-right:1px #438eb9 solid}
+.mediv1 .xsel font{font-weight:bold;color:#438eb9}
+.mediv1 .xsel font i{color:#438eb9}
+.mediv2{float:left;width:90%;margin:30px 5% 0px 5%}
+.mediv2 li{float:left;margin:10px 0px 5px 20px;width:240px;border:1px #ccc solid;border-radius:7px;padding:10px}
+.mediv2 li span{float:left;width:100px;height:100px;border:1px #457896 dotted;overflow:hidden}
+.mediv2 li span img{float:left;width:100px;height:100px;cursor:pointer}
+.mediv2 li label{float:left;margin:5px 0px 0px 0px;width:120px;border-bottom:1px #eee dotted;padding-bottom:5px;margin-left:10px;color:#76AC25;cursor:pointer}
+.mediv2 li label i{color:#aaa;}
+.mediv2 li font{float:left;width:130px;margin-top:10px;text-align:center;font-size:16px;color:#aaa;cursor:pointer}
+.mediv2 .xnew{cursor:pointer}
+.mediv2 .xnew span{background:#fff;border:2px #ccc dotted}
+.mediv2 .xnew label{color:#aaa;border-bottom:0px;margin-top:25px;cursor:pointer}
+.mediv2 .xstate2 span{border:2px #ddd dotted;height:98px;width:98px}
+.mediv2 .xstate2 label{color:#aaa}
+.mediv2 .xstate1 span{}
+</style>
+<div class="pMenu" id="id_pMenu">
+	<input type="hidden" value="{fun_get::get('url_type')}" name="url_type" id="id_url_type">
+	<li style="font-weight:bold"><input type="hidden" name="url_shop_id" value="{if($admin_shop['id']<0)}0{else}{$admin_shop['id']}{/if}" id="id_url_shop_id"><span class="more1" onmouseover="kj.windiv({'id':'shop_user_windiv','fid':this,'src':'common.php?app=meal&app_act=shop1&url_mode=2'});" id="id_shop_user">店铺：{if($admin_shop['id']<1)}请选择{else}{$admin_shop['name']}{/if}</span></li>
+	<li class="sel" onclick="admin.act('');">管理</li>
+	<li class = "x_btn"><a href="javascript:parent.thisjs.klkkdj_open('桌位管理-帮助','app=service&app_act=help&key=help.meal.table');" title="帮助"><img src="images/faq.gif"></a></li>
+</div>
+<div class="pMain" id="id_main">
+	<div class="mediv1">
+		{foreach($arr_group as $item)}
+		<li><span onclick="master_open({id:{$item['group_id']},title:'修改分类',w:600,h:300,'showbtnmax':false,'showbtnhide':false,'url':'{fun_get::url(array('app_act'=>'group.edit','id'=>$item['group_id']))}'});"></span><font>{$item['group_name']}</font></li>
+		{/foreach}
+		<li class="xnew" onclick="master_open({id:0,title:'新增分类',w:600,h:300,'showbtnmax':false,'showbtnhide':false,'url':'{fun_get::url(array('app_act'=>'group.edit'))}'});">新增分类</li>
+	</div>
+	<div class="mediv2">
+	{foreach($arr_table as $item)}
+		<li class="xstate{$item['state']}"><span title="下载二维码" onclick="window.open('common.php?app=other&app_act=download&name={$item['table_name']}&path=<?php echo urlencode($item['qrcode']['url']);?>','_blank');"><img src = "{fun_get::html_url($item['qrcode']['url'])}"></span><label onclick="master_open({id:{$item['table_id']},title:'修改桌位',w:600,h:300,'showbtnmax':false,'showbtnhide':false,'url':'{fun_get::url(array('app_act'=>'edit','id'=>$item['table_id']))}'});">{$item['table_name']}<i>({$item['table_num']})</i></label><font onclick="thisjs.detail({$item['table_id']});">{if($item['state']==1)}用餐中{else if($item['state']==2)}已被预订{else}可以预订{/if}</font></li>
+	{/foreach}
+		<li class="xnew" onclick="master_open({id:0,title:'新增桌位',w:600,h:300,'showbtnmax':false,'showbtnhide':false,'url':'{fun_get::url(array('app_act'=>'edit'))}'});"><span></span><label>新增桌位</label></li>
+	</div>
+</div>
+<script>
+//店铺选择回调函数
+function shop1_callback(o) {
+	if("id" in o) {
+		kj.set("#id_url_shop_id" , "value" , o.id);
+		admin.refresh();
+	}
+}
+var thisjs = new function() {
+	this.detail = function(id) {
+		master_open({'url':"{fun_get::url(array('id'=>'','app_act'=>'reserve'))}&id="+id,'id':'table_reserve','type':'iframe','title':'订单明细','w':800,'showbtnmax':false});
+	}
+}
+</script>
+{include(footer)}

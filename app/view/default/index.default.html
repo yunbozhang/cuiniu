@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>{cfg:(site_title,sys)}</title>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+</head>
+<body>
+{include(header)}
+{set $arr=fun_kj::get_ads('A1',1)}
+{if(isset($arr['list']))}
+<div class="kj_slider">
+	<div class="xli"{if(!empty($arr['h']))} style="height:{$arr['h']}"{/if}>
+		{foreach($arr['list'] as $item)}
+		<li><a href="{$item['link']}"><img src = "{$item['url']}"{if(!empty($arr['h']))} style="height:{$arr['h']}"{/if}></a></li>
+		{/foreach}
+	</div>
+	<div class="xleft xbtn1" style="display:none{if(!empty($arr['h']))};margin-top:-{$arr['h']/2}px;{/if}"><a href="javascript:void(0);" onclick="kj.slider.pagepre(this);">&lt;</a></div>
+	<div class="xright xbtn1" style="display:none{if(!empty($arr['h']))};margin-top:-{$arr['h']/2}px;{/if}"><a href="javascript:void(0);" onclick="kj.slider.pagenext(this);">&gt;</a></div>
+	<div class="xbtn Tslider_btn" style="display:none">{foreach($arr['list'] as $item)}<a href="javascript:void(0);">&nbsp;</a>{/foreach}</div>
+</div>
+{else if(isset($arr['html']))}
+<div style="float:left;{if(!empty($arr['w']))}width:{$arr['w']};{else}width:1000px;{/if}margin:10px 0px">
+	{$arr['html']}
+</div>
+{/if}
+	<div class="div2" id="id_toolbar">
+		<div class="main">
+		<li class="x1"><span class="xsel" onclick="jsindex.changelist(0 ,this);">所有商家</span><span onclick="jsindex.changelist(1 ,this);" id="id_collect_tab">我的收藏</span></li>
+		<li class="x2" id="id_act_sort"><span onclick="jsindex.sort(0);" style="width:auto"><font>默认</font></span><span onclick="jsindex.sort(1);"><font>最新</font><i></i></span><span onclick="jsindex.sort(2);"><font>销量</font><i></i></span><span onclick="jsindex.sort(3);"><font>人气</font><i></i></span></li>
+		<li class="xxiala">
+			<div class="Txiala xtit" xialadata="{align:'right'}" id="id_xiala_cart"><span>分类</span><em class="xup"></em></div>
+			<div class="Txialaval" style="display:none" id="id_history">
+				<ul id="id_typelist">
+					<a href="javascript:void(0);" onclick="jsindex.selshoptype('' , this);">全部</a>
+				{foreach($arr_type as $item)}
+					<a href="javascript:void(0);" onclick="jsindex.selshoptype('{$item}' , this);">{$item}</a>
+				{/foreach}
+				</ul>
+			</div>		
+		</li>
+		<li class="x4">
+			<form onsubmit="return false;"><input type="text" name="s_key" value="" class="xtxt" id="id_s_key"><input type="submit" name="btnok" value="" class="xbtn" onclick="jsindex.shoppage=0;jsindex.shopmore();"></form>
+		</li>
+		<li class="x3"><span id="id_chk_addprice" onclick="if(this.className=='xsel'){this.className=''}else{this.className='xsel'}jsindex.shoppage=0;jsindex.shopmore();">免费配送</span><span id="id_chk_state" onclick="if(this.className=='xsel'){this.className=''}else{this.className='xsel'}jsindex.showstate();">营业中</span></li>
+		</div>
+	</div>
+	<div class="list" id='id_shopall'>
+		<ul>
+		{include(index.shopmore)}
+		</ul>
+	</div>
+{if($shop_list['pageinfo']['pages']>$shop_list['pageinfo']['page'])}
+	<div class="more" id="id_listmore"><input type="button" name="more" value="加载更多..." onclick="jsindex.shopmore();"></div>
+{/if}
+{include(footer)}
+<div class="qrcodetips"><li><div><img src="images/kjcms2.jpg"><h1>优惠活动仅<i>手机微信专享</i></h1><font>网页下单不再享受优惠了哦~</font></div></li><img src="images/close-1.png" class="xclose" onclick="kj.remove(kj.parent(this,'div'));"></div>
+<script src="js.js"></script>
+<script src="index.js"></script>
+<script src="/common/js/kj.slider.js"></script>
+<script>
+jsindex.cssdir = "{$temp_url}";
+jsindex.shoppage = kj.toint("{$shop_list['pageinfo']['page']}");
+jsindex.shoppages = kj.toint("{$shop_list['pageinfo']['pages']}");
+jsindex.pagesize = kj.toint("{$shop_list['pageinfo']['pagesize']}");
+jsindex.sortby = kj.toint("{$shop_list['sortby']}");
+jsindex.sortval = kj.toint("{$shop_list['sortval']}");
+jsindex.sort_init();
+</script>
+</body>
+</html>

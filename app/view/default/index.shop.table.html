@@ -1,0 +1,289 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>{$shopinfo['shop_name']}-{cfg:(site_name,sys)}</title>
+<meta name="keywords" content="{$shopinfo['shop_name']},{cfg:(keywords,sys)}"/>
+<meta name="description" content="{fun_format::len($shopinfo['shop_desc'],50)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+</head>
+<body>
+{include(header)}
+{include(label.shop.top)}
+{set $arr=fun_kj::get_ads('B1-shop'.$shopinfo['shop_id'],1)}
+{if(isset($arr['list']) && count($arr['list'])>0)}
+<div class="kj_slider" style="{if(!empty($arr['h']))}height:{$arr['h']};{/if}{if(!empty($arr['w']))}width:{$arr['w']};{/if}">
+	<div class="xli" style="{if(!empty($arr['h']))}height:{$arr['h']};{/if}{if(!empty($arr['w']))}width:{$arr['w']};{/if}">
+		{foreach($arr['list'] as $item)}
+		<li><a href="{$item['link']}"><img src = "{$item['url']}" style="{if(!empty($arr['h']))}height:{$arr['h']};{/if}{if(!empty($arr['w']))}width:{$arr['w']};{/if}"></a></li>
+		{/foreach}
+	</div>
+	<div class="xleft xbtn1" style="display:none{if(!empty($arr['h']))};margin-top:-{$arr['h']/2}px;{/if}"><a href="javascript:void(0);" onclick="kj.slider.pagepre(this);">&lt;</a></div>
+	<div class="xright xbtn1" style="display:none{if(!empty($arr['h']))};margin-top:-{$arr['h']/2}px;{/if}"><a href="javascript:void(0);" onclick="kj.slider.pagenext(this);">&gt;</a></div>
+	<div class="xbtn Tslider_btn" style="display:none">{foreach($arr['list'] as $item)}<a href="javascript:void(0);">&nbsp;</a>{/foreach}</div>
+</div>
+{else if(isset($arr['html']) && trim($arr['html'])!='')}
+<div style="float:left;{if(!empty($arr['w']))}width:{$arr['w']};{else}width:1000px;{/if}margin:10px 0px">
+	{$arr['html']}
+</div>
+{/if}
+	<div class="shopinfo" style="float:right" id="id_shopinfo">
+		{include(label.shop.right)}
+	</div>
+	<div class="shopcate">
+		<li class="x1"></li>
+		{if($shopinfo['shop_service']==0 || $shopinfo['shop_service']==3)}
+			<li class="x2"><a href="{fun_get::url(array('type'=>'','reserve_id'=>''))}"{if(fun_get::get("type")!='2')} class="xsel"{/if}>外卖</a>{if($shopinfo['shop_service']==3)}<a href="{fun_get::url(array('type'=>'2'))}"{if(fun_get::get("type")=='2')} class="xsel"{/if}>餐厅订位</a>{/if}<a href="{fun_get::url(array('app_act'=>'comment.shop','reserve_id'=>'','shop_id'=>$shopinfo['shop_id']))}">评价</a></li>
+		{else}
+			<li class="x2"><a href="{fun_get::url(array('type'=>'','reserve_id'=>''))}"{if(fun_get::get("type")!='1')} class="xsel"{/if}>餐厅订位</a>{if($shopinfo['shop_service']==4)}<a href="{fun_get::url(array('type'=>'1','reserve_id'=>''))}"{if(fun_get::get("type")=='1')} class="xsel"{/if}>外卖</a>{/if}<a href="{fun_get::url(array('app_act'=>'comment.shop','reserve_id'=>'','shop_id'=>$shopinfo['shop_id']))}">评价</a></li>
+		{/if}
+		<li class="xtips" id="id_timetips" style="display:">
+			<label>预订时间：</label><font>今天-{fun_format::len($reserve_time,5)}</font><a href="javascript:jsshop.showtime();">切换时间</a>
+		</li>
+	</div>
+	<div class="shoptable" id="id_tablelist">
+	{foreach($arr_group as $group)}
+		<li class="xtit">{$group["group_name"]}</li>
+		{foreach($arr_table['id_'.$group['group_id']] as $table)}
+		 <li kjdata="{'id':{$table['table_id']},'name':'{$table['table_name']}','num':'{$table['table_num']}'}"{if(!empty($mytable) && $mytable['reserve_table_id']==$table['table_id'])} class="xmyyu" onclick="window.open('?app=member&app_act=order.detail&id={$mytable['order_id']}','_self');" {else if($table["state"] == 1)} class="xuse"{else if($table["state"] == 2)} class="xyu"{else} onclick="jsshop.table_click(this);" class="xnew"{/if}>
+		 <span></span><label>{$table["table_name"]}<i>({$table["table_num"]})</i></label><font>
+		 {if($table["state"] == 1)}
+			用餐中
+		 {else if($table["state"] == 2)}
+			{if(!empty($mytable) && $mytable['reserve_table_id']==$table['table_id'])}我的预订{else}已预订{/if}
+		 {else}可以预订{/if}</font>
+		 </li>
+		 {/foreach}
+	{/foreach}
+	</div>
+{include(footer)}
+<div id="id_reserve_div" style='display:none'>
+	<div class="reserve">
+		<form name="frmMain" method="post" action="return false">
+		<li>
+			<label>桌位：</label><span class="Ttable"></span>
+		</li>
+		<li>
+			<label>时间：</label><span class="Tretime">今天-{fun_format::len($reserve_time,5)}</span>
+		</li>
+		<li><label>人数：</label><span><select name="num">
+										<option value=""></option>
+										<option value="1">1位</option>
+										<option value="2">2位</option>
+										<option value="3">3位</option>
+										<option value="4">4位</option>
+										<option value="5">5位</option>
+										<option value="6">6位</option>
+										<option value="7">7位</option>
+										<option value="8">8位</option>
+										<option value="9">9位</option>
+										<option value="10">10位</option>
+										<option value="">不确定</option>
+										</select></span></li>
+		<li><label>电话：</label><span><input type="text" name="tel" value="" class="xtxt"></span></li>
+		<li><label>称呼：</label><span><input type="text" name="name" value="" class="xtxt"></span></li>
+		<li><label>备注：</label><span><input type="text" name="beta" value="" class="xbeta"></span></li>
+		<li class="xtips"><label>&nbsp;</label><span>需要预付订金：<font>￥{$shopinfo['shop_reserve_money']}</font></span></li>
+		<li class="xbtn"><input type="button" name="btnok" value="立即预订" onclick="jsshop.yuding();"></li>
+		</form>
+	</div>
+</div>
+<div class="reserve_time" id="id_reserve_time" style="display:none">
+	<div class="xtit">
+		请选择预订时间
+	</div>
+	<div class="xli">
+		{if(!empty($arr_reserve_day))}
+			<li id="id_reserve_day" class="xday Ta">
+			{if(!empty($arrivetime))}<a href="javascript:void(0);" kjdata="" class="xsel"><font>今天</font><i></i></a>{/if}
+			{foreach($arr_reserve_day as $ii=>$item)}
+				{if($ii == 0)}
+				<a href="javascript:void(0);" kjdata="{$item['val']}"><font>明天</font><i></i></a>
+				{else}
+				<a href="javascript:void(0);" kjdata="{$item['val']}"><font>{$item['name']}</font><i></i></a>
+				{/if}
+			{/foreach}
+			</li>
+		{/if}
+		<li id="id_reserve_time1" class="xtime">
+			{foreach($arrivetime as $item=>$key)}
+			<a href="javascript:void(0);" kjdata="{$item}"><font>{$key}</font><i></i></a>
+			{/foreach}
+		</li>
+		<li name="arrive2"{if(!empty($arrivetime))} style="display:none"{/if} id="id_reserve_time2" class="xtime">
+			{foreach($arr_arrive as $item=>$key)}
+			<a href="javascript:void(0);" kjdata="{$item}"><font>{$key}</font><i></i></a>
+			{/foreach}
+		</li>
+		<li class="xbtn">
+			<a href="javascript:void(0);" onclick="jsshop.start();">开始选桌位</a>
+		</li>
+	</div>
+</div>
+<script src = "{cfg:(dirpath,base)}/index.php?app=js&app_act=shop.hit&shop_id={$shopinfo['shop_id']}"></script>
+<script src="/common/js/kj.slider.js"></script>
+<script>
+var jsshop = new function() {
+	this.reserve_date = '{$reserve_date}';
+	this.reserve_time = '{$reserve_time}';
+	this.showext = function() {
+		var offset = kj.offset("#id_shoptopli");
+		kj.set("#id_shopext","style.left",offset.left+"px");
+		kj.show("#id_shopext");
+		kj.set("#id_shopext","style.top",offset.top+"px");
+		kj.set("#id_shopext ul","className","xover");
+		kj.set("#id_shoptopli .xtit","className","xtit2");
+	}
+	this.yuding = function() {
+		var obj = {};
+		obj.table_id = this.table_id;
+		obj.date = this.reserve_date;
+		obj.time = this.reserve_time;
+		obj.tel = document.frmMain.tel.value;
+		obj.name = document.frmMain.name.value;
+		obj.num = document.frmMain.num.value;
+		obj.beta = document.frmMain.beta.value;
+		kj.ajax.post("{fun_get::url(array('app_act'=>'shop.table.save','date'=>'','time'=>''))}",obj,function(data) {
+			var obj = kj.json(data);
+			if(obj.isnull) {
+				alert("系统繁忙");
+				return;
+			}
+			if(obj.code == '0') {
+				window.open("./index.php?app=member&app_act=reserve_pay&id="+obj.id+"&pay_method=alipay","_self");
+			} else {
+				alert(obj.msg);
+			}
+		});
+		return false;
+	}
+	this.hideext = function() {
+		kj.hide("#id_shopext");
+		kj.set("#id_shoptopli .xtit2","className","xtit");
+	}
+	this.show_reserve = function(obj) {
+		if(kj.obj("#id_reserve_div")) {
+			this.reserve_html = kj.obj("#id_reserve_div").innerHTML;
+			kj.remove("#id_reserve_div");
+		}
+		kj.dialog({'html':this.reserve_html,'id':'editinfo','type':'html','title':'预订桌位','w':500,'showbtnmax':false});
+		kj.set("#wineditinfo .Ttable","innerHTML",obj.name+'('+obj.num+')');
+		var arr = kj.obj("#id_timetips font");
+		var val = arr[0].innerHTML;
+		if(val == '') val = '今天-现在';
+		kj.set("#wineditinfo .Tretime","innerHTML",val);
+	}
+	this.showtime = function() {
+		if(!kj.obj("#id_bglayer")) kj.bglayer("","#000",0.5,'{"click":"hide"}');
+		var w = kj.w();
+		kj.show("#id_reserve_time");
+		var w2 = kj.w("#id_reserve_time");
+		var left = (w-w2)/2;
+		kj.set("#id_reserve_time","style.left",left+'px');
+		var h = document.body.clientHeight;
+		if(!h || (document.documentElement.clientHeight && document.documentElement.clientHeight>h)) h = document.documentElement.clientHeight;
+		var h2 = kj.h("#id_reserve_time");
+		var top = (h-h2)/2;
+		kj.set("#id_reserve_time","style.top",top+'px');
+		h = kj.h("#id_reserve_day");
+		if(h<300) h = 300;
+		kj.set("#id_reserve_time1","style.height",h+'px');
+		kj.set("#id_reserve_time2","style.height",h+'px');
+	}
+	this.start = function() {
+		var arr = kj.obj("#id_reserve_day .xsel");
+		if(!arr || arr.length<1) {
+			alert("请选择预约日期");return;
+		}
+		var arr2,txt;
+		var date = kj.getAttribute(arr[0],'kjdata');
+		var arr2x = kj.obj("font",arr[0]);
+		txt = arr2x[0].innerHTML;
+		if(date == '') {
+			arr2 = kj.obj("#id_reserve_time1 .xsel");
+		} else {
+			arr2 = kj.obj("#id_reserve_time2 .xsel");
+		}
+		if(!arr2 || arr2.length<1) {
+			alert("请选择预约时间");return;
+		}
+		var time = kj.getAttribute(arr2[0],'kjdata');
+		arr2x = kj.obj("font",arr2[0]);
+		txt = txt + '-' + arr2x[0].innerHTML;
+		kj.set("#id_timetips font","innerHTML",txt);
+		kj.set("#id_reserve_div .Tretime","innerHTML",txt);
+		kj.show("#id_timetips");
+		this.reserve_date = date;
+		this.reserve_time = time;
+		kj.set("#id_timetips a","innerHTML","切换时间");
+		kj.set("#id_timetips label","innerHTML","预订时间：");
+		kj.show("#id_timetips font");
+		this.getlist(date,time);
+	}
+	this.getlist = function(date ,time) {
+		kj.ajax.get("{fun_get::url(array('app_act'=>'shop.tablelist','date'=>'','time'=>''))}&date="+date+"&time="+time,function(data) {
+			var objdata = kj.json(data);
+			kj.obj("#id_tablelist").innerHTML = '';
+			var i,j;
+			for(i = 0 ; i < objdata.group.length ; i++) {
+				obj = document.createElement("li");
+				obj.innerHTML = objdata.group[i].group_name;
+				obj.className = 'xtit';
+				kj.obj("#id_tablelist").appendChild(obj);
+				for(j = 0 ; j < objdata.table['id_'+objdata.group[i].group_id].length ; j++) {
+					obj = document.createElement("li");
+					if(objdata.table['id_'+objdata.group[i].group_id][j].state == 1) {
+						obj.className = 'xuse';
+						statename = "用餐中";
+					} else if(objdata.table['id_'+objdata.group[i].group_id][j].state == 2) {
+						obj.className = 'xyu';
+						statename = "已预订";
+					} else {
+						obj.className = 'xnew';
+						statename = '可以预订';
+					}
+					obj.id = "id_table_"+objdata.table['id_'+objdata.group[i].group_id][j].table_id;
+					obj.innerHTML = "<span></span><label>"+objdata.table['id_'+objdata.group[i].group_id][j].table_name+"<i>("+objdata.table['id_'+objdata.group[i].group_id][j].table_num+")</i></label><font>"+statename+"</font>";
+					kj.obj("#id_tablelist").appendChild(obj);
+					kj.setAttribute("#"+obj.id,"kjdata","{'id':"+objdata.table['id_'+objdata.group[i].group_id][j].table_id+",'name':'"+objdata.table['id_'+objdata.group[i].group_id][j].table_name+"','num':'" + objdata.table['id_'+objdata.group[i].group_id][j].table_num + "'}");
+					if(statename=="可以预订") {
+						kj.handler("#"+obj.id,"click",function() {
+							jsshop.table_click(this);
+						});
+					}
+				}
+			}
+			kj.hide("#id_reserve_time");
+			kj.remove("#id_bglayer");
+		});
+	}
+	this.table_click = function(o) {
+		var kjdata = kj.getAttribute(o,"kjdata");
+		var obj = kj.json(kjdata);
+		jsshop.table_id = obj.id;
+		jsshop.show_reserve(obj);
+	}
+}
+kj.handler("#id_reserve_day a","click",function() {
+	kj.delClassName("#id_reserve_day a","xsel");
+	kj.addClassName(this,"xsel");
+	var kjdata = kj.getAttribute(this,"kjdata");
+	if(kjdata == '') {
+		kj.show("#id_reserve_time1");
+		kj.hide("#id_reserve_time2");
+	} else {
+		kj.hide("#id_reserve_time1");
+		kj.show("#id_reserve_time2");
+	}
+});
+kj.handler("#id_reserve_time1 a","click",function() {
+	kj.delClassName("#id_reserve_time1 a","xsel");
+	kj.addClassName(this,"xsel");
+});
+kj.handler("#id_reserve_time2 a","click",function() {
+	kj.delClassName("#id_reserve_time2 a","xsel");
+	kj.addClassName(this,"xsel");
+});
+</script>
+</body>
+</html>

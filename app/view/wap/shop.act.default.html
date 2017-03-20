@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>促销活动-{cfg:(site_title,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+<style>
+#id_pic_view img{max-width:100px;max-height:100px}
+.meselect select{width:260px;float:left;margin:5px 0px 3px 0px;clear:both}
+</style>
+</head>
+<body>
+{include(label.header)}
+<div class="top">
+	<h1>促销活动</h1>
+	<a href="?" class="x1"><img src="images/home.png"></a>
+	<a href="?app=shop" id="id_top_back" class="x2"><img src="images/back.png"></a>
+</div>
+<div class="main">
+	<table class="shoptable">
+		<tr class="xtit"><td>名称<td><td>状态</td><td>操作</td></tr>
+		{foreach($arr_list['list'] as $item)}
+		<tr><td>{$item['act_name']}<td><td>{$item['act_state']}</td><td>
+		{if($this_limit->chk_act("edit"))}
+		<input type="button" value="编辑" onclick="thisjs.open({$item['act_id']});" class="btn1">&nbsp;{/if}
+		{if($this_limit->chk_act("delete"))}
+		<input type="button" value="删除" onclick="thisjs.del({$item['act_id']});" class="btn2">
+		{/if}
+		</td></tr>
+		{/foreach}
+	</table>
+	<div class="page">
+		{if($arr_list['pagebtns']['start']!=1)}<li><a href="{fun_get::url(array('page'=>''))}&page=1">1</a></li>{/if}
+		{if($arr_list['pagebtns']['start']>2)}
+			<li class="xnone"><font>...</font></li>
+		{/if}
+		{foreach($arr_list['pagebtns']['list'] as $item)}
+		<li{if(fun_get::get('page',1)==$item)} class="xsel"{/if}><a href="{fun_get::url(array('page'=>''))}&page={$item}">{$item}</a></li>
+		{/foreach}
+		{if($arr_list['pagebtns']['end']<$arr_list['pageinfo']['pages']-1)}
+			<li class="xnone"><font>...</font></li>
+		{/if}
+		{if($arr_list['pagebtns']['end']<$arr_list['pageinfo']['pages'])}
+		<li><a href="{fun_get::url(array('page'=>''))}&page={$arr_list['pageinfo']['pages']}">{$arr_list['pageinfo']['pages']}</a></li>
+		{/if}
+		</li>
+	</div>
+</div>
+</div>
+{include(label.footer)}
+<script>
+var thisjs = new function() {
+	this.open = function(id) {
+		window.open("?app_module=shop&app=act&app_act=edit&id="+id,"_self");
+	}
+	this.del = function() {
+	}
+}
+</script>
+</body>
+</html>

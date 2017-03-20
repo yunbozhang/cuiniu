@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>我的留言-{cfg:(site_title,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+</head>
+<body>
+{include(label.header)}
+<div class="top">
+	<h1>我的留言</h1>
+	<a href="?" class="x1"><img src="images/home.png"></a>
+	<a href="?app=member&app_act=main" id="id_top_back" class="x2"><img src="images/back.png"></a>
+</div>
+<div class="main">
+	{foreach($arr_list['list'] as $item)}
+	<div class="mymsg">
+		<div class="info"><p><font>{$item["msg_name"]}&nbsp;&nbsp;&nbsp;&nbsp;{$item["msg_email"]}</font><span>{$item["msg_time"]}</span></p></div>
+		<div class="content"><p>内容：{$item["msg_cont"]}</p></div>
+		<div class="return" id="id_return_{$item["msg_id"]}">
+		{if(!empty($item["msg_recont"]))}
+			<div class="return_content"><p>回复：{$item["msg_recont"]}</p></div>
+		{/if}
+		</div>
+	</div>
+	{/foreach}
+	<div class="page">
+		{if($arr_list['pagebtns']['start']!=1)}<li><a href="{fun_get::url(array('page'=>''))}&page=1">1</a></li>{/if}
+		{if($arr_list['pagebtns']['start']>2)}
+			<li class="xnone"><font>...</font></li>
+		{/if}
+		{foreach($arr_list['pagebtns']['list'] as $item)}
+		<li{if(fun_get::get('page',1)==$item)} class="xsel"{/if}><a href="{fun_get::url(array('page'=>''))}&page={$item}">{$item}</a></li>
+		{/foreach}
+		{if($arr_list['pagebtns']['end']<$arr_list['pageinfo']['pages']-1)}
+			<li class="xnone"><font>...</font></li>
+		{/if}
+		{if($arr_list['pagebtns']['end']<$arr_list['pageinfo']['pages'])}
+		<li><a href="{fun_get::url(array('page'=>''))}&page={$arr_list['pageinfo']['pages']}">{$arr_list['pageinfo']['pages']}</a></li>
+		{/if}
+		</li>
+	</div>
+</div>
+{include(label.footer)}
+</body>
+</html>

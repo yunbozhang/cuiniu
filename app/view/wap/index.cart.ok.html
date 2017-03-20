@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>订购成功-{cfg:(site_title,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+</head>
+<body class="gbig">
+{include(label.header)}
+<div class="top">
+	<h1>提交成功{if(cls_obj::get('cls_user')->uname=='weixin_oBJZ5s85q562bhVVP8UwvbextDoU')}<a href="javascript:thisjs.wx_share();">分享</a>{/if}</h1>
+	<a href="?" id="id_top_back" class="x2"><img src="images/back.png"></a>
+</div>
+<div class="main">
+	<div class="cartok">
+		{if(empty($obj_order))}
+				<div class="xtit">订单不存在!</div>
+		{else}
+			{if($obj_order['order_pay_method'] == "afterpayment")}
+					<div class="xtit">恭喜您订单提交成功！</div>
+					<div class="xli"><ul>
+					<li>订单编号：<font>{$obj_order['order_id']}</li>
+					<li>订单金额：<font>{fun_kj::get_price($obj_order['order_total_pay'])}</font></li>
+					<li>支付方式：<font>货到付款</font></p>
+					<li>订单状态：<font>{$obj_order['state']}</font></p>
+					<li class="xbtn1">
+					<p><a href="?app=member&app_act=order.detail&id={$obj_order['order_id']}">订单详情</a></p>
+					<p class="y1"><a href="?app=member&app_act=main">会员中心</a></p>
+					</li>
+			{else if($obj_order['order_pay_method'] == "paymented")}
+					<div class="xtit">恭喜您订单提交成功！</div>
+					<div class="xli"><ul>
+					<li>订单编号：<font>{$obj_order['order_id']}</li>
+					<li>订单金额：<font>{fun_kj::get_price($obj_order['order_total_pay'])}</font></li>
+					<li>支付方式：<font>预付款或积分抵扣</font></p>
+					<li>订单状态：<font>{$obj_order['state']}</font></p>
+					<li class="xbtn1">
+					<p><a href="?app=member&app_act=order.detail&id={$obj_order['order_id']}">订单详情</a></p>
+					<p class="y1"><a href="?app=member&app_act=main">会员中心</a></p>
+					</li>
+			{else}
+					<div class="xtit">{if($obj_order['order_state']==-2)}恭喜您订单提交成功，请您尽快完成付款！{else if($obj_order['order_state']>=0)}恭喜您订单提交成功！{else}超时未支付{/if}</div>
+					<div class="xli"><ul>
+					<li>订单编号：<font>{$obj_order['order_id']}</font></li>
+					<li>订单金额：<font>{fun_kj::get_price($obj_order['order_total_pay'])}</font></li>
+					<li>支付方式：<font>在线支付{if($obj_order['order_pay_val']>0)}<span style="color:#888;font-weight:bold">(已支付)</span>{/if}</font></li>
+					{if(!empty($obj_order['state']))}<li>订单状态：<font>{$obj_order['state']}</font></li>{/if}
+					{if($obj_order['order_state']==-2)}
+						<li>请提交订单后30分钟内完成付款，否则系统将自动取消订单！</li>
+						<li class="xbtn1">
+						<p><a href="javascript:thisjs.pay();" id="id_btn_pay">立即支付</a></p>
+						</li>
+					{else}
+					<li class="xbtn1">
+					<p><a href="?app=member&app_act=order.detail&id={$obj_order['order_id']}">订单详情</a></p>
+					<p class="y1"><a href="?app=member&app_act=main">会员中心</a></p>
+					</li>
+					{/if}
+			{/if}
+			</ul></div>
+		{/if}
+	</div>
+</div>
+<script>
+{if(cls_obj::get("cls_session")->get("weixin")==1)}
+function onBridgeReady(){
+   WeixinJSBridge.invoke(
+	   'getBrandWCPayRequest', {
+		   "appId" : thisjs.appId,     //公众号名称，由商户传入     
+		   "timeStamp": thisjs.timeStamp,         //时间戳，自1970年以来的秒数     
+		   "nonceStr" : thisjs.nonceStr, //随机串     
+		   "package" : thisjs.package,     
+		   "signType" : "MD5",         //微信签名方式:     
+		   "paySign" : thisjs.paySign //微信签名 
+	   },
+	   function(res){     
+		   if(res.err_msg == "get_brand_wcpay_request:ok" ) {
+				window.open('?app=member&app_act=order.detail&id={$id}','_self');
+		   }     // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。 
+			kj.obj("#id_btn_pay").innerHTML = '立即支付';
+	   }
+   ); 
+}
+{/if}
+var thisjs = new function() {
+	{if(cls_obj::get("cls_session")->get("weixin")==1)}
+	this.wxpay = function() {
+		if (typeof WeixinJSBridge == "undefined"){
+		   if( document.addEventListener ){
+			   document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+		   }else if (document.attachEvent){
+			   document.attachEvent('WeixinJSBridgeReady', onBridgeReady); 
+			   document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+		   }
+		}else{
+		   onBridgeReady();
+		}
+	}
+	{/if}
+	//显示支付方式选择框
+	this.pay = function() {
+	{if(cls_obj::get("cls_session")->get("weixin")==1)}
+		kj.obj("#id_btn_pay").innerHTML = '正在支付...';
+		kj.ajax.get("{cfg:(dirpath,base)}/index.php?app=member&app_act=order_pay&id={$obj_order['order_id']}&pay_method=weixin",function(data) {
+			var obj = kj.json(data);
+			if(obj.isnull) {
+				alert("系统繁忙");
+				kj.obj("#id_btn_pay").innerHTML = '立即支付';
+				return;
+			}
+			if(obj.code == '0') {
+				thisjs.appId = obj.appId;
+				thisjs.timeStamp = obj.timeStamp+'';
+				thisjs.nonceStr = obj.nonceStr;
+				thisjs.package = obj.package;
+				thisjs.paySign = obj.paySign;
+				thisjs.wxpay();
+			} else {
+				alert(obj.msg);
+			}
+		});
+	{else}
+		window.open("{cfg:(dirpath,base)}/index.php?app=member&app_act=order_pay&id={$obj_order['order_id']}&pay_method=alipaywap",'_self');
+	{/if}
+	}
+}
+{if($obj_order['order_pay_method'] == "onlinepayment" && $obj_order['order_pay_val']==0)}
+thisjs.pay();
+{/if}
+</script>
+</body>
+</html>

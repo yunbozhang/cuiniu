@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>{cfg:(site_title,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+</head>
+<body>
+{include(label.header)}
+<script src="shoplist.js"></script>
+<div class="top">
+	<h1>收藏列表</h1>
+	<a href="?" class="x1"><img src="images/home.png"></a>
+	<a href="?" id="id_top_back" class="x2"><img src="images/back.png"></a>
+</div>
+<table class="box3">
+<tr><td><li id="id_act_tit" onclick="jsshoplist.showsort();"><font></font><i></i></li></td><td><li onclick="jsshoplist.showtype();" id="id_type_tit"><font>菜系</font><i></i></li></td><td class="x1"><li><span onclick="if(this.className=='xsel'){this.className=''}else{this.className='xsel'}jsshoplist.shoppage=0;jsshoplist.shopmore();" id="id_chk_addprice">免费配送</span></li></td><tr>
+</table>
+<div id="id_act_sort" style="display:none" class="dropdown">
+<ul>
+<li onclick="jsshoplist.sort(1,'最新');" title="最新">最新<i></i></li><li onclick="jsshoplist.sort(2,'销量');" title="销量">销量<i></i></li><li onclick="jsshoplist.sort(3,'人气');" title="人气">人气<i></i></li>
+</ul>
+</div>
+<div id="id_typelist" style="display:none" class="dropdown">
+<ul>
+	<a href="javascript:void(0);" onclick="jsshoplist.selshoptype('' , this , '全部');">全部<i>&nbsp;</i></a>
+	{foreach($arr_type as $item)}
+	<a href="javascript:void(0);" onclick="jsshoplist.selshoptype('{$item}' , this , '{$item}');">{$item}<i>&nbsp;</i></a>
+	{/foreach}
+</ul>
+</div>
+<div id="id_shopall">
+<ul>
+{include(index.shopmore)}
+</ul>
+</div>
+<script>
+jsshoplist.iscollect = true;
+jsshoplist.cssdir = "{$temp_url}";
+jsshoplist.shoppage = kj.toint("{$shop_list['pageinfo']['page']}");
+jsshoplist.shoppages = kj.toint("{$shop_list['pageinfo']['pages']}");
+jsshoplist.pagesize = kj.toint("{$shop_list['pageinfo']['pagesize']}");
+jsshoplist.sortby = kj.toint("{$shop_list['sortby']}");
+jsshoplist.sortval = kj.toint("{$shop_list['sortval']}");
+jsshoplist.sort_init();
+</script>
+{include(label.footer)}
+</body>
+</html>

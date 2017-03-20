@@ -1,0 +1,25 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>帮助中心-{cfg:(site_title,sys)}</title>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+</head>
+<body>
+{include(header)}
+<div class="newsli">
+	{foreach($arr_help as $item)}
+	<a href="{cfg:(dirpath,base)}/index.php?app_act=help&id={$item['article_id']}"{if($id==$item['article_id'])} class="xsel"{/if}><font>{$item['article_title']}</font><i></i></a>
+	{/foreach}
+	<a href="{cfg:(dirpath,base)}/index.php?app_act=msg"><font>意见反馈</font><i></i></a>
+	{if($site['customview']==0)}<a href="{cfg:(dirpath,base)}/index.php?app_act=reg.shop"><font>店铺加盟</font><i></i></a>{/if}
+</div>
+<div class="newscont">
+	<div class="xtit">{$thisinfo['article_title']}</div>
+	<div class="xcont">{$thisinfo['article_content']}</div>
+</div>
+{include(footer)}
+</body>
+</html>

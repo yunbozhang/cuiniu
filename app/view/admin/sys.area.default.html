@@ -1,0 +1,153 @@
+{include(header)}
+<style>
+.me_pic_view{position:absolute;}
+.me_pic_sel{float:left;width:500px;text-align:left}
+.me_pic_sel li{float:left}
+.me_pic_sel .x1{width:350px}
+.me_pic_sel .x2{width:100px}
+.me_pic_sel .x2 img{width:100px;height:100px}
+</style>
+<input type="hidden" value="{$this_pid}" name="url_pid" id="id_url_pid">
+<div class="pMenu" id="id_pMenu">
+	<li class="sel">管理</li>
+	<li onclick="admin.table.row_insert()" class="x_btn">添加</li>
+	<li class = "x_btn"><a href="javascript:parent.thisjs.klkkdj_open('地区管理-帮助','app=service&app_act=help&key=help.sys.area');" title="帮助"><img src="images/faq.gif"></a></li>
+	<li style="float:right;margin-right:10px;border:0px"><a href="http://api.map.baidu.com/lbsapi/getpoint/" target="_blank">[获取坐标]</a></li>
+</div>
+<div class="pMain_1" id="id_pMain_1">
+	<div class="pPath">路径：<a href="javascript:kj.set('#id_url_pid','value','0');admin.refresh();">顶级</a>{$this_path}</div>
+</div>
+<div class="pMain" id="id_main">
+<div class="pTableBox" id="id_table_box">
+	<div class='pTableTit' id="id_table_title">
+		<li><span class="x_tit" style="width:35px">ID</span></li>
+		{foreach($arr_list["tabtit"] as $item)}
+			<li><span class="x_tit"{if($item["w"]>0)} style="width:{$item["w"]}px"{/if} onclick="admin.table.list1.sort('{$item['key']}')">{$item["name"]}
+			{if(isset($arr_list['sort'][$item['key']]))}<img src="images/sort_{$arr_list['sort'][$item['key']]}.png">{/if}</span><span class="x_split"></span></li>
+		{/if}
+		<li><span class="x_tit" style="cursor:none;width:80px">操作</span></li>
+	</div>
+	<div class="pTableList" id="id_table_list">
+		<div class='pTable' id="id_table">
+			<div class='pTabRow' style="display:none">
+				<li><input type="hidden" name="area_id[]" value=""></li>
+				{foreach($arr_list["tabtd"] as $field)}
+					<li><input type="text" name="{$field}[]" value="" class="autosize"></li>
+				{/foreach}
+				<li>
+					<a href="javascript:kj.remove('#THISID');">删除</a>
+				</li>
+			</div>
+			{foreach($arr_list['list'] as $item)}
+			<div class='pTabRow' id="id_tabrow_{$item['area_id']}">
+				<li><input type='hidden' name='area_id[]' value="{$item['area_id']}">{$item['area_id']}</li>
+				{foreach($arr_list["tabtd"] as $field)}
+					{if($field=='area_pic')}
+					<li><img src="images/image_s.gif" onerror="this.src='{$temp_baseurl}common/images/no_pic.jpg'" onmouseover="thisjs.pic_view(this,'');" onmouseout="thisjs.pic_view(this,'none');" onclick="thisjs.pic_sel(this);" title="单击选择"><input type="hidden" name="{$field}[]" value="{$item[$field]}"><div class="me_pic_view"></div></li>
+					{else}
+					<li><input type="text" name="{$field}[]" value="{$item[$field]}" class="autosize"></li>
+					{/if}
+				{/foreach}
+				<li>
+				<a href="javascript:kj.set('#id_url_pid','value','{$item['area_id']}');admin.refresh();">下级</a>
+				{if($this_limit->chk_act("delete"))}&nbsp;&nbsp;<a href="javascript:thisjs.remove('{$item['area_id']}');">删除</a>{/if}
+				</li>
+			</div>
+			{/foreach}
+		</div>
+	</div>
+</div>
+</div>
+<div class="pFootAct" id="id_pFootAct">
+	<li>{if($this_limit->chk_act("save"))}<input type="button" name="btnExe" value="保存" onclick="admin.frm_ajax('save');" class="pBtn">{/if}</li>
+</div>
+<div id="id_selpic_html" style="display:none">
+	<div class="me_pic_sel">
+	<li class="x1"><input type="text" name="pic_url" id="id_sel_pic" value="temp_urlvalue" class="pTxt1 pTxtL300">&nbsp;<a href="javascript:kj.dialog({id:'id_sel_pic',title:'选择图片',url:'common.php?app=other&app_act=attatch&url_objid=id_sel_pic&callback=pic_callback',w:600,showbtnhide:false,type:'iframe'});">选择</a><br><iframe name="frm_format_pic" src="common.php?app=other&app_act=upload" width="300px" height="30px" frameborder=0 scrolling="no"></iframe><br><input type="button" name="btn_pic_ok" value="确定" onclick="thisjs.pic_ok();" class="pBtn">&nbsp;&nbsp;<input type="button" name="btn_pic_cancel" value="取消" onclick="kj.dialog.close('#winpic_sel');" class="pBtn"></li><li class="x2"><img src = "temp_urlhtml" id="id_sel_pic_view"></li>
+	</div>
+</div>
+<script src="admin.table.js"></script>
+<script>
+//初始化表格控件
+kj.onload(function(){
+admin.table.list1.init('#id_table_title' , '#id_table');
+});
+//自动保存
+admin.table.list1.save_resize = function() {
+	var lng_w = (kj.w(this.field));
+	kj.ajax.get("common.php?app=config&app_module=user&dir={$app_dir}&app_act=save_resize&filename=sys&key=sys.area&index=" + this.fieldsindex + "&w=" + lng_w , function(data){
+		//alert(data);
+	});
+}
+admin.table.list1.sort = function(key) {
+	kj.ajax.get("common.php?app=config&app_module=user&dir={$app_dir}&app_act=sort&key=sys.area&filename=sys&sortby=" + key , function(data){
+			var obj_data=kj.json(data);
+			if(!obj_data.isnull) {
+				admin.refresh();
+			}
+	});
+}
+//规格图片选择回调
+function pic_callback(o) {
+	if('objid' in o) {
+		kj.obj("#id_sel_pic_view").src = kj.url_view(kj.obj("#id_sel_pic").value);
+	}
+	kj.dialog.close("#winid_sel_pic");
+}
+function upload_callback(info){
+	var obj = kj.json(info);
+	if('url' in obj) {
+		kj.obj("#id_sel_pic").value=obj.url;
+		kj.obj("#id_sel_pic_view").src = kj.url_view(obj.url);
+	}
+}
+
+//当前页面js对象
+var thisjs = new function() {
+	this.pic_selhtml = '';
+	this.remove = function(id) {
+		admin.ajax_delete( id , true , function() {kj.remove("#id_tabrow_" + id);} );
+	}
+	//预览图片
+	this.pic_view = function(o,val) {
+		var obj = kj.parent(o , "li");
+		var arr = kj.obj("input" , obj);
+		var src = '';
+		if(arr && 'length' in arr & arr.length>0) src = arr[0].value;
+		if(src == '' ) {
+			src = '{$temp_baseurl}common/images/no_pic.jpg';
+		} else {
+			src = kj.url_view(src);
+		}
+
+		arr = kj.obj(".me_pic_view" , obj);
+		if(arr && 'length' in arr && arr.length>0) {
+			arr[0].innerHTML = '<img src'+'="' + src + '" class="img_w500">';
+			arr[0].style.display = val;
+		}
+	}
+	//图片选择框
+	this.pic_sel = function(o) {
+		var objcol = kj.parent(o , "li");
+		var arr = kj.obj(":area_pic[]" , objcol);
+		var url;
+		if(arr && 'length' in arr & arr.length>0) {
+			url = arr[0].value;
+			this.pic_obj = arr[0];
+		}
+		if(this.pic_selhtml == '') {
+			this.pic_selhtml = kj.obj("#id_selpic_html").innerHTML;
+			kj.remove("#id_selpic_html");
+		}
+		var html = this.pic_selhtml;
+		html = html.replace('temp_urlvalue' , url);
+		html = html.replace('temp_urlhtml' , kj.url_view(url));
+		kj.dialog({'html':html,'id':'pic_sel','type':'html','title':'选择图片','w':600,'h':160,'showbtnmax':false});
+	}
+	this.pic_ok = function() {
+		this.pic_obj.value = kj.obj("#id_sel_pic").value;
+		kj.dialog.close('#winpic_sel');
+	}
+}
+</script>
+{include(footer)}

@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>我的礼品-{cfg:(site_title,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+</head>
+<body style="background:#f8f8f8">
+{include(label.header)}
+<div class="top">
+	<h1>我的礼品</h1>
+	<a href="?" class="x1"><img src="images/home.png"></a>
+	<a href="?app=member&app_act=main" id="id_top_back" class="x2"><img src="images/back.png"></a>
+</div>
+<div class="uexper">
+	{foreach($record_list['list'] as $item)}
+	<li>
+		<p><b>{$item["record_datetime"]}</b></p>
+		<p>名称：<b>{$item["gift_name"]}</b></p>
+		<p>数量：<b class="xorange">{$item['record_num']}</b></p>
+		<p>积分：<b class="xblue">{$item["record_score"]}</b></p>
+		<p>状态：<b id="id_state_{$item['record_id']}">{$item["state"]}</b></p>
+		{if(!empty($item['record_send_time']) && empty($item['record_receive_time']) )}
+		<p id="id_btnstate_{$item['record_id']}"><a class="btn_ green" href="javascript:thisjs.receive('{$item['record_id']}');">领取</a></p>
+		{/if}
+	</li>
+	{/foreach}
+</div>
+<div class="page">
+	{if($record_list['pagebtns']['start']!=1)}<li><a href="{fun_get::url(array('page'=>''))}&page=1">1</a></li>{/if}
+	{if($record_list['pagebtns']['start']>2)}
+		<li class="xnone"><font>...</font></li>
+	{/if}
+	{foreach($record_list['pagebtns']['list'] as $item)}
+	<li{if(fun_get::get('page',1)==$item)} class="xsel"{/if}><a href="{fun_get::url(array('page'=>''))}&page={$item}">{$item}</a></li>
+	{/foreach}
+	{if($record_list['pagebtns']['end']<$record_list['pageinfo']['pages']-1)}
+		<li class="xnone"><font>...</font></li>
+	{/if}
+	{if($record_list['pagebtns']['end']<$record_list['pageinfo']['pages'])}
+	<li><a href="{fun_get::url(array('page'=>''))}&page={$record_list['pageinfo']['pages']}">{$record_list['pageinfo']['pages']}</a></li>
+	{/if}
+	</li>
+</div>
+
+{include(label.footer)}
+</body>
+</html>
+<script>
+var thisjs = new function() {
+	this.receive = function(id) {
+		kj.ajax.get("{cfg:(dirpath,base)}/index.php?app=act.gift&app_act=receive&id="+id,function(data) {
+			var obj = kj.json(data);
+			if(obj.isnull) {kj.alert("系统繁忙");return;}
+			if(obj.code != '0') {
+				('msg' in obj)? alert(obj.msg) : alert("系统繁忙");
+				return;
+			}
+			var objstate = kj.obj("#id_state_"+obj.id);
+			if(objstate) objstate.innerHTML = "已领取";
+			('msg' in obj) ? alert(obj.msg) : alert("已成功设置为领取状态");
+			kj.remove("#id_btnstate_"+obj.id);
+		});
+	}
+}
+</script>

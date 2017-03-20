@@ -1,0 +1,109 @@
+.pTableTit{border:1px #ddd solid;border-left:0px;border-top:0px;padding:0px;float:left;height:30px;width:10000px;display:inline;background:url(bg13.jpg) repeat-x}
+.pTableTit li{float:left;padding:0px 0px 0px 5px;overflow:hidden;white-space:nowrap;text-align:left;width:auto;font-weight:bold;color:#555555}
+.pTableTit .x_tit{float:left;padding:8px 0px 5px 0px;cursor:pointer}
+.pTableTit .x_split{float:left;width:10px;border-right:1px #ddd solid;height:30px}
+.pTable{border:1px #ddd solid;border-left:0px;border-top:0px;border-collapse: collapse;padding:0px;float:left;width:10000px}
+.pTable .pTabRow{float:left;width:10000px}
+.pTable .x_title{float:left;width:100%;text-align:left;padding:8px 0px 5px 0px;font-weight:bold;font-size:14px}
+
+.pTable .pTabRow li{float:left;padding:5px 0px 3px 5px;overflow:hidden;text-align:left;line-height:25px}
+.pTableBox {float:left;width:10000px;overflow-X:hidden;height:auto}
+.pRowSel{background:#d0e1f9}
+.pRowMove{background:#efefef}
+.pTableList{float:left;overflow:hidden}
+
+.pMenu{float:right;width:770px;padding-top:5px;background:url(menu_bg.jpg) repeat-x 0px bottom;color:#333;margin-right:10px}
+.pMenu li{float:left;border-top:1px #ddd solid;border-left:1px #ddd solid;border-right:1px #ddd solid;margin-left:10px;padding:10px 15px 10px 15px;letter-spacing:5px;cursor:pointer}
+.pMenu .fdpic{float:right;width:15px;height:13px;background:url(table.jpg) no-repeat 0px bottom;padding:8px 0px 0px 0px;border:0px}
+.pMenu .info{border:0px;color:#ff0000}
+.pMenu .sel{background:#ffffff;font-weight:bold}
+.pMenu .z_sel{color:#ff0000}
+.pMenu .x_btn{border:0px;color:#ff0000;padding:8px 5px 3px 5px}
+
+.pTableMain{float:right;width:770px;overflow:hidden;border:1px #ddd solid;border-bottom:0px;margin:10px 5px 0px 5px}
+
+.pEditTable{border:0px #6CC1F3 solid;margin-top:10px;border-collapse: collapse;float:left;clear:both;width:100%}
+.pEditTable td{padding:8px 0px 5px 0px}
+.pEditTable .pTabTitRow{background:#f8f8f8;height:20px}
+.pEditTable .pTabTitCol{text-align:center;text-align:left;color:#666666;font-weight:bold}
+.pEditTable .pTabSubmit{text-align:left;padding-left:110px;background:#f8f8f8;border-top:1px #ddd solid}
+.pEditTable .pTabColName{border-top:1px #ddd solid;width:100px;background:#f8f8f8;border-right:1px #ddd solid;text-align:right;padding-right:5px}
+.pEditTable .pTabColVal{border-top:1px #ddd solid;text-align:left;padding-left:5px;padding-top:3px;padding-bottom:3px}
+.pEditTable .pTabColInfo{border-top:1px #ddd solid;width:200px;text-align:left;padding-left:5px}
+
+.peFootAct{width:100%;border-top:1px #eee solid;position:fixed;bottom:0px;left:0px;padding-top:3px;background:#fff;z-index:999}
+.peFootAct li{float:left;margin:0px 0px 0px 50px}
+.pFootAct{width:100%;border-top:1px #cccccc solid;border-collapse: collapse;float:left;padding:20px 0px;margin:20px 0px 0px 0px}
+.pFootAct li{float:left;line-height:30px;height:30px;vertical-align:middle;padding:0px;overflow:hidden;margin-right:20px}
+
+.pMain{float:left;overflow:hidden;padding:0px;margin:0px;width:100%}
+.pMain_1{float:right;padding-top:10px;width:710px;text-align:left;overflow:hidden}
+
+.pPath{float:right;width:100%;padding:5px 0px 3px 0px;border-bottom:1px #cccccc solid;color:#666666}
+.pPath li{float:left;padding:5px 10px 0px 5px}
+
+
+.pLayer {float:left;width:100%;text-align:left}
+.pLayer li{float:left;clear:both;margin:8px 0px 5px 0px;width:100%}
+.pLayer .padding_1{float:left}
+.pLayer .xx_1{float:left;padding-left:5px}
+.pLayer .xx_2{float:left;padding-left:5px}
+.pLayer .xx_act{float:right}
+.pLayerAdd {float:left;margin:10px 0px 0px 20px;clear:both;width:80px}
+.btnMenuDiv{float:left;width:960px;text-align:left;}
+.btnMenuDiv li{float:left;padding:5px 0px 3px 10px;white-space:nowrap;height:20px;}
+
+.shop1{float:right;width:700px;font-size:14px;color:#888888;margin:10px 0px 0px 10px}
+.shop2{float:left;width:200px;margin:30px 0px 0px 20px}
+.shop2 li{float:left;width:185px;padding:5px 0px 5px 15px;background:url(shop2.jpg) no-repeat left center;}
+.shop3{float:right;width:710px;background:#efefef;color:#ff8800;padding:5px 0px 5px 0px;font-size:14px;font-weight:bold}
+.shop4{float:right;width:960px;height:300px;margin-top:20px}
+
+.shop5{float:left;width:680px;margin-bottom:20px}
+.shop5 .x_tit{float:left;width:680px;border-bottom:1px #ff8800 solid}
+.shop5 .x_li1{float:left;width:650px;padding:0px 0px 0px 30px}
+.shop5 .x_li1 li{float:left;margin:3px 10px 0px 0px}
+.shop5 .x_li1 .x_col1{color:#0000ff}
+.shop5 .x_li1 .x_col2{float:right;width:100px}
+.shop5 .x_li1 .x_col3{float:right;width:100px;color:#ff0000;font-size:18px}
+.shop5 .x_info1{float:left;width:650px;padding:5px 0px 0px 30px;line-height:30px;}
+.shop5 .x_info2{float:left;width:650px;padding:5px 0px 0px 30px;line-height:30px;border:1px #cccccc dotted;background:#f8f8f8}
+.shop5 .x_info3{float:left;width:650px;padding:5px 0px 0px 30px;line-height:30px;border:1px #66CC00 dotted;background:#EAF3E1;margin-top:10px;color:#4F8D11}
+.shop5 .x_info4{float:left;width:650px;padding:8px 0px;background:#fff}
+.shop5 .x_info4 .xtit{font-weight:bold;padding-left:30px;width:928px}
+.shop5 .x_info4 .xtit font{font-weight:200;color:#ff8800}
+.shop5 .x_info4 p{float:left;width:650px;margin:7px 0px}
+.shop5 .x_info4 p span{float:left;font-weight:bold;width:120px}
+.shop5 .x_info4 p .y1{width:60px;padding-left:8px;text-align:right;font-weight:200}
+.shop5 .x_info4 .xbeta{width:600px;border:1px #efefef dotted;margin:5px 0px 0px 30px;padding:5px}
+
+.edit_table{border:0px #6CC1F3 solid;margin:30px 0px 10px 20px;border-collapse: collapse;float:left;width:960px;padding:0px 0px 0px 0px}
+.edit_table td{padding:8px 0px 5px 0px}
+.edit_table .x_titrow{height:20px}
+.edit_table .x_titcol{text-align:center;text-align:left;color:#666666;font-weight:bold}
+.edit_table .x_colname{width:120px;text-align:right;padding-right:5px;padding-top:6px}
+.edit_table .x_colval{text-align:left;padding-left:5px;padding-top:6px;padding-bottom:3px}
+
+.sright{float:right;margin-right:10px;width:710px;overflow:hidden;padding:10px 0px 10px 0px}
+
+
+.uspro{float:left;margin:20px 0px 0px 50px}
+.uspro li{float:left;margin-right:15px;background:url(vip_arr.png) no-repeat right center;padding-right:25px}
+.uspro li a{float:left;border:1px #ccc solid;padding:5px 10px;}
+.uspro li a:hover{border:1px #ff6600 solid}
+.uspro .x1{background:url();}
+.uspro .xsel{}
+.uspro .xsel a{border:1px #ff6600 solid;color:#ff6600}
+.uspro .xsel a:hover{border:1px #ff6600 solid;color:#ff6600}
+.ustj{float:left;width:500px;margin:30px 0px 0px 50px}
+.ustj li{float:left;width:50%}
+.ustj li p{float:left;clear:both;margin:5px 0px 3px 0px}
+.ucontainer{float:left;width:684px;margin:20px 0px 20px 50px;height:320px;border:1px #ccc solid;padding:15px;}
+#container{float:left;width:684px;height:300px;margin-top:20px}
+.usstate{float:left;padding:10px 0px 0px 10px;line-height:30px;text-align:center;width:250px}
+.usstate p{float:left;width:100%;margin:15px 0px}
+.usstate label{float:left;border:1px #ccc solid;padding:0px 8px;margin:5px 10px}
+.usetable{float:left;width:700px;margin:10px 0px 0px 50px}
+.usetable td{padding:5px 0px}
+.usetable .x1{padding-right:20px;width:120px}
+.usetable .x1 font{float:right}

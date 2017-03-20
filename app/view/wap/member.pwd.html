@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>修改密码-{cfg:(site_title,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+</head>
+<body>
+{include(label.header)}
+<div class="top">
+	<h1>修改密码</h1>
+	<a href="?" class="x1"><img src="images/home.png"></a>
+	<a href="?app=member&app_act=main" id="id_top_back" class="x2"><img src="images/back.png"></a>
+</div>
+<form name="frm_member" method="post" action="?app=ajax&app_act=useredit" onsubmit="return thisjs.frm_ajax();">
+<div class="main">
+	<div class="login">
+		<li class="xli">
+			<p class="xpwd"><i></i><input type="password" name="oldpwd" value="" placeholder="原密码"></p>
+			<p class="xpwd"><i></i><input type="password" name="pwd1" value="" placeholder="新密码"></p>
+			<p class="xpwd"><i></i><input type="password" name="pwd2" value="" placeholder="再次输入新密码"></p>
+			<p class="xemail"><i></i><input type="text" name="email" value="" placeholder="邮箱"></p>
+		</li>
+	</div>
+	<a href="javascript:void(0);" onclick="thisjs.frm_ajax();" class="btn-a1 Tlogin" style="margin-top:15px"><font>登录</font></a>
+</div>
+</form>
+{include(label.footer)}
+</body>
+</html>
+<script>
+var thisjs = new function() {
+	this.frm_ajax = function() {
+		if(document.frm_member.pwd1.value!="" || document.frm_member.pwd2.value!="") {
+			if(document.frm_member.pwd1.value != document.frm_member.pwd2.value) {
+				kj.alert("两次输入密码不正确");
+				document.frm_member.pwd1.focus();
+				return false;
+			}
+			if(!kj.rule.types.pwd(document.frm_member.pwd1.value)) {
+				kj.alert(kj.cfg('rule_pwd_tips'));
+				document.frm_member.pwd1.focus();
+				return false;
+			}
+			if(document.frm_member.oldpwd.value=="") {
+				kj.alert("请输入原密码");
+				document.frm_member.oldpwd.focus();
+				return false;
+			}
+		}
+		if(document.frm_member.email.value!='' && !kj.rule.types.email(document.frm_member.email.value)) {
+			kj.alert("输入邮箱格式不正确");
+			document.frm_member.email.focus();
+			return false;
+		}
+		kj.ajax.post(document.frm_member,function(data){
+			var obj_data=kj.json(data);
+			if(obj_data.isnull) {
+				kj.alert("操作失败");
+			} else {
+				if('code' in obj_data && obj_data.code=='0') {
+					kj.alert("修改密码成功");
+					window.open('?app=member&app_act=main','_self');
+				} else {
+					if("msg" in obj_data) {
+						kj.alert(obj_data.msg);
+					} else {
+						kj.alert("保存失败");
+					}
+				}
+			}
+		});
+		return false;
+	}
+}
+</script>

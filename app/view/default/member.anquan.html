@@ -1,0 +1,386 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>收货地址-{cfg:(site_title,sys)}</title>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+</head>
+<body>
+{include(header)}
+{include(member_left)}
+<div class="uright">
+	<div class="upath"><font>收货地址</font></div>
+	<div class="uanquan">
+		<li><span class="x1"></span><font>&nbsp;&nbsp;为保护您账号和资产安全，请定期修改密码</font><a href="javascript:thisjs.show_editpwd();" class="btn-a3">修改</a></li>
+		{if(!empty($mobile))}
+		<li><span class="x3"></span><font>&nbsp;&nbsp;当前您绑定的手机：{$mobile}</font><a href="javascript:thisjs.edit(2);" class="btn-a3">修改</a></li>
+		{else}
+		<li><span class="x3"></span><font>&nbsp;&nbsp;为保护您账号和资产安全，请绑定您的手机</font><a href="javascript:thisjs.show_tel();" class="btn-a3">绑定</a></li>
+		{/if}
+		<li><span class="x2"></span><font>&nbsp;&nbsp;安全保护问题</font>{if(count($arr_question)==0)}<a href="javascript:thisjs.show_ask();" class="btn-a3">设置</a>{else}<a href="javascript:thisjs.edit(1);" class="btn-a3">修改</a>{/if}</li>
+	</div>
+</div>
+{include(footer)}
+<div id="id_ediepwd_box" style="display:none">
+	<form name="frm_editpwd" method="post" action="index.php?app=member&app_act=anquan.editpwd" onsubmit="return thisjs.editpwd();">
+	<div class="uanquan_x1">
+		<li>原&nbsp;&nbsp;密&nbsp;&nbsp;码：<input type="text" value="" placeholder="原密码" class="txt" name="oldpwd" rule='pwd' ruletips="原密码不能为空或密码格式不正确" required></li>
+		<li>新&nbsp;&nbsp;密&nbsp;&nbsp;码：<input type="text" value="" placeholder="新密码" class="txt" name="pwd1" rule='pwd' ruletips="新密码不能为空或密码格式不正确" required></li>
+		<li>确认密码：<input type="text" value="" placeholder="确认新密码" class="txt" name="pwd2" rule='pwd' ruletips="确认密码不能为空或密码格式不正确" required></li>
+		<li><span><input type="submit" name="btnok" value="确定" class="btn-1">&nbsp;&nbsp;<input type="button" name="btncancel" value="取消" class="btn-2" onclick="kj.dialog.close('#wineditpwd');"></span></li>
+	</div>
+	</form>
+</div>
+<div id="id_ask_box" style="display:none">
+	<form name="frm_safeask" method="post" action="index.php?app=member&app_act=anquan.safeask" onsubmit="return thisjs.save_safeask();">
+	<div class="uanquan_x2">
+		<li><span class="xtit">提问一：</span><span>
+			<select name='ask1_1'>
+			{foreach($ask1 as $item)}
+			<option value="{$item}">{$item}</option>
+			{/foreach}
+			</select>		
+		</span><span>
+			<select name='ask1_2'>
+			{foreach($ask2 as $item)}
+			<option value="{$item}">{$item}</option>
+			{/foreach}
+			</select>
+		</span></li>
+		<li>
+			<span class="xtit">答案：</span>
+			<span><input type="text" name='ask1_answer' placeholder="请输入答案" required class="txt"></span>
+		</li>
+		<li class="xline"><span class="xtit">提问二：</span><span>
+			<select name='ask2_1'>
+			{foreach($ask1 as $item)}
+			<option value="{$item}">{$item}</option>
+			{/foreach}
+			</select>		
+		</span><span>
+			<select name='ask2_2'>
+			{foreach($ask2 as $item)}
+			<option value="{$item}">{$item}</option>
+			{/foreach}
+			</select>
+		</span></li>
+		<li>
+			<span class="xtit">答案：</span>
+			<span><input type="text" name='ask2_answer' placeholder="请输入答案" required class="txt"></span>
+		</li>
+		<li class="xline"><span class="xtit">提问一：</span><span>
+			<select name='ask3_1'>
+			{foreach($ask1 as $item)}
+			<option value="{$item}">{$item}</option>
+			{/foreach}
+			</select>		
+		</span><span>
+			<select name='ask3_2'>
+			{foreach($ask2 as $item)}
+			<option value="{$item}">{$item}</option>
+			{/foreach}
+			</select>
+		</span></li>
+		<li>
+			<span class="xtit">答案：</span>
+			<span><input type="text" name='ask3_answer' placeholder="请输入答案" required class="txt"></span>
+		</li>
+		<li><span class="xtit">&nbsp;</span>
+			<span><input type="submit" name="btnok" value="确定" class="btn-1">&nbsp;&nbsp;<input type="button" name="btncancel" value="取消" class="btn-2" onclick="kj.dialog.close('#winask');"></span>
+		</li>
+	</div>
+	</form>
+</div>
+<div id="id_tel_box" style="display:none">
+	<div class="uanquan_x3">
+	<form name="frm_verifytel" method="post" action="index.php?app=member&app_act=anquan.verifytel" onsubmit="return thisjs.verifytel();">
+		<li>绑定手机号：<input type="text" value="" name="mobile" placeholder="请填写手机号" class="txt" rule='tel' ruletips='手机号码格式不对' required>&nbsp;<input type="button" name="btncancel" value="获取短信验证信息" class="btn-4" onclick="thisjs.sendsms();" id="id_btn_sendmsg"><input type="button" name="btncancel" value="" class="btn-4" id="id_btn_timer" style="display:none"></li>
+		<li>短信验证码：<input type="text" value="" placeholder="验证码" class="txt" name="verifycode"></li>
+		<li><span><input type="submit" name="btnok" value="确定" class="btn-1">&nbsp;&nbsp;<input type="button" name="btncancel" value="取消" class="btn-2" onclick="kj.dialog.close('#wintel');"></span></li>
+	</form>
+	</div>
+</div>
+<div id="id_editsel" style="display:none">
+	<div class="uanquan_x4">
+	<li><span><a href="javascript:thisjs.verify_method('ask');">通过回答原密码问题修改</a></span><span><a href="javascript:thisjs.verify_method('tel');">通过绑定手机短信修改</a></span></li>
+	</div>
+</div>
+{if(!empty($mobile))}
+<div id="id_edittel_box" style="display:none">
+	<form name="frm_editverifytel" method="post" action="index.php?app=member&app_act=anquan.verifytel" onsubmit="return thisjs.edit_verifytel();">
+	<div class="uanquan_x3">
+		<li>绑定手机号：{$mobile}&nbsp;<input type="button" name="btncancel" value="获取短信验证信息" class="btn-4" onclick="thisjs.send_verify_sms();" id="id_btn_editsendmsg"><input type="button" name="btncancel" value="" class="btn-4" id="id_btn_edittimer" style="display:none"></li>
+		<li>短信验证码：<input type="text" value="" placeholder="验证码" class="txt" name="verifycode"></li>
+		<li><span><input type="submit" name="btnok" value="确定" class="btn-1">&nbsp;&nbsp;<input type="button" name="btncancel" value="取消" class="btn-2" onclick="kj.dialog.close('#winedittel');"></span></li>
+	</div>
+	</form>
+</div>
+{/if}
+{if(!empty($arr_question))}
+<div id="id_editask_box" style="display:none">
+	<form name="frm_editverifyask" method="post" action="index.php?app=member&app_act=anquan.verify.ask" onsubmit="return thisjs.verifyask();">
+	<div class="uanquan_x2">
+		{foreach($arr_question as $item)}
+		<li><span class="xtit">提问一：</span><span>{$item['safeask_question']}？</span></li>
+		<li>
+			<span class="xtit">答案：</span>
+			<span><input type="text" name='answer_{$item["safeask_number"]}' placeholder="请输入答案" required class="txt"></span>
+		</li>
+		{/foreach}
+		<li><span class="xtit">&nbsp;</span>
+			<span><input type="submit" name="btnok" value="确定" class="btn-1">&nbsp;&nbsp;<input type="button" name="btncancel" value="取消" class="btn-2" onclick="kj.dialog.close('#wineditask');"></span>
+		</li>
+	</div>
+	</form>
+</div>
+{/if}
+<script>
+var thisjs = new function() {
+	this.show_editpwd = function() {
+		if(!this.html_editpwd) {
+			this.html_editpwd = kj.obj("#id_ediepwd_box").innerHTML;
+			kj.remove("#id_ediepwd_box");
+		}
+		kj.dialog({'html':this.html_editpwd,'id':'editpwd','type':'html','title':'修改密码','w':350,'showbtnmax':false,'showbtnhide':false});
+	}
+	this.editpwd = function() {
+		if(kj.rule.form(document.frm_editpwd) == false) {
+			return false;
+		}
+		if(document.frm_editpwd.pwd1.value != document.frm_editpwd.pwd2.value) {
+			kj.rule.showtips(document.frm_editpwd.pwd2 , '两次输入密码不一至');
+			return false;
+		}
+		if(document.frm_editpwd.oldpwd.value == document.frm_editpwd.pwd1.value) {
+			kj.rule.showtips(document.frm_editpwd.pwd1 , '新密码不能与原密码相同');
+			return false;
+		}
+		kj.ajax.post(document.frm_editpwd,function(data) {
+			var obj_data = kj.json(data);
+			if(obj_data.isnull) {
+				alert("操作失败：系统繁忙");return;
+			}
+			if(obj_data.code == '0') {
+				kj.alert.show("成功修改密码");
+				kj.hide('#wineditpwd');
+			} else {
+				alert("操作失败：" + obj_data.msg);
+			}
+		});
+		return false;
+	}
+	this.show_ask = function() {
+		if(!this.html_ask) {
+			this.html_ask = kj.obj("#id_ask_box").innerHTML;
+			kj.remove("#id_ask_box");
+		}
+		kj.dialog({'html':this.html_ask,'id':'ask','type':'html','title':'设置安全保护问题','w':500,'showbtnmax':false,'showbtnhide':false});
+	}
+	this.save_safeask = function() {
+		if(kj.rule.form(document.frm_safeask) == false) {
+			return false;
+		}
+		var ask1 = document.frm_safeask.ask1_1.value + document.frm_safeask.ask1_2.value;
+		var ask2 = document.frm_safeask.ask2_1.value + document.frm_safeask.ask2_2.value;
+		var ask3 = document.frm_safeask.ask3_1.value + document.frm_safeask.ask3_2.value;
+
+		if(ask1 == ask2) {
+			alert("提问一与提问二选择的问题不能相同");
+			return false;
+		}
+		if(ask1 == ask3) {
+			alert("提问一与提问三选择的问题不能相同");
+			return false;
+		}
+		if(ask2 == ask3) {
+			alert("提问二与提问三选择的问题不能相同");
+			return false;
+		}
+		var obj_form = {'ask1':ask1 , 'ask2':ask2 , 'ask3':ask3 , 'answer1':document.frm_safeask.ask1_answer.value,'answer2':document.frm_safeask.ask2_answer.value,'answer3':document.frm_safeask.ask3_answer.value};
+		kj.ajax.post(document.frm_safeask.action ,obj_form ,function(data) {
+			var obj_data = kj.json(data);
+			if(obj_data.isnull) {
+				alert("操作失败：系统繁忙");return;
+			}
+			if(obj_data.code == '0') {
+				kj.alert.show("设置成功",function(){location.reload(true);});
+				kj.hide('.Tsafeask');
+			} else {
+				alert("操作失败：" + obj_data.msg);
+			}
+		});
+		return false;
+	}
+	this.show_tel = function() {
+		if(!this.html_tel) {
+			this.html_tel = kj.obj("#id_tel_box").innerHTML;
+			kj.remove("#id_tel_box");
+		}
+		kj.dialog({'html':this.html_tel,'id':'tel','type':'html','title':'绑定手机','w':500,'showbtnmax':false,'showbtnhide':false});
+	}
+	this.send_verify_sms = function() {
+		kj.ajax.get(kj.cfg('baseurl') + "/index.php?app=member&app_act=anquan.send.sms" , function(data) {
+			var obj = kj.json(data);
+			if(obj.isnull) return;
+			if(obj.code != 0) {
+				kj.alert(obj.msg);
+				return;
+			}
+			kj.hide("#id_btn_editsendmsg");
+			kj.show("#id_btn_edittimer");
+			thisjs.timer = 120;
+			thisjs.edit_starttime(true);
+		});
+	}
+	this.edit_starttime = function(isstart) {
+		var obj = kj.obj("#id_btn_edittimer");
+		if(!obj) return;
+		var timer = kj.toint(obj.value);
+		timer--;
+		if(isstart) timer = this.timer;
+		if(timer<0) {
+			kj.hide("#id_btn_edittimer");
+			kj.show("#id_btn_editsendmsg");
+		} else {
+			obj.value = timer;
+			setTimeout('thisjs.edit_starttime()' , 1000);
+		}
+	}
+	this.edit_verifytel = function() {
+		var val = document.frm_editverifytel.verifycode.value;
+		if(val == '') {
+			alert("请输入验证码");
+			document.frm_editverifytel.verifycode.focus();
+			return false;
+		}
+		kj.ajax.get(kj.cfg('baseurl') + "/index.php?app=member&app_act=anquan.verify.sms&key=" + val , function(data) {
+			var obj_data = kj.json(data);
+			if(obj_data.isnull) {
+				alert("验证失败：系统繁忙");return;
+			}
+			if(obj_data.code == '0') {
+				kj.dialog.close("#winedittel");
+				if(thisjs.edittype == 1) {
+					thisjs.show_ask();
+				} else {
+					thisjs.show_tel();
+				}
+			} else {
+				alert(obj_data.msg);
+			}
+		});
+		return false;
+	}
+	this.sendsms = function() {
+			kj.hide("#id_btn_sendmsg");
+			kj.show("#id_btn_timer");
+			thisjs.timer = 120;
+			thisjs.starttime(true);
+			return;
+		var tel = document.frm_verifytel.mobile.value;
+		kj.ajax.get(kj.cfg('baseurl') + "/common.php?app=sys&app_act=send.sms&tel="+tel+"&type=4" , function(data) {
+			var obj = kj.json(data);
+			if(obj.isnull) return;
+			if(obj.code != 0) {
+				kj.alert(obj.msg);
+				return;
+			}
+			kj.hide("#id_btn_sendmsg");
+			kj.show("#id_btn_timer");
+			thisjs.timer = 120;
+			thisjs.starttime(true);
+		});
+	}
+	this.starttime = function(isstart) {
+		var obj = kj.obj("#id_btn_timer");
+		if(!obj) return;
+		var timer = kj.toint(obj.value);
+		timer--;
+		if(isstart) timer = this.timer;
+		if(timer<0) {
+			kj.hide("#id_btn_timer");
+			kj.show("#id_btn_sendmsg");
+		} else {
+			obj.value = timer;
+			setTimeout('thisjs.starttime()' , 1000);
+		}
+	}
+	this.verifytel = function() {
+		if(kj.rule.form(document.frm_verifytel) == false) {
+			return false;
+		}
+		kj.ajax.post(document.frm_verifytel , function(data) {
+			var obj_data = kj.json(data);
+			if(obj_data.isnull) {
+				alert("操作失败：系统繁忙");return;
+			}
+			if(obj_data.code == '0') {
+				kj.alert.show("操作成功",function(){location.reload(true);});
+				kj.hide('.TverifyTel');
+			} else {
+				alert(obj_data.msg);
+			}
+		});
+		return false;
+	}
+	this.verifyask = function() {
+		if(kj.rule.form(document.frm_editverifyask) == false) {
+			return false;
+		}
+		kj.ajax.post(document.frm_editverifyask , function(data) {
+			var obj_data = kj.json(data);
+			if(obj_data.isnull) {
+				alert("验证失败：系统繁忙");return;
+			}
+			if(obj_data.code == '0') {
+				kj.dialog.close("#wineditask");
+				if(thisjs.edittype == 1) {
+					thisjs.show_ask();
+				} else {
+					thisjs.show_tel();
+				}
+			} else {
+				alert(obj_data.msg);
+			}
+		});
+		return false;
+	}
+	this.edit = function(type) {
+		thisjs.edittype = type;
+		var tit = (type == 1) ? '修改密码保护问题' : '重新绑定手机号';
+		tit = '需要验证后才能' + tit;
+		if(!this.html_editsel) {
+			this.html_editsel = kj.obj("#id_editsel").innerHTML;
+			kj.remove("#id_editsel");
+		}
+		kj.dialog({'html':this.html_editsel,'id':'editsel','type':'html','title':tit,'w':500,'showbtnmax':false,'showbtnhide':false});
+
+	}
+	this.verify_method = function(type) {
+		kj.dialog.close("#wineditsel");
+		if(type == 'tel') {
+			this.show_editel();
+		} else {
+			this.show_editask();
+		}
+	}
+	this.show_editel = function() {
+		if(!this.html_edittel) {
+			this.html_edittel = kj.obj("#id_edittel_box").innerHTML;
+			kj.remove("#id_edittel_box");
+		}
+		kj.dialog({'html':this.html_edittel,'id':'edittel','type':'html','title':'通过绑定手机验证','w':500,'showbtnmax':false,'showbtnhide':false});
+	}
+	this.show_editask = function() {
+		if(!this.html_editask) {
+			this.html_editask = kj.obj("#id_editask_box").innerHTML;
+			kj.remove("#id_editask_box");
+		}
+		kj.dialog({'html':this.html_editask,'id':'editask','type':'html','title':'通过密保验证','w':500,'showbtnmax':false,'showbtnhide':false});
+	}
+}
+</script>
+</body>
+</html>

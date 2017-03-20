@@ -1,0 +1,115 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>来单显示-{cfg:(site_title,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+</head>
+<body>
+{include(label.header)}
+<div class="top">
+	<h1>来单显示</h1>
+	<a href="?" class="x1"><img src="images/home.png"></a>
+	<a href="?app=shop" id="id_top_back" class="x2"><img src="images/back.png"></a>
+</div>
+<div class="neworder">
+<div class="main">
+<ul class="xbtn">
+<li><button type="button" onclick="thisjs.timeclick();" id="id_timer"><font id="id_timer_txt">刷新</font></button></li>
+<li class="Actcheck" kjfun="thisjs.hide_handle();"><input type="hidden" name="handle" id="id_handle" value="{if(!$hide_handle)}1{else}0{/if}"><span{if($hide_handle)} class="xon"{/if}><i></i></span><font kjdata="{'on':'隐藏已处理订单','off':'显示已处理订单'}">{if(!$hide_handle)}显示已处理订单{else}隐藏已处理订单{/if}</font></li>
+</ul>
+<ul class="xli" id="id_list">
+{foreach($order_list['list'] as $item)}
+{if(!$hide_handle || $item['order_state'] == 0)}
+<li class="{if($item['order_state']==0)}state1{else if($item['order_state']<0)}state2{/if}" onclick="thisjs.open('{$item['order_id']}');" id="id_li_{$item['order_id']}">
+<p>订单号：<b class="red">{$item['order_id']}</b>&nbsp;&nbsp;<b>{$item['order_name']}</b>&nbsp;&nbsp;Tel：{$item['order_mobile']}&nbsp;&nbsp;结算：<b class="red">{fun_kj::get_price($item['order_total'])}</b></p>
+</li>
+{/if}
+{/foreach}
+</ul>
+</div>
+</div>
+<script src="/common/js/kj.ajax.js"></script>
+<script src="/common/js/kj.dialog.js"></script>
+<script>
+var thisjs = new function() {
+	this.state_html = '';
+	this.timerval = 6;
+	this.hide_handle_val = {if($hide_handle)}true{else}false{/if};
+	this.refuse_id = 0;//拒绝接受订单id号
+	this.timertxt = '';
+	this.new_id = kj.toint('{$order_list["newid"]}');
+	this.open = function(id) {
+		window.open('{cfg:(dirpath,base)}/{cfg:(basename,base)}?app_module=shop&app=order&app_act=detail&id='+id,'_self');
+	}
+	//获取新订单
+	this.refresh = function() {
+		kj.ajax.get("{fun_get::url(array('app_act'=>'today_getnew','id'=>''))}&id="+this.new_id,function(data){
+			var obj = kj.json(data);
+			if(!obj.isnull && ('list' in obj) && obj.list.length>0 ) {
+				var html = '',state;
+				for(var i = 0; i < obj.list.length ; i++) {
+					if(thisjs.hide_handle_val && obj.list[i].order_state!=0) continue;
+					html += '<li onclick="thisjs.open(\''+obj.list[i].order_id+'\');" id="id_li_'+obj.list[i].order_id+'" class="';
+					state = kj.toint(obj.list[i].order_state);
+					if(state==0) {
+						html += 'state1';
+					} else if(state<0) {
+						html += 'state2';
+					}
+					html += '"><p>订单号：<b class="red">'+obj.list[i].order_id+'</b>&nbsp;&nbsp;<b>'+obj.list[i].order_name+'</b>&nbsp;&nbsp;Tel：';
+					html += obj.list[i].order_mobile;
+					html += '&nbsp;&nbsp;结算：<b class="red">' + kj.cfg('coinsign') +obj.list[i].order_total+'</b></p></li>';
+					thisjs.new_id = obj.list[i].order_id;
+				}
+				html += kj.obj("#id_list").innerHTML;
+				kj.obj("#id_list").innerHTML = html;
+			}
+		});
+		kj.obj("#id_timer_txt").innerHTML = "刷新:" + thisjs.timerval;
+		window.setTimeout('thisjs.timer()',1000);
+	}
+	this.timer = function() {
+		var val = kj.obj("#id_timer_txt").innerHTML;
+		if(val == '暂停中') return;
+		val = kj.toint(val.replace('刷新:',''));
+		val--;
+		if(val<0) {
+			kj.obj("#id_timer_txt").innerHTML = "获取中";
+			this.refresh();
+		} else {
+			kj.obj("#id_timer_txt").innerHTML = "刷新:"+val;
+			window.setTimeout('thisjs.timer()',1000);
+		}
+	}
+	this.timeclick = function() {
+		var val = kj.obj("#id_timer_txt").innerHTML;
+		if(val == '暂停中') {
+			kj.obj("#id_timer_txt").innerHTML = this.timertxt;
+			this.timer();
+		} else {
+			this.timertxt = kj.obj("#id_timer_txt").innerHTML;
+			kj.obj("#id_timer_txt").innerHTML = "暂停中";
+		}
+	}
+	this.hide_handle = function() {
+		var val = kj.obj("#id_handle").value;
+		kj.ajax.get("common.php?app=config&app_module=user&dir={$app_dir}&app_act=save_var&var=call.hide.handle&val=" + val , function(data){
+			location.reload(true);
+		});
+	}
+
+}
+kj.onload(function(){
+	//定时间检测，是否有新单
+	kj.obj("#id_timer_txt").innerHTML = "刷新:" + thisjs.timerval;
+	window.setTimeout('thisjs.refresh()',1000);
+});
+
+</script>
+{include(label.footer)}
+</body>
+</html>

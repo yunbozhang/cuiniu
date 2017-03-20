@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>打印与短信-商家管理-{cfg:(site_title,sys)}</title>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+<style>
+.me_div{float:left;margin:10px 0px 0px 0px}
+.me_div li{float:left;margin:5px 10px 5px 0px;border:1px #cccccc solid;padding:5px;background:#efefef}
+</style>
+</head>
+<body>
+{include(header)}
+{include(shop.header)}
+{include(shop.left)}
+<div class="uright">
+	<div class="upath"><font>店铺资料</font></div>
+	<table class='usetable'>
+		<tr>
+			<td class="x1" valign="top">下单短信验证<font>：</font></td><td valign="top"><label><input name="shop_verifytel" type="checkbox" value="1"{if($editinfo['shop_verifytel']==1)} checked{/if}/> 需要</label> <font class="txt_red">*</font>
+			</td></tr>
+		<tr>
+			<td class="x1" valign="top">短信模式<font>：</font></td><td valign="top" style="line-height:30px">
+				{if(fun_is::com('sms'))}
+					<select name="shop_sms">
+					{foreach($arr_sms as $item=>$key)}
+						<option value="{$key}"{if($key==$editinfo['shop_sms'])} selected{/if}>{$item}</option>
+					{/foreach}
+					</select>
+					&nbsp;<span class="pBeta">【订单提醒】紧紧发一条“您有新的订单”这样的提醒信息，【订单详情】则可以发送订单详细信息</span>
+				{else}
+					<input type="hidden" name="shop_sms" value="{$editinfo['shop_sms']}"><span style="color:#ff0000">未安装短信组件</span>
+				{/if}
+			</td></tr>
+		<tr>
+			<td class="x1" valign="top">接收手机<font>：</font></td><td valign="top" style="line-height:30px">
+				<input type="text" name="shop_sms_tel" value="{$editinfo['shop_sms_tel']}" class='pTxtL300'>&nbsp;<span class="pBeta">可以是多个，以小逗号(英文时的逗号)分隔，每次会随机发送到一个手机，主要是为了减轻单个手机的工作量，不会同时向多个发送</span>
+			</td></tr>
+		<tr>
+			<td class="x1" valign="top">邮件提醒<font>：</font></td><td valign="top" style="line-height:30px">
+			<input type="text" name="shop_email" value="{$editinfo['shop_email']}" class='pTxtL200'>&nbsp;<span class="pBeta">短信模式为订单详情时才提醒 ，空则表示不邮件提醒</span>
+			</td></tr>
+		<tr>
+			<td class="x1" valign="top">无线打印机ID<font>：</font></td><td valign="top" style="line-height:30px">
+				<input type="text" name="shop_print_id" value="{$editinfo['shop_print_id']}" class='pTxtL200'>&nbsp;<span class="pBeta">当开通无线打印时，为空即用默认打印机，-1 表示无打印机，购买打印机时会有相关ID</span>
+			</td></tr>
+		<tr>
+			<td class="x1" valign="top">新单自动打印<font>：</font></td><td valign="top" style="line-height:30px">
+				<input type="checkbox" name="shop_print_auto" value="1"{if($editinfo['shop_print_auto']==1)} checked{/if}>&nbsp;<span class="pBeta">当开通无线打印时有效</span>
+			</td></tr>
+		<tr>
+			<td class="x1" valign="top">取消时自动打印<font>：</font></td><td valign="top" style="line-height:30px">
+				<input type="checkbox" name="shop_print_cancel" value="1"{if($editinfo['shop_print_cancel']==1)} checked{/if}>&nbsp;<span class="pBeta">当开通无线打印时，订单被取消时是否打印</span>
+			</td></tr>
+		<tr>
+			<td class="x1" valign="top">打印机控制店铺状态<font>：</font></td><td valign="top" style="line-height:30px">
+				<input type="checkbox" name="shop_print_tongbu" value="1"{if($editinfo['shop_print_tongbu']==1)} checked{/if}>&nbsp;<span class="pBeta">当开关打印机时，同步店铺状态，即打印机开，店铺营状态正常，关则暂停营业</span>
+			</td></tr>
+		<tr>
+			<td class="pTabColName">小票内容<font>：</font></td><td class="pTabColVal"><div style="float:left"><textarea name="shop_printinfo" id="shop_printinfo" cols="60" rows="22">{$editinfo['shop_printinfo']}</textarea></div>
+			<div style="float:left;width:90%;color:#888888;line-height:25px">格式如：{店铺名称} 这样的文字在这里称为变量，系统预先设置好的，在打印时会根据相关信息自动替换过来,目前支持以下变量，请点击插入</div>
+			<div class="me_div">
+			<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{订单id}');" title="点击插入变量">订单ID</a></li>
+			<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{餐厅名称}');" title="点击插入变量">餐厅名称</a></li>
+			<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{订餐电话}');" title="点击插入变量">订餐电话</a></li>
+			<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{餐厅地址}');" title="点击插入变量">餐厅地址</a></li>
+			<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{订单号}');" title="点击插入变量">订单号</a></li>
+			<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{所在区域}');" title="点击插入变量">所在区域</a></li>
+			<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{具体地址}');" title="点击插入变量">具体地址</a></li>
+			<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{公司}');" title="点击插入变量">公司</a></li>
+			<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{部门}');" title="点击插入变量">部门</a></li>
+			<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{客户称呼}');" title="点击插入变量">客户称呼</a></li>
+			<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{送餐地址}');" title="等于所在区域加上具体地址">送餐地址</a></li>
+			<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{客户电话}');" title="等于固话加上手机">客户电话</a></li>
+			<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{固话}');" title="点击插入变量">固话</a></li>
+			<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{手机}');" title="点击插入变量">手机</a></li>
+			<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{下单时间}');" title="点击插入变量">下单时间</a></li>
+			<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{指定时间信息}');" title="点击插入变量">指定时间信息</a></li>
+			<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{打印时间}');" title="点击插入变量">打印时间</a></li>
+			<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{应收金额}');" title="点击插入变量">应收金额</a></li>
+			<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{菜品列表}');" title="点击插入变量">菜品列表</a></li>
+			<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{优惠活动}');" title="点击插入变量">优惠活动</a></li>
+			<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{积分抵扣}');" title="点击插入变量">积分抵扣</a></li>
+			<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{发票信息}');" title="点击插入变量">发票信息</a></li>
+			<li><a href="javascript:kj.textarea_insertstr('#shop_printinfo','{备注}');" title="点击插入变量">备注</a></li>
+			</div>
+			</div>			
+			</td></tr>
+		<tr>
+			<td class="x1" valign="top"></td><td valign="top" style="margin-top:30px">
+				<input type="button" name="btn_submit" class="btn-3" value="保 存" onclick="shop.frm_ajax('info.save.printsms');">
+			</td></tr>
+		</table>
+	</div>
+{include(shop.footer)}
+{include(footer)}
+</body>
+</html>
+<script src="shop.js"></script>
+<script>
+var thisjs = new function() {
+}
+</script>
+<script src="/common/js/kj.pic.js"></script>

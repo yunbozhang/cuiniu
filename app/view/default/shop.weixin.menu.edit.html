@@ -1,0 +1,288 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>编辑微信自定义菜单-商家管理-{cfg:(site_title,sys)}</title>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+<script src="{cfg:(dirpath,base)}/common.php?app=sys&app_act=web.config&app_ajax=1"></script>
+<script src="/common/js/kj.js"></script>
+<script src="/common/js/kj.ajax.js"></script>
+<script src="/common/js/kj.dialog.js"></script>
+<script src="/common/js/date.js"></script>
+<style>
+body{background:#fff}
+#id_weixin_ico{position:fixed;top:0px;left:0px;border:1px #ccc solid;background:#fff}
+#id_weixin_ico ul{float:left;width:450px;padding:0px}
+#id_weixin_ico ul li{float:left;padding:3px}
+#id_type_a a{float:left;margin:0px 5px;padding-left:20px}
+#id_type_a .xsel{color:#ff8800;font-weight:bold;background:url(images/ok.gif) no-repeat 0px center}
+#id_type_other{float:left;width:300px;text-align:center}
+#id_type_other img{width:100px;height:120px}
+#id_box_news{float:left;}
+#id_box_news ul{float:left;border-bottom:1px #ccc dotted;padding-bottom:8px}
+#id_box_news li{float:left;width:100%}
+#id_box_news span{float:left}
+#id_box_news div{float:left;width:100%}
+</style>
+</head>
+<body style="overflow-x:hidden">
+{include(shop.header)}
+<input type="hidden" name="message_text" value="{$editinfo['message_text']}" id="id_text_val">
+<input type="hidden" name="message_type" value="{$editinfo['message_type']}" id="id_message_type">
+<input type="hidden" name="message_media_id" value="{$editinfo['message_media_id']}" id="id_message_media_id">
+<input type="hidden" name="menu_message_id" value="{$editinfo['menu_message_id']}" id="id_keywords_message_id">
+<div class="pMenu" id="id_pMenu" style="width:100%">
+	<li class="sel">基本信息</li>
+</div>
+<div class="pMain" id="id_main">
+	<table class='pEditTable'>
+	<tr class='pTabTitRow'><td class='pTabTitCol' colspan="2"></td></tr>
+	<tr>
+		<td class="pTabColName">父级：</td>
+		<td class="pTabColVal">
+			{$select_folder}
+		</td></tr>
+	<tr>
+		<td class="pTabColName">名称：</td>
+		<td class="pTabColVal">
+			<input type="text" name="menu_name" value="{$editinfo['menu_name']}" class='pTxt1 pTxtL200'>
+		</td></tr>
+	<tr>
+		<td class="pTabColName">模式：</td>
+		<td class="pTabColVal">
+			<label><input type="radio" name="mode" value="0" checked onclick="kj.show('.Tlinkurl');kj.hide('.Tmessage');">跳转链接</label>&nbsp;&nbsp;
+			<label><input type="radio" name="mode" value="1"{if(!empty($editinfo['menu_message_id']))} checked{/if} onclick="kj.hide('.Tlinkurl');kj.show('.Tmessage');">发送消息</label></label>
+		</td></tr>
+	<tr class="Tlinkurl">
+		<td class="pTabColName">链接：</td>
+		<td class="pTabColVal">
+			<input type="text" name="menu_linkurl" value="{$editinfo['menu_linkurl']}" class='pTxt1 pTxtL300'>
+		</td></tr>
+	<tr{if(empty($editinfo['menu_message_id']))} style="display:none"{/if} class="Tmessage">
+		<td class="pTabColName">类型：</td>
+		<td class="pTabColVal" id="id_type_a">
+		<a href="javascript:thisjs.typeclick('text');"{if($editinfo['message_type']=='' || $editinfo['message_type']=='text')} class="xsel"{/if} id="id_type_text">文字</a>
+		<!--
+		<a href="javascript:thisjs.typeclick('image');"{if($editinfo['message_type']=='image')} class="xsel"{/if} id="id_type_image">图片</a>		
+		<a href="javascript:thisjs.typeclick('voice');"{if($editinfo['message_type']=='voice')} class="xsel"{/if} id="id_type_voice">音频</a>		
+		<a href="javascript:thisjs.typeclick('video');"{if($editinfo['message_type']=='video')} class="xsel"{/if} id="id_type_video">视频</a>
+		-->
+		<a href="javascript:thisjs.typeclick('news');"{if($editinfo['message_type']=='news')} class="xsel"{/if} id="id_type_news">图文</a>		
+		</td></tr>
+	<tr{if(empty($editinfo['menu_message_id']))} style="display:none"{/if} class="Tmessage">
+		<td class="pTabColName">消息：</td>
+		<td class="pTabColVal">
+			<div id="id_box_text"{if($editinfo['message_type']!='' && $editinfo['message_type']!='text')} style="display:none"{/if}>
+				<li>
+					<div style="width:550px;height:150px;padding:10px;word-wrap: break-word;overflow:hidden;border:1px #ccc solid;outline:0px" contenteditable='true' id="id_message_text"  onkeyup = "thisjs.strlen_keyup(this,kj.obj('#id_text_num'),600);">{if($editinfo['message_type']=='' || $editinfo['message_type']=='text')}{$editinfo['message_text_html']}{/if}</div>
+				</li>
+				<li style="width:500px;margin-top:10px"><span>&nbsp;&nbsp;&nbsp;<a href="javascript:thisjs.showico();"><img src="../admin/images/icon_weixin.png" id="id_ico_pic"></a></span><span style="float:right">还可以输入<font id="id_text_num">600</font>字</span></li>
+			</div>
+			<div id="id_type_other"{if($editinfo['message_type']=='' || $editinfo['message_type']=='text' || $editinfo['message_type']=='news')} style="display:none"{/if}>
+				{if($editinfo['message_type']=='image')}
+					<img src="{$editinfo['media_url']}"><br>{$editinfo['media_name']}
+				{else if($editinfo['message_type']=='voice')}
+					<img src="../admin/images/mp3.png" style="width:auto;height:auto"><br>{$editinfo['media_name']}
+				{else if($editinfo['message_type']=='video')}
+					<img src="../admin/images/video.png" style="width:auto;height:auto"><br>{$editinfo['media_name']}
+				{/if}
+			</div>
+			<div id="id_box_news"{if($editinfo['message_type']!='news')} style="display:none"{/if}>
+				<div id="id_news_list">
+				{if(isset($editinfo['news']) && !empty($editinfo['news']))}
+					{foreach($editinfo['news'] as $new)}
+					<ul>
+					<li><span>标题：<input type="text" name="message_title[]" value="{$new['title']}" class='pTxt1 pTxtL200'></span><span style="float:right;margin-right:20px;cursor:pointer" onclick="kj.remove(kj.parent(this,'ul'));"><img src="../admin/images/b_drop.png"></span></li>
+					<li>链接：<input type="text" name="message_url[]" value="{$new['url']}" class='pTxt1 pTxtL200'></li>
+					<li><span>图片：</span><span><input type="text" name="message_pic[]" id="id_message_pic{$new['id']}" value="{$new['pic']}" class='pTxt1 pTxtL300'>&nbsp;<a href="javascript:kj.dialog({id:'dialog_attatch',title:'选择图片',url:'common.php?app=other&app_act=attatch&url_objid=id_message_pic{$new['id']}',w:600,showbtnhide:false,type:'iframe'});">选择</a><br><iframe name="frm_pic_url" src="common.php?app=other&app_act=upload&objid=id_message_pic{$new['id']}" width="300px" height="30px" frameborder=0 scrolling="no"></iframe></span></li>
+					<li class="Ttextarea"><span>描述：</span><span><textarea name="message_desc[]" cols="60" rows="5">{$new['desc']}</textarea></span></li>
+					</ul>
+					{/foreach}
+				{else}
+					<ul>
+					<li>标题：<input type="text" name="message_title[]" value="" class='pTxt1 pTxtL200'></li>
+					<li>链接：<input type="text" name="message_url[]" value="" class='pTxt1 pTxtL200'></li>
+					<li><span>图片：</span><span><input type="text" name="message_pic[]" id="id_message_pic" value="" class='pTxt1 pTxtL300'>&nbsp;<a href="javascript:kj.dialog({id:'dialog_attatch',title:'选择图片',url:'common.php?app=other&app_act=attatch&url_objid=id_message_pic',w:600,showbtnhide:false,type:'iframe'});">选择</a><br><iframe name="frm_pic_url" src="common.php?app=other&app_act=upload&objid=id_message_pic" width="300px" height="30px" frameborder=0 scrolling="no"></iframe></span></li>
+					<li class="Ttextarea"><span>描述：</span><span><textarea name="message_desc[]" cols="60" rows="5"></textarea></span></li>
+					</ul>
+				{/if}
+				</div>
+				<div>
+					<li style="margin-left:40px"><a href="javascript:thisjs.news_add();"><span><img src="../admin/images/add.gif"></span><span>&nbsp;添加</span></a></li>
+				</div>
+			</div>
+		</td></tr>
+	<tr>
+		<td class="pTabColName">排序：</td>
+		<td class="pTabColVal">
+			<input type="text" name="menu_sort" value="{$editinfo['menu_sort']}" class='pTxt1 pTxtL200'>
+		</td></tr>
+	</table>
+</div>
+<div style="float:left;height:50px;width:100%">&nbsp;</div>
+<div class="peFootAct" id="id_pFootAct">
+	<li>
+	<input type="button" name="dosubmit" class="btn-3" value="保存" onclick="thisjs.save();">
+	</li>
+</div>
+<div id="id_weixin_ico" style="display:none">
+</div>
+{include(shop.footer)}
+<script src="shop.js"></script>
+<script>
+var thisjs = new function() {
+	this.media_select = function(type , id , file , name) {
+		kj.delClassName("#id_type_a a" , "xsel");
+		kj.addClassName("#id_type_" + type , "xsel");
+		kj.set("#id_message_media_id" , "value" , id);
+		kj.set("#id_message_type" , "value" , type);
+		kj.hide("#id_box_text");
+		kj.show("#id_type_other");
+		if(type == 'image') {
+			html = '<img src = "' + kj.url_view(file) + '"><br>' + name;
+		} else if(type == 'voice') {
+			html = '<img src="images/mp3.png" style="width:auto"><br><font>播放</font>';
+		} else {
+			html = '<img src="images/video.png" style="width:auto"><br><font>播放</font>';
+		}
+		kj.dialog.close("#winmedia_" + type);
+		kj.obj("#id_type_other").innerHTML = html;
+	}
+	this.typeclick = function(type) {
+		switch(type) {
+			case "image":
+				title = '选择图片';break;
+			case "voice":
+				title = '选择音频文件';break;
+			case "video":
+				title = '选择视频文件';break;
+			case "news":
+				kj.show("#id_box_news");
+				kj.hide("#id_type_other");
+				kj.hide("#id_box_text");
+				kj.delClassName("#id_type_a a" , "xsel");
+				kj.addClassName("#id_type_news" , "xsel");
+				kj.set("#id_message_media_id" , "value" , '');
+				kj.set("#id_message_type" , "value" , type);
+				return;
+			default:
+				kj.show('#id_box_text');
+				kj.hide('#id_type_other');
+				kj.hide('#id_box_news');
+				kj.delClassName("#id_type_a a" , "xsel");
+				kj.addClassName("#id_type_text" , "xsel");
+				kj.set("#id_message_media_id" , "value" , '');
+				kj.set("#id_message_type" , "value" , type);
+				return;
+		}
+		kj.dialog({'id':'media_' + type,'title':title,'url':'{fun_get::url(array("app"=>"media","app_act"=>""))}&type='+type,'w':700,'max_h':600,'showbtnhide':false,'showbtnmax':false,'type':'iframe','notoolbar':'1'});
+	}
+	this.save = function() {
+		kj.obj("#id_text_val").value = kj.obj("#id_message_text").innerHTML;
+		shop.frm_ajax('menu.save');
+	}
+	this.strlen_keyup = function(obj,obj2,length) {
+		var val = obj.innerHTML;
+		var arr = val.split('<img');
+		val = val.replace(/<img[\s0-9a-z\/\.\:\=\"]*>/g, "");
+		var len = length-val.length;
+		len = len-((arr.length-1)*3);
+		if(len<=0) {
+			obj.value = val.substr(0,length);
+			len = 0;
+		}
+		obj2.innerHTML = len;
+	}
+
+	this.showico = function(obj) {
+		kj.obj("#id_message_text").focus();
+		var obj = kj.obj("#id_ico_pic");
+		var offset = kj.offset(obj);
+		kj.set('#id_weixin_ico' , 'style.top' , offset.top+20+'px');
+		kj.set('#id_weixin_ico' , 'style.left' , offset.left+'px');
+		kj.show("#id_weixin_ico");
+	}
+	this.selico = function(o) {
+		kj.obj("#id_message_text").focus();
+		var pic = '<img src = "' + o.src + '">';
+		this.insertstr('#id_message_text','KLKKDJWEIXINICO');
+		var text = kj.obj('#id_message_text').innerHTML;
+		text = text.replace('KLKKDJWEIXINICO', pic);
+		kj.obj('#id_message_text').innerHTML = text;
+		thisjs.strlen_keyup(kj.obj("#id_message_text"),kj.obj('#id_text_num'),600);
+		kj.hide("#id_weixin_ico");
+	}
+	this.insertstr = function (obj ,html){
+		   var dthis= kj.obj(obj);//要插入内容的某个div,在标准浏览器中 无需这句话
+			var sel, range;
+			dthis.focus();
+			if (window.getSelection)
+			 {
+					// IE9 and non-IE
+					sel = window.getSelection();
+					if (sel.getRangeAt && sel.rangeCount) {
+					range = sel.getRangeAt(0);
+					range.deleteContents();
+					var el = document.createElement('div');
+					el.innerHTML = html;
+					var frag = document.createDocumentFragment(), node, lastNode;
+					while ( (node = el.firstChild) )
+					 {
+						lastNode = frag.appendChild(node);
+					 }
+				   
+				range.insertNode(frag);
+					if (lastNode) {
+					range = range.cloneRange();
+					range.setStartAfter(lastNode);
+					range.collapse(true);
+					sel.removeAllRanges();
+					sel.addRange(range);
+					}
+				   }
+			} 
+			else if (document.selection && document.selection.type !='Control') {
+				document.selection.createRange().text = html;
+			}
+	}
+	this.news_add = function() {
+		var arr = kj.obj("#id_news_list ul");
+		var ii = 'ii_' + arr.length;
+		var html = '<li><span>标题：<input type="text" name="message_title[]" value="" class="pTxt1 pTxtL200"></span><span style="float:right;margin-right:20px;cursor:pointer" onclick="kj.remove(kj.parent(this,\'ul\'));"><img src="images/b_drop.png"></span></li>';
+			html +=	'<li>链接：<input type="text" name="message_url[]" value="" class="pTxt1 pTxtL200"></li>';
+			html +=	'<li><span>图片：</span><span><input type="text" name="message_pic[]" id="id_message_pic'+ii+'" value="" class="pTxt1 pTxtL300">&nbsp;<a href="javascript:kj.dialog({id:\'dialog_attatch\',title:\'选择图片\',url:\'common.php?app=other&app_act=attatch&url_objid=id_message_pic'+ii+'\',w:600,showbtnhide:false,type:\'iframe\'});">选择</a><br><iframe name="frm_pic_url" src="common.php?app=other&app_act=upload&objid=id_message_pic'+ii+'" width="300px" height="30px" frameborder=0 scrolling="no"></iframe></span></li>';
+			html += '<li class="Ttextarea"><span>描述：</span><span><textarea name="message_desc[]" cols="60" rows="5"></textarea></span></li>';
+		var obj_ul = document.createElement("ul");
+		obj_ul.innerHTML = html;
+		kj.obj("#id_news_list").appendChild(obj_ul);
+		this.news_refresh();
+	}
+	this.news_refresh = function() {
+		var arr = kj.obj("#id_news_list textarea");
+		if(arr.length>1) kj.hide(".Ttextarea");
+	}
+}
+kj.onload(function(){
+	thisjs.strlen_keyup(kj.obj("#id_message_text"),kj.obj('#id_text_num'),600);
+	var html = '<ul>';
+	for(var i = 0; i < 105 ; i++) {
+		ii = i;
+		html += '<li><img src="https://res.wx.qq.com/mpres/htmledition/images/icon/emotion/' + ii + '.gif" onclick="thisjs.selico(this);"></li>';
+	}
+	html += "</ul>";
+	kj.obj("#id_weixin_ico").innerHTML = html;
+	thisjs.news_refresh();
+});
+//body点击事件
+kj.handler(document.documentElement,"mousedown",function(e){
+	//隐藏购物车
+	var target = kj.event_target(e);
+	var objcart = kj.parent(target , "#id_weixin_ico");
+	if(!objcart) kj.hide("#id_weixin_ico");
+});
+function attatch_callback() {
+	kj.dialog.close("#windialog_attatch");
+}
+</script>
+</body>
+</html>

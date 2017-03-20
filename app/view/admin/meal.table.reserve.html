@@ -1,0 +1,236 @@
+{include(header)}
+<style>
+.mshopinfo{float:left;width:783px;border:1px #eee solid;margin-top:10px}
+.mshopinfo li{float:left;}
+.mshopinfo .ximg{}
+.mshopinfo .ximg img{width:60px;height:60px}
+.mshopinfo .x1{padding-top:8px;margin-left:8px}
+.mshopinfo .x1 p{float:left;clear:both;margin:3px 0px 3px 0px;font-size:14px}
+.mshopinfo .x2{padding-top:25px;margin-left:50px}
+.mshopinfo .x2 p{float:left;margin-left:20px}
+.mshopinfo .x3{margin:25px 0px 0px 50px;color:#ffa900}
+.mshopinfo .x4{float:right;margin:15px 30px 0px 0px}
+.mshopinfo .x4 span{background:url(sort_desc.png) no-repeat right center;padding-right:20px;float:left;cursor:pointer}
+.mshopinfo .x4 .yopen{background:url(sort_asc.png) no-repeat right center;color:#d80616}
+.mdetail{float:left;width:100%;background:#F1F1F1}
+.mdetail .x1{float:left;width:480px;padding:8px 0px}
+.mdetail .x1 p{float:left;width:480px;margin:7px 0px}
+.mdetail .x1 p span{float:left;font-weight:bold;}
+.mdetail .x1 p .y1{width:80px;padding-left:8px;text-align:right;font-weight:200}
+.mdetail .x2{float:right;width:470px;padding:8px 0px;font-weight:bold}
+.mdetail .x2 p{float:right;;margin:10px 0px;margin-right:10px;clear:both}
+.mdetail .x2 .xtotal{text-align:right}
+.mdetail .x2 .xtotal font{font-size:18px;color:#ff3300}
+.mdetail .x2 .xstate{color:#ff3300}
+.mdetail .x2 .xtips{float:right;}
+.mdetail .x2 .xtips a{float:right;background:#ffac00;color:#fff;padding:5px 8px;margin-top:-5px}
+.mdetail .x3{float:left;width:958px;padding:8px 0px;background:#fff}
+.mdetail .x3 .xtit{font-weight:bold;padding-left:30px;width:928px}
+.mdetail .x3 .xtit font{font-weight:200;color:#ff8800}
+.mdetail .x3 p{float:left;width:958px;margin:7px 0px}
+.mdetail .x3 p span{float:left;font-weight:bold;width:120px}
+.mdetail .x3 p .y1{width:60px;padding-left:8px;text-align:right;font-weight:200}
+.mdetail .x3 .xbeta{width:900px;border:1px #efefef dotted;margin:5px 0px 0px 30px;padding:5px}
+.mdetail .x4{float:left;width:480px;margin-left:20px}
+.mdetail .x4 span{float:left;padding:2px 3px;border:1px #ffac00 dotted;color:#d80616;margin:3px 5px}
+.mtable{float:left;border:1px #eee solid;width:785px;margin:0px 0px 20px 0px;border-top:0px}
+.mtable .xtit{}
+.mtable .xtit td{background:#F1F1F1;font-weight:bold}
+.mtable td{padding:12px 0px;border-bottom:1px #ccc dotted;text-align:center}
+.mtable .xcol1{text-align:left;padding-left:20px}
+.mstep{float:left;width:250px;margin:15px 0px 0px 30px;}
+.mstep li{float:left;width:245px;border-left:5px #d4ee9b solid}
+.mstep li i{float:left;width:26px;height:26px;background:url(images/step.png) no-repeat;margin-left:-15px}
+.mstep li span{float:left;width:180px;margin:5px 0px 0px 20px;text-align:left}
+.mstep li .xx1{padding:30px 0px}
+.mstep .xoff{border-left:5px #e5e5e5 solid;color:#888}
+.mstep .xoff i{background:url(images/step.png) no-repeat 0px -26px}
+.mstep .xclose{border-left:5px #e5e5e5 solid;color:#888}
+.mstep .xclose i{background:url(images/step.png) no-repeat 0px -52px}
+.mstep .nobg{border-left:5px #fff solid;}
+.btn-1x {
+    background: #76AC25;
+    padding: 3px 10px;
+    color: #fff;
+    border: 0px;
+    cursor: pointer;
+    border-radius: 2px;
+}
+.btn-1 {
+    background: #d80616;
+    padding: 3px 10px;
+    color: #fff;
+    border: 0px;
+    cursor: pointer;
+    border-radius: 2px;
+}
+p{padding:0px;margin:0px}
+.mtitle{float:left;width:785;margin:10px 0px 0px 5px}
+.mtitle span{float:left;font-size:14px;padding:5px 0px;font-weight:bold;color:#888;margin-right:20px}
+</style>
+<div class="pMain" id="id_main">
+{foreach($order_list['list'] as $order)}
+	<div class="mtitle">
+		<span>订单号：{$order['order_id']}</span>
+		<span>时间：{$order['reserve_datetime']}</span>
+		<span>状态：
+		{if($order['reserve_state']==0)}
+			待付订金
+		{else if($order['reserve_state']==1)}
+			待点菜
+		{else if($order['reserve_state']==2)}
+			待上菜
+		{else if($order['reserve_state']==10)}
+			用餐结束
+		{else if($order['reserve_state']>0)}
+			用餐中
+		{else}
+			已取消
+		{/if}
+		</span>
+	</div>
+	<table class="mtable">
+	{set $ii=count($order['menu'])+2}
+		<tr class="xtit"><td class="xcol1">餐品</td><td>数量</td><td>小计</td><td>操作</td><td rowspan="{$ii}" style="width:278px;background:#fff;border-left:1px #ddd solid" valign="top">
+			<div class="mstep">
+				{if($order['reserve_state']==0)}
+				<li><i></i><span><p>等待付订金</p><p class="xx1"><input type="button" class="btn-1" value="取消订单" name="btncancel" onclick="thisjs.cancel({$order['reserve_id']})"></p></span></li>
+				{else if($order['reserve_state']>0)}
+					<li><i></i><span><p>预订成功，等待到位</p><p class="xx1">
+					{if($order['reserve_state']==1)}
+					<input type="button" class="btn-1" value="点菜" name="btnpay" onclick="thisjs.go('{$order['order_shop_id']}','{$order['reserve_number']}','{$order['reserve_table_id']}');">
+					<input type="button" class="btn-1" value="取消" name="btncancel" onclick="thisjs.cancel({$order['reserve_id']})">
+					{else if($order['reserve_state']==2)}
+					<input type="button" class="btn-1x" value="开始上菜" name="btnstart" onclick="thisjs.upmenu('{$order['reserve_id']}','{$order['reserve_table_id']}');">
+					<input type="button" class="btn-1" value="加菜" name="btnpay" onclick="thisjs.go('{$order['order_shop_id']}','{$order['reserve_number']}','{$order['reserve_table_id']}');">
+					<input type="button" class="btn-1" value="取消" name="btncancel" onclick="thisjs.cancel({$order['reserve_id']})">
+					{else if($order['reserve_state']<10)}
+					<input type="button" class="btn-1" value="加菜" name="btnpay" onclick="thisjs.go('{$order['order_shop_id']}','{$order['reserve_number']}','{$order['reserve_table_id']}');">
+					{/if}
+					</p></span></li>
+				{else}
+					<li><i></i><span><p>已取消</p><p class="xx1"></p></span></li>
+				{/if}
+				{if($order['reserve_state']>2)}
+					<li class=""><i></i><span><p>已到位，用餐中</p><p class="xx1">{if($order['reserve_state']<10)}<input type="button" class="btn-1x" value="完成" name="btnpay" onclick="thisjs.pay({$order['reserve_id']});">&nbsp;<input type="button" class="btn-1" value="取消" name="btncancel" onclick="thisjs.cancel({$order['reserve_id']})">{/if}</p></span></li>
+				{else}
+					<li class="xoff"><i></i><span><p>已到位，用餐中</p><p class="xx1"></p></span></li>
+				{/if}
+				{if($order['reserve_state']>=10)}
+					<li class=""><i></i><span><p>订单完成</p></span></li>
+				{else}
+					<li class="xoff"><i></i><span><p>订单完成</p></span></li>
+				{/if}			
+			</div>
+		</td></tr>
+		{if(!empty($order['menu']))}
+		{foreach($order['menu'] as $menu)}
+		<tr><td class="xcol1">
+		{set $price=0}
+		{foreach($menu as $item_menu)}
+			{set $price+=$order_list['price']['id_'.$item_menu]}
+			{$order_list['menu']['id_'.$item_menu]['menu_title']}&nbsp;&nbsp;
+		{/foreach}
+		</td><td>{$order['menunum'][implode(',',$menu)]}份</td><td>{fun_kj::get_price($price*$order['menunum'][implode(',',$menu)])}</td>
+		{set $menuid=implode(',',$menu)}
+		<td><a href="javascript:thisjs.delmenu('{$order['reserve_number']}','{$menuid}');">[取消]</a></td>
+		</tr>
+		{/foreach}
+		{/if}
+		<tr><td colspan="4" style="padding:0px">
+		<div class="mdetail">
+			<li class="x1">
+				<p><span class="y1">桌位：</span><span>{$order['reserve_tablename']}{$order['reserve_id']}</span></p>
+				<p><span class="y1">人数：</span><span>{$order['reserve_num']}</span></p>
+				<p><span class="y1">联系人：</span><span>{$order['reserve_name']}</span></p>
+				<p><span class="y1">电话：</span><span>{$order["reserve_tel"]}</span></p>
+				<p><span class="y1">备注：</span><span>{$order['reserve_beta']}</span></p>
+			</li>
+			<li class='x2'>
+				{if(!empty($order['order_ids']))}
+				<p class="xtotal">商品 {fun_kj::get_price($order['order_total'])}{if($order['order_addprice']>0)} + 配送费 {fun_kj::get_price($order['order_addprice'])}{/if}{if($order['order_score_money']>0)} - 抵扣 {fun_kj::get_price($order['order_score_money'])}{/if}{if($order['order_favorable']>0)} - 优惠 {fun_kj::get_price($order['order_favorable'])}{/if}{if($order['order_repayment']>0)} - 预付款 {fun_kj::get_price($order['order_repayment'])}{/if} = 应付：<font>{fun_kj::get_price($order['order_total_pay'])}</font>
+				</p>
+				{else}
+				<p class="xtotal">预付订金：<font>{$order['reserve_deposit']}</font></p>
+				{/if}
+			</li>
+		</div>
+		</td></tr>
+	</table>
+{/foreach}
+</div>
+{if(fun_get::get("rid")=='')}
+<div class="pPage" id="id_pPage">
+{$order_list['pagebtns']}
+</div>
+{/if}
+<script>
+var thisjs = new function() {
+	this.go = function(shopid,number,tid) {
+		window.open('index.php?app_act=shop&id='+shopid+'&type=2&tableid='+tid+'&reserve_id='+ number,'_self');
+	}
+	this.cancel = function(id) {
+		if( !confirm("确定要取消订单吗？") ) return;
+		kj.ajax.get("{fun_get::url(array('app_act'=>'reserve.cancel','id'=>''))}&id="+id , function(data) {
+			var obj_data = kj.json(data);
+			if(obj_data.isnull) {
+				alert("系统繁忙，请稍后再试");
+				return;
+			}
+			if(obj_data.code == "0") {
+				kj.alert.show("成功取消",function(){
+					location.reload(true);
+				});
+			} else {
+				alert(obj_data.msg);
+			}
+		});
+	}
+	this.upmenu = function(id) {
+		kj.ajax.get("{fun_get::url(array('app_act'=>'upmenu','id'=>''))}&id="+id,function(data) {
+			var obj = kj.json(data);
+			if(obj.isnull) {
+				alert("系统繁忙");return;
+			}
+			if(obj.code == '0') {
+				kj.alert.show("已通知上菜",function(){
+					location.reload(true);
+				});
+			} else {
+				alert(obj.msg);
+			}
+		});
+	}
+	this.delmenu = function(number,menuid) {
+		kj.ajax.get("index.php?app=ajax&app_act=reserve.delmenu&number="+number+"&menuid="+menuid,function(data) {
+			var obj = kj.json(data);
+			if(obj.isnull) {
+				alert("系统繁忙");return;
+			}
+			if(obj.code == '0') {
+				kj.alert.show("已成功取消",function(){
+					location.reload(true);
+				});
+			} else {
+				alert(obj.msg);
+			}
+		});
+	}
+	this.pay = function(id) {
+		kj.ajax.get("{fun_get::url(array('app_act'=>'reserve.pay','id'=>''))}&id="+id,function(data) {
+			var obj = kj.json(data);
+			if(obj.isnull) {
+				alert("系统繁忙");return;
+			}
+			if(obj.code == '0') {
+				kj.alert.show("设置成功",function(){
+					location.reload(true);
+				});
+			} else {
+				alert(obj.msg);
+			}
+		});
+	}
+}
+</script>
+{include(footer)}

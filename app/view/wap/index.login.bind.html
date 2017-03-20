@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>{cfg:(site_title,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+<link rel="stylesheet" type="text/css" href="/common/images/emoji.css"/>
+</head>
+<body>
+{include(label.header)}
+<div class="top">
+	<h1>【{fun_format::toemoji($openinfo['name'],1)}】绑定一个现有账号</h1>
+</div>
+<form name="frmlogin" method="post" action="{cfg:(dirpath,base)}/common.php?app=sys&app_act=login.verify" onsubmit="return thisjs.on_login();">
+<div class="main">
+	<div class="login">
+		<li class="xtit"><a href="javascript:void(0);" class="xsel">已有账号</a><a href="{fun_get::url(array('app_act'=>'bind.reg'))}">新账号</a></li>
+		<li class="xli">
+			<p class="xname"><i></i><input type="text" name="uname" value="" placeholder="{if(cls_config::get('rule_uname','user')=='email')}邮箱{else if(cls_config::get('rule_uname','user')=='mobile')}手机{else}用户名{/if}"></p>
+			<p class="xpwd"><i></i><input type="password" name="pwd" value="" placeholder="密码"></p>
+			<p class="xtel Tverifypic"{if(cls_obj::get("cls_user")->is_verifycode()==false)} style="display:none"{/if}><i></i><input type="text" name="verifycode" value="" placeholder="验证码"></p>
+		</li>
+		<li class="xcode Tverifypic"{if(cls_obj::get("cls_user")->is_verifycode()==false)} style="display:none"{/if}>
+			<span>&nbsp;</span>
+			<font>不区分大小写，<a href="">看不清换一张</a></font>
+		<img src="{cfg:(dirpath,base)}/common.php?app=sys&app_act=verifycode&app_contenttype=img" id="id_verify_pic" onclick="this.src='{cfg:(dirpath,base)}/common.php?app=sys&app_act=verifycode&app_contenttype=img&app_rnd='+Math.random();">
+		</li>
+	</div>
+	<a href="javascript:void(0);" onclick="thisjs.on_login();" class="btn-a1 Tlogin" style="margin-top:15px"><font>绑&nbsp;定</font></a>
+	<input type="hidden" name="autologin" value="1">
+	<a href="{fun_get::url(array('app_act'=>'bind.auto'))}" class="btn-a2 Tlogin" style="margin-top:15px"><font>不需要绑定，直接进入</font></a>
+</div>
+<input type="hidden" name="jump_fromurl" value="{$jump_fromurl}" id="id_jump_fromurl">
+</form>
+{include(label.footer)}
+</body>
+</html>
+<script>
+var thisjs = new function() {
+	this.on_login = function() {
+		kj.ajax.post(document.frmlogin , function(data) {
+			var obj_data=kj.json(data);
+			if(obj_data.isnull) {
+				kj.alert("系统繁忙，请稍后再来试试");
+			} else {
+				if(obj_data.code == 0) {
+					window.open("{fun_get::url(array('app_act'=>'bind'))}","_self");
+				} else {
+					if(thisjs.is_verify) {
+						thisjs.verify_refresh();
+						document.frmlogin.verifycode.value='';
+					}
+					if('show_code' in obj_data && obj_data.show_code == '1') {
+						thisjs.is_verify = true;
+						kj.show("#id_verify_code");
+					}
+					if('msg' in obj_data && obj_data.msg) {
+						kj.alert(obj_data.msg);
+					} else {
+						kj.alert("系统繁忙，请稍后再来试试");
+					}
+				}
+			}
+		});
+		return false;
+	}
+	this.verify_refresh = function() {
+		kj.obj("#id_verify_pic").src = kj.cfg('dirpath') + '/common.php?app=sys&app_act=verifycode&app_contenttype=img&app_rnd='+Math.random();
+	}
+}
+</script>

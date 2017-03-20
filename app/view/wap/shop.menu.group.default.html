@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>分组管理-{cfg:(site_title,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+<style>
+#id_pic_view img{max-width:100px;max-height:100px}
+.meselect select{width:260px;float:left;margin:5px 0px 3px 0px;clear:both}
+</style>
+</head>
+<body>
+{include(label.header)}
+<div class="top">
+	<h1>分组管理</h1>
+	<a href="?" class="x1"><img src="images/home.png"></a>
+	<a href="?app=shop" id="id_top_back" class="x2"><img src="images/back.png"></a>
+</div>
+<form name="frm_main" action="{fun_get::url(array('app_act'=>'save'))}" method="post">
+<input type="hidden" name="group_id[]" value=""><input type="hidden" name="group_sort[]" value="">
+<input type="hidden" name="group_name[]" value="">
+<div class="main">
+	<table class="shoptable" id="id_metable">
+		<tr class="xtit"><td>排序</td><td>名称</td><td>操作</td></tr>
+		{foreach($arr_list['list'] as $item)}
+		<tr id="id_row_{$item['group_id']}">
+		<td><input type="hidden" name="group_id[]" value="{$item['group_id']}"><input type="text" name="group_sort[]" value="{$item['group_sort']}" class="txtbox1"></td>
+		<td><input type="text" name="group_name[]" value="{$item['group_name']}" class="txtbox1"></td>
+		<td>
+		{if($this_limit->chk_act("delete"))}
+		<input type="button" value="删除" onclick="thisjs.del({$item['group_id']});" class="btn2">
+		{/if}
+		</td></tr>
+		{/foreach}
+	</table>
+	<div class="shopedit">
+		<div class="xtime">
+			<a href="javascript:thisjs.add();">添加</a>
+		</div>
+		<div class="xbtn" style="margin-top:30px"><input type="button" name="btn_saveinfo" value=" 保存 " class="btn1" onclick="thisjs.on_save();"></div>
+	</div>
+</div>
+</form>
+<script src="/common/js/kj.table.js"></script>
+{include(label.footer)}
+<script>
+var thisjs = new function() {
+	this.add = function(id) {
+		var perms1 = [];
+		perms1[perms1.length] = {'attribute':{'innerHTML':'<input type="hidden" name="group_id[]" value=""><input type="text" name="group_sort[]" value="" class="txtbox1">'}};
+		perms1[perms1.length] = {'attribute':{'innerHTML':'<input type="text" name="group_name[]" value="" class="txtbox1">'}};
+		perms1[perms1.length] = {'attribute':{'innerHTML':'<input type="button" value="删除" onclick="kj.remove(kj.parent(this,\'tr\'));" class="btn2">'}};
+		kj.table.row_insert("#id_metable" , perms1);
+	}
+	this.del = function(id) {
+		kj.ajax.post("{fun_get::url(array('app_act'=>'delete','id'=>''))}&id=" + id , function(data) {
+			var objdata = kj.json(data);
+			if(objdata.isnull) {
+				alert("系统繁忙");
+				return;
+			}
+			if(objdata.code == '0') {
+				kj.alert.show("删除成功",function(){
+					kj.remove("#id_row_" + objdata.id);
+				});
+			} else {
+				alert(objdata.msg);
+			}
+		});
+	}
+	this.on_save = function() {
+		kj.ajax.post(document.frm_main , function(data) {
+			var objdata = kj.json(data);
+			if(objdata.isnull) {
+				alert("系统繁忙");
+				return;
+			}
+			if(objdata.code == '0') {
+				kj.alert.show("保存成功");
+			} else {
+				alert(objdata.msg);
+			}
+		});
+	}
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>{cfg:(site_name,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{fun_format::len($shopinfo['shop_desc'],50)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+</head>
+<body>
+{include(label.header)}
+<script src="shoplist.js"></script>
+<div class="top">
+{if(fun_get::get('s_key')=='')}
+	<h1>餐厅列表</h1>
+	<a href="?app_act=search" class="x1"><img src="images/n1.png"></a>
+	<a href="?" id="id_top_back" class="x2"><img src="images/back.png"></a>
+{else}
+	<h1>搜索：“{fun_get::get("s_key")}”</h1>
+	<a href="?" class="x1"><img src="images/home.png"></a>
+	<a href="?app_act=search&s_key={fun_get::get('s_key')}" id="id_top_back" class="x2"><img src="images/back.png"></a>
+{/if}
+</div>
+<table class="box3">
+<tr><td><li onclick="jsshoplist.showtype();" id="id_type_tit"><font>分类</font><i></i></li></td>
+<td><li id="id_act_tit" onclick="jsshoplist.showsort();"><font></font><i></i></li></td>
+<td class="x1"><li onclick="jsshoplist.showcondition();" id="id_state_tit"><font>筛选</font><i></i></li></td><tr>
+</table>
+<div id="id_act_sort" style="display:none" class="dropdown">
+<ul>
+<li onclick="jsshoplist.sort(0,'距离');" title="距离"><div><font>距离</font></div></li><li onclick="jsshoplist.sort(1,'最新');" title="最新"><div><font>最新</font><i></i></div></li><li onclick="jsshoplist.sort(2,'销量');" title="销量"><div><font>销量</font><i></i></div></li><li onclick="jsshoplist.sort(3,'人气');" title="人气"><div><font>人气</font><i></i></div></li>
+</ul>
+</div>
+<div id="id_condition" style="display:none" class="dropdown">
+	<ul>
+		<li onclick="if(this.className=='xsel'){this.className=''}else{this.className='xsel'}jsshoplist.shoppage=0;jsshoplist.shopmore();" id="id_chk_addprice">免费配送</li>
+		<li onclick="if(this.className=='xsel'){this.className=''}else{this.className='xsel'}jsshoplist.shoppage=0;jsshoplist.shopmore();" id="id_chk_state">正常营业</li>
+	</ul>
+</div>
+<div id="id_typelist" style="display:none" class="dropdown">
+<ul>
+	<a href="javascript:void(0);" onclick="jsshoplist.selshoptype('' , this , '全部');">全部<i>&nbsp;</i></a>
+	{foreach($arr_type as $item)}
+	<a href="javascript:void(0);" onclick="jsshoplist.selshoptype('{$item}' , this , '{$item}');">{$item}<i>&nbsp;</i></a>
+	{/foreach}
+</ul>
+</div>
+<div id="id_shopall">
+<ul>
+{include(index.shopmore)}
+</ul>
+</div>
+{if($shop_list['pageinfo']['pages']>1)}
+<div class="init" id="id_init_refresh">
+	<li><img src="images/init.gif"><font>正在加载...</font></li>
+</div>
+{/if}
+<script>
+jsshoplist.cssdir = "{$temp_url}";
+jsshoplist.shoppage = kj.toint("{$shop_list['pageinfo']['page']}");
+jsshoplist.shoppages = kj.toint("{$shop_list['pageinfo']['pages']}");
+jsshoplist.pagesize = kj.toint("{$shop_list['pageinfo']['pagesize']}");
+jsshoplist.sortby = kj.toint("{$shop_list['sortby']}");
+jsshoplist.sortval = kj.toint("{$shop_list['sortval']}");
+jsshoplist.sort_init();
+</script>
+{include(label.footer)}
+</body>
+</html>

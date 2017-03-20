@@ -1,0 +1,37 @@
+<div class="uleft">
+	<div class="xinfo">
+		<li class="xpic"><img src="images/sir.gif"></li>
+		<li class="xli">
+			<span class="x1">您好，{cls_obj::get("cls_user")->uname}</span>
+			<span class="x1">积分：{cls_obj::get("cls_user")->get_score()}</span>
+			<span class="x1"><a href="{cfg:(dirpath,base)}/index.php?app_act=shop&id={$shop_info['id']}" class="btn-a1x" target="_blank"><font>浏览商家</font></a></span>
+			<span class="x1"><a href="{cfg:(dirpath,base)}/common.php?app_module=meal&app=call" class="btn-a1x" target="_blank"><font>来单显示</font></a></span>
+		</li>
+	</div>
+	<div class="xmenu">
+		<li class="xtit">会员中心</li>
+		<li>
+		<a href="{cfg:(dirpath,base)}/index.php?app=shop"{if($app=='shop' && $app_act=='default')}  class="xsel"{/if}>商家首页</a>
+		{if($this_limit->chk_act("default",'shop'))}<a href="{cfg:(dirpath,base)}/index.php?app=shop&app_act=info"{if($app_act=='info')}  class="xsel"{/if}>商家资料</a>{/if}
+		{if($this_limit->chk_act("default",'shop'))}<a href="{cfg:(dirpath,base)}/index.php?app=shop&app_act=intro"{if($app_act=='intro')}  class="xsel"{/if}>商家简介</a>{/if}
+		{if($this_limit->chk_act("default",'shop'))}<a href="{cfg:(dirpath,base)}/index.php?app=shop&app_act=printsms"{if($app_act=='printsms')}  class="xsel"{/if}>打印与短信</a>{/if}
+		{if($this_limit->chk_act("default",'shop'))}<a href="{cfg:(dirpath,base)}/index.php?app=shop&app_act=extend"{if($app_act=='extend')}  class="xsel"{/if}>运营配置</a>{/if}
+		{if($this_limit->chk_act("default",'menu' ,'shop'))}<a href="{cfg:(dirpath,base)}/index.php?app_module=shop&app=menu"{if($app=='menu')}  class="xsel"{/if}>商品管理</a>{/if}
+		{if($this_limit->chk_act("default",'menu.group','shop'))}<a href="{cfg:(dirpath,base)}/index.php?app_module=shop&app=menu.group"{if($app=='menu.group')}  class="xsel"{/if}>商品分组</a>{/if}
+		{if($this_limit->chk_act("default",'dispatch','shop'))}<a href="{cfg:(dirpath,base)}/index.php?app_module=shop&app=dispatch"{if($app=='dispatch')}  class="xsel"{/if}>配送范围</a>{/if}
+		{if($this_limit->chk_act("default",'order','shop'))}<a href="{cfg:(dirpath,base)}/index.php?app_module=shop&app=order"{if($app=='order' && $app_act=='default')}  class="xsel"{/if}>订单管理</a>{/if}
+		{if($this_limit->chk_act("default",'act','shop'))}<a href="{cfg:(dirpath,base)}/index.php?app_module=shop&app=act"{if($app=='act')}  class="xsel"{/if}>促销信息</a>{/if}
+		{if($this_limit->chk_act("default",'article','shop'))}<a href="{cfg:(dirpath,base)}/index.php?app_module=shop&app=article"{if($app=='article')}  class="xsel"{/if}>活动公告</a>{/if}
+		{if($this_limit->chk_act("default",'ads','shop'))}<a href="{cfg:(dirpath,base)}/index.php?app_module=shop&app=ads"{if($app=='ads')}  class="xsel"{/if}>广告管理</a>{/if}
+		{if($this_limit->chk_act("default",'report','shop'))}<a href="{cfg:(dirpath,base)}/index.php?app_module=shop&app=report"{if($app=='report')}  class="xsel"{/if}>订单统计</a>{/if}
+		{if($this_limit->chk_act("default",'reportmenu','shop'))}<a href="{cfg:(dirpath,base)}/index.php?app_module=shop&app=reportmenu"{if($app=='reportmenu')}  class="xsel"{/if}>销售统计</a>{/if}
+		{if($this_limit->chk_act("default",'checkout','shop'))}<a href="{cfg:(dirpath,base)}/index.php?app_module=shop&app=checkout"{if($app=='checkout')}  class="xsel"{/if}>结算记录</a>{/if}
+		{if(!empty($shop_info['site_id']))}
+			{if($this_limit->chk_act("message",'weixin','shop'))}<a href="{cfg:(dirpath,base)}/index.php?app_module=shop&app=weixin&app_act=message"{if($app=='weixin' && ($app_act=='message' || $app_act=='keywords'))}  class="xsel"{/if}>微信消息管理</a>{/if}
+			{if($this_limit->chk_act("menu",'weixin','shop'))}<a href="{cfg:(dirpath,base)}/index.php?app_module=shop&app=weixin&app_act=menu"{if($app=='weixin' && $app_act=='menu')}  class="xsel"{/if}>微信自定义菜单</a>{/if}
+			{if($this_limit->chk_act("user",'weixin','shop'))}<a href="{cfg:(dirpath,base)}/index.php?app_module=shop&app=weixin&app_act=user"{if($app=='weixin' && $app_act=='user')}  class="xsel"{/if}>微信关注者管理</a>{/if}
+		{/if}
+		</li>
+		<li class="xtit"><a href="{cfg:(dirpath,base)}/common.php?app=sys&app_act=login.out&jump_url={fun_format::url_encode(cls_config::get('dirpath').'/')}">安全退出</a></li>
+	</div>
+</div>

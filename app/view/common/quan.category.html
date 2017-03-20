@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>分类</title>
+<meta name="keywords" content="" />
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+<script src="{cfg:(dirpath,base)}/common.php?app=sys&app_act=web.config&app_ajax=1"></script>
+<script src="/common/js/kj.js"></script>
+<script src="/common/js/kj.ajax.js"></script>
+<style>
+.treebox{float:left;width:100%;text-align:left}
+.treebox div{float:left;clear:both;margin:0px}
+.btnrow{position:fixed;bottom:0px;border-top:1px #ccc solid;padding:5px 0px;background:#fff;width:100%;text-align:left;}
+</style>
+</head>
+<body>
+<div class="treebox" id="id_tree">
+{foreach($arr_list['list'] as $item)}
+	{if($item['category_childs']>0)}
+		<div id="id_category_{$item['category_id']}"><img src="/admin/images/jia.gif" onclick="thisjs.click({$item['category_id']});" id="id_img_{$item['category_id']}">&nbsp;<input type="checkbox" name="categoryid[]" value="{$item['category_id']}" categoryname="{$item['category_name']}" id="id_check_{$item['category_id']}" class="Tpid0" onclick="thisjs.check({$item['category_id']},this);"{if(in_array($item['category_id'],$sel_category))} checked{/if}>&nbsp;<img src="/admin/images/folder.gif">&nbsp;{$item['category_name']}</div>
+	{else}
+		<div>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" name="categoryid[]" id="id_check_{$item['category_id']}" categoryname="{$item['category_name']}" value="{$item['category_id']}" onclick="thisjs.check({$item['category_id']},this);" class="Tpid0"{if(in_array($item['category_id'],$sel_category))} checked{/if}>&nbsp;<img src="/admin/images/table.jpg">&nbsp;{$item['category_name']}</div>
+	{/if}
+{/foreach}
+</div>
+<div class="btnrow">
+<input type="button" name="btnsave" value="保存" onclick="thisjs.save();" class="pBtn">
+</div>
+<script>
+var thisjs = new function() {
+	this.selid = [];
+	this.selname = [];
+	this.ids = '{$sel_category_ids}'.split(',');
+	this.ids_sel = '{$sel_ids}'.split(',');
+	this.save = function() {
+		var callback = '{$callback}';
+		if(callback == '') return;
+		this.selid = [];
+		this.selname = [];
+		var isall = this.get_selid(0);
+		var ids = this.selid.join(",");
+		var names = this.selname.join(",");
+		var obj = {'objid':'{$objid}' , 'ids':'' ,'names':''};
+		if(ids == '') {
+			if(isall) {
+				obj.ids = '-1';
+				obj.names = '所有';
+			} else {
+				obj.ids = '';
+				obj.names = '';
+			}
+		} else {
+			obj.ids = ids;
+			obj.names = names;
+		}
+		{if(!empty($callback))}
+			if(window.parent) {
+				window.parent.{$callback}(obj);
+			} else if(window.opener) {
+				window.opener.{$callback}(obj);
+			}
+		{/if}
+	}
+	this.get_selid = function(id) {
+		var arr_top = kj.obj(".Tpid"+id);
+		var arr_return = [];
+		if(!arr_top || arr_top.length<1) {
+			return id;
+		}
+		for(var i = 0 ; i < arr_top.length ; i++) {
+			if(arr_top[i].checked) {
+				val = this.get_selid(arr_top[i].value);
+				if(val) arr_return[arr_return.length] = val;
+			}
+		}
+		if(arr_return.length==arr_top.length) {
+			return (id==0)? true : id;
+		} else {
+			for(var i = 0 ; i < arr_return.length ; i++) {
+				this.selid[this.selid.length] = arr_return[i];
+				this.selname[this.selname.length] = kj.getAttribute("#id_check_"+arr_return[i],"categoryname");
+			}
+			return false;
+		}
+	}
+	this.click = function(id) {
+		var src = kj.obj("#id_img_"+id).src;
+		var arr = src.split("/");
+		if(arr[arr.length-1]=='jia.gif') {
+			this.open(id);
+		} else {
+			this.close(id);
+		}
+	}
+	this.open = function(id) {
+		var obj = kj.obj("#id_childs_"+id);
+		if(obj) {
+			kj.show(obj);
+			kj.obj("#id_img_" + id).src="{$temp_baseurl}/admin/images/jian.gif";
+			return;
+		}
+		kj.ajax.get("?app=quan&app_act=category.childs&id=" + id , function(data) {
+			var obj_data = kj.json(data);
+			if(obj_data.isnull) return;
+			var obj_div;
+			var obj = kj.obj("#id_category_"+obj_data.id);
+			var obj_tree = obj.parentNode;
+			var html = ''
+			obj_div = document.createElement("div");
+			var arr_clickid = [];
+			var ischecked,ischeckeded = false;
+			for(var i = 0 ; i < obj_data.list.length ; i++) {
+				ischecked = '';
+				if(thisjs.ids.indexOf(obj_data.list[i].category_id)>=0 || thisjs.ids_sel.indexOf(obj_data.id)>=0 ) ischecked = ' checked';
+				if(obj_data.list[i].category_childs=='0') {
+					html += '<div>&nbsp;&nbsp;&nbsp;&nbsp;<input type="checkbox" id="id_check_'+obj_data.list[i].category_id+'" name="categoryid[]" class="Tpid'+obj_data.id+'"  value="'+obj_data.list[i].category_id+'" onclick="thisjs.check('+obj_data.list[i].category_id+',this);" categoryname="'+obj_data.list[i].category_name+'"'+ischecked+'>&nbsp;<img src="/admin/images/table.jpg">&nbsp;'+obj_data.list[i].category_name+'</div>';
+				} else {
+					html += '<div id="id_category_'+obj_data.list[i].category_id+'"><img src="/admin/images/jia.gif" onclick="thisjs.click('+obj_data.list[i].category_id+');" id="id_img_'+obj_data.list[i].category_id+'">&nbsp;<input type="checkbox" id="id_check_'+obj_data.list[i].category_id+'" name="categoryid[]"  value="'+obj_data.list[i].category_id+'" onclick="thisjs.check('+obj_data.list[i].category_id+',this);" class="Tpid'+obj_data.id+'" categoryname="'+obj_data.list[i].category_name+'"'+ischecked+'>&nbsp;<img src="/admin/images/folder.gif">&nbsp;'+obj_data.list[i].category_name+'</div>';
+					if(ischecked && thisjs.ids_sel.indexOf(obj_data.list[i].category_id)<0 && thisjs.ids_sel.indexOf(obj_data.id)<0) arr_clickid[arr_clickid.length] = obj_data.list[i].category_id;
+				}
+				if(ischecked) ischeckeded = true;
+			}
+			obj_div.innerHTML = html;
+			obj_div.style.cssText = "float:left;padding-left:20px";
+			obj_div.id = "id_childs_" + obj_data.id;
+			kj.insert_after(obj_tree , obj , obj_div);
+			kj.obj("#id_img_" + obj_data.id).src="{$temp_baseurl}/admin/images/jian.gif";
+			for(i = 0 ; i < arr_clickid.length; i++) {
+				thisjs.click(arr_clickid[i]);
+			}
+			if(ischeckeded == false && kj.obj("#id_check_"+obj_data.id).checked) {
+				kj.set("#id_childs_" + obj_data.id + " :categoryid[]" , "checked" , true);
+			}
+		});
+	}
+	this.close = function(id) {
+		kj.obj("#id_img_"+id).src="{$temp_baseurl}/admin/images/jia.gif";
+		kj.hide("#id_childs_"+id);
+	}
+	this.check = function(id , o) {
+		if(o) {
+			var ischeck = ( o.checked ) ? true : false;
+			var obj = kj.obj("#id_childs_" + id + " :categoryid[]");
+			if(obj && 'length' in obj) {
+				for(var i = 0 ; i < obj.length ; i++) {
+					obj[i].checked = ischeck;
+				}
+			}
+		}
+		var objx = kj.obj("#id_check_"+id);
+		var classname = objx.className;
+		var id = classname.replace("Tpid","");
+		this.check_parent(id);
+	}
+	this.check_parent = function(id) {
+		id = kj.toint(id);
+		if(id<1) return;
+		var obj = kj.obj("#id_childs_" + id + " .Tpid" + id);
+		var check = false;
+		for(var i = 0 ; i < obj.length ; i++) {
+			if(obj[i].checked) {
+				check = true;break;
+			}
+		}
+		var objx = kj.obj("#id_check_" + id);
+		objx.checked = check;
+		var classname = objx.className;
+		var id2 = classname.replace("Tpid","");
+		this.check_parent(id2);
+	}
+}
+kj.onload(function(){
+	for(var i = 0; i < thisjs.ids.length ; i++) {
+		if(kj.obj("#id_img_" + thisjs.ids[i]) && thisjs.ids_sel.indexOf(thisjs.ids[i])<0 ) {
+			thisjs.click(thisjs.ids[i]);
+		}
+	}
+});
+</script>
+</body>
+</html>

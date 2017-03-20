@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>礼品兑换-{cfg:(site_title,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="礼品兑换,{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+</head>
+<body class="gbig">
+{include(label.header)}
+<div class="top">
+	<h1>积分兑换</h1>
+	<a href="?" class="x1"><img src="images/home.png"></a>
+	<a href="?" id="id_top_back" class="x2"><img src="images/back.png"></a>
+</div>
+<div class="listpic" id="id_list">
+{foreach($arr_gift['list'] as $ii=>$item)}
+	<li{if($ii%2!=0)} class="x1"{/if}><div>
+	<a href="?app=act.gift&app_act=view&id={$item['gift_id']}">
+		<p class="xpic"><img src = "{$item['gift_pic']}"></p>
+		<h3 style="height:18px"><font>{$item['gift_name']}</font></h3>
+		<p class="xprice">
+			<font>{$item['gift_score']}&nbsp;积分</font>
+			<label>兑换</label>
+		</p>
+	</a>
+	</li>
+{/foreach}
+</div>
+{include(label.footer)}
+</body>
+</html>

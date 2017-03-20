@@ -1,0 +1,61 @@
+body{margin:0px auto;text-align:center;font-size:14px;font-family:"微软雅黑";width:100%;overflow-x:hidden}
+select{border-radius:0;font-size:16px;height:30px}
+div,li{text-align:left;overflow:hidden}
+ul,h1,h2,h3,p{margin:0px;padding:0px}
+li{list-style-type:none}
+img{border:0px}
+input{font-size:14px;}
+input[type="text"]{border:1px #ccc solid;padding:1px 2px}
+input{-webkit-appearance:none;border-radius:0;padding:0px;margin:0px}
+input[type="checkbox"]{-webkit-appearance:checkbox}
+input[type="radio"]{-webkit-appearance:radio}
+i{font-style:normal;}
+
+select,textarea,input{outline:0px}
+table{border-collapse: collapse}
+select,textarea,input{outline:0px}
+a:link {color:#000; text-decoration:none;}
+a:visited {color:#000;text-decoration:none;}
+a:hover {color:#000; text-decoration:none}
+a:active {color:#000;}
+.main{margin:0px auto;width:98%;overflow:visible}
+
+.top{position:fixed;top:0px;left:0px;z-index:100}
+.toolbar{width:100%;height:45px;position:fixed;bottom:0px;box-shadow: 0px 0px 5px rgba(0,0,0,0.4);background:#fff;z-index:99;font-size:12px}
+.toolbar a{float:left;width:33.3%;text-align:center;padding-top:27px}
+.toolbar .x1{background:url(icon_home.png) no-repeat center 2px; background-size:25px;}
+.toolbar .x1a{background:url(icon_home_a.png) no-repeat center 2px;color:#f22; background-size:25px;}
+.toolbar .x2{background:url(icon_search.png) no-repeat center 2px; background-size:25px;}
+.toolbar .x2a{background:url(icon_search_a.png) no-repeat center 2px;color:#f22; background-size:25px;}
+.toolbar .x3{background:url(icon_cart.png) no-repeat center 2px; background-size:25px;}
+.toolbar .x3a{background:url(icon_cart_a.png) no-repeat center 2px;color:#f22; background-size:25px;}
+.toolbar .x4{background:url(icon_help.png) no-repeat center 2px; background-size:25px;}
+.toolbar .x4a{background:url(icon_help_a.png) no-repeat center 2px;color:#f22; background-size:25px;}
+.toolbar .x5{background:url(icon_user.png) no-repeat center 2px; background-size:25px;}
+.toolbar .x5a{background:url(icon_user_a.png) no-repeat center 2px;color:#f22; background-size:25px;}
+.toolbar .x6{background:url(icon_sys.png) no-repeat center 4px; background-size:22px;}
+.toolbar .x6a{background:url(icon_sys_a.png) no-repeat center 4px;color:#f22; background-size:22px;}
+.toolbar font{float:left;padding:1px 3px;background:#c91800;margin:-40px 0px 0px 60%;color:#fff;border-radius:25px}
+.toolbar span{float:left;width:100%;text-align:center}
+.toolbarA{}
+.toolbarA a{width:25%}
+
+
+.top{float:left;width:100%;height:40px;background:#ff6900;color:#fff;box-shadow: 0px 0px 5px rgba(0,0,0,0.4)}
+.top h1{float:left;width:100%;text-align:center;padding-top:12px;font-weight:bold;font-size:14px;height:28px}
+.top font{float:left;margin:-28px 0px 0px 10px}
+.top .x1{float:right;margin-right:10px}
+.top .x2{float:left}
+.top .x3{float:right;margin:-28px 10px 0px 0px;color:#fff}
+.top a{color:#fff}
+.top .xsearch{float:left;width:100%;margin-top:5px}
+.top .xsearch .xtxt{float:left;width:100%;border:0px #ddd solid;padding:3px 2px;background:#fff;height:20px}
+.top .xsearch .xbtn{width:20px;height:20px;background:url(s1.png) no-repeat center center;float:right;margin:-23px 5px 0px 0px;border:0px}
+.top .xsearch2{float:left;width:100%;margin-top:5px}
+.top .xsearch2 .xtxt{float:right;width:80%;border:0px #ddd solid;padding:3px 2px;background:#fff;height:20px;margin-right:5px}
+.top .xsearch2 .xbtn{width:20px;height:20px;background:url(s1.png) no-repeat center center;float:right;margin:-23px 10px 0px 0px;border:0px}
+.top .xsearch2 span{float:left;width:100%}
+.top .xback{float:left;background:url(icon_left_w.png) no-repeat center;width:40px;height:40px;margin-top:-40px; background-size:25px;}
+.top img{float:left;margin:-32px 0px 0px 8px;width:30px}
+.top .xra{float:right;margin-top:-40px;padding:12px 8px 0px 8px;height:28px}
+.top .xrhome{float:right;margin-top:-40px;width:40px;height:40px;background:url(icon_home_w.png) no-repeat center; background-size:25px;}

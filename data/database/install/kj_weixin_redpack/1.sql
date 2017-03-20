@@ -1,0 +1,1 @@
+alter table {DB_PRE}weixin_redpack engine innodb;

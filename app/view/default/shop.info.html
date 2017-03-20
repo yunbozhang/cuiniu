@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>商家资料-商家管理-{cfg:(site_title,sys)}</title>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+</head>
+<body>
+{include(header)}
+{include(shop.header)}
+{include(shop.left)}
+<input type="hidden" name="shop_progress" value="{$editinfo['shop_progress']}">
+<div class="uright">
+	<div class="upath"><font>店铺资料</font></div>
+	<table class='usetable'>
+		<tr>
+			<td class="x1" valign="top">店名<font>：</font></td><td valign="top"><input name="shop_name" type="text" class="pTxtL300" value="{$editinfo['shop_name']}" ruletips='店名不能为空' required/> <font class="txt_red">*</font>
+			</td></tr>
+		<tr>
+			<td class="x1" valign="top">联系人<font>：</font></td><td valign="top" style="line-height:30px">
+				<input name="shop_linkname" type="text" value="{$editinfo['shop_linkname']}" ruletips='联系人不能为空' required/> <font class="txt_red">*</font>
+			</td></tr>
+		<tr>
+			<td class="x1" valign="top">联系人电话<font>：</font></td><td valign="top" style="line-height:30px">
+				<input name="shop_linktel" type="text" value="{$editinfo['shop_linktel']}" ruletips='联系电话不能为空' required/> <font class="txt_red">*</font>
+			</td></tr>
+		<tr>
+			<td class="x1" valign="top">店铺电话<font>：</font></td><td valign="top" style="line-height:30px">
+			<input name="shop_tel" type="text" value="{$editinfo['shop_tel']}"/>
+			</td></tr>
+		<tr>
+			<td class="x1" valign="top">地区：</td>
+			<td valign="top">
+				<input type="hidden" name="shop_area_id" id="id_shop_area_id" value="{$editinfo['shop_area_id']}">
+				<input type="hidden" name="shop_area_allid" id="id_shop_area_allid" value="{$editinfo['shop_area_allid']}">
+				<input type="hidden" name="shop_area" id="id_shop_area" value="{$editinfo['shop_area']}">
+				<select name="area_id[]" onchange="thisjs.changearea(this.value,0);" id="id_area_0">
+					<option value=""></option>
+				{foreach($editinfo["area"]["default"] as $item)}
+					<option value="{$item['area_id']}"{if(in_array($item['area_id'] , explode("," , $editinfo['shop_area_allid']) ) )} selected{/if}>{$item['area_name']}</option>
+				{/foreach}
+				</select>
+				{for($i=1;$i<$editinfo["area"]["depth"];$i++)}
+					<select name="area_id[]" onchange="thisjs.changearea(this.value,{$i});" id="id_area_{$i}">
+					</select>
+				{/foreach} <font class="txt_red">*</font>
+			</td></tr>
+		<tr>
+			<td class="x1" valign="top">店铺地址<font>：</font></td><td valign="top" style="line-height:30px">
+			<input name="shop_address" type="text" class="pTxt1 pTxtL300" value="{$editinfo['shop_address']}" ruletips="店铺地址不能为空" required/> <font class="txt_red">*</font>
+			</td></tr>
+		<tr>
+			<td class="x1" valign="top">店面logo<font>：</font><br><span class="pBeta">(200px × 200px)&nbsp;&nbsp;&nbsp;</span></td><td valign="top" style="line-height:30px">
+				<span style="float:left"><input type="text" name="shop_pic" id="id_shop_pic" value="{$editinfo['shop_pic']}" onchange="kj.obj('#id_img_shop_pic').src=kj.url_view(this.value);" class="pTxtL300">&nbsp;<a href="javascript:kj.dialog({id:'dialog_attatch',title:'选择图片',url:'common.php?app=other&app_act=attatch&url_objid=id_shop_pic',w:600,max_h:700,showbtnhide:false,type:'iframe'});">选择</a><br><iframe name="frm_article_pic_big" src="common.php?app=other&app_act=upload&small=1" width="300px" height="30px" frameborder=0 scrolling="no"></iframe></span><span style="float:left;margin-left:5px"><img src="{$editinfo['shop_pic']}" width="60px" height="60px" id="id_img_shop_pic" onclick="kj.pic.preview(this.src);" onerror="this.src='{$temp_baseurl}common/images/no_pic.jpg'"></span>
+				</td></tr>
+		<tr>
+			<td class="x1" valign="top">店面logo(小图)<font>：</font><br><span class="pBeta">(100px × 100px)&nbsp;&nbsp;&nbsp;</span></td><td valign="top" style="line-height:30px">
+			<span style="float:left"><input type="text" name="shop_pic_small" id="id_shop_pic_small" value="{$editinfo['shop_pic_small']}" onchange="kj.obj('#id_img_shop_pic_small').src=kj.url_view(this.value);" class="pTxtL300">&nbsp;<a href="javascript:kj.dialog({id:'dialog_attatch',title:'选择图片',url:'common.php?app=other&app_act=attatch&url_objid=id_shop_pic_small',w:600,max_h:700,showbtnhide:false,type:'iframe'});">选择</a><br><iframe name="frm_article_pic" src="common.php?app=other&app_act=upload&callback=upload_callback2" width="300px" height="30px" frameborder=0 scrolling="no"></iframe></span><span style="float:left;margin-left:5px"><img src="{$editinfo['shop_pic_small']}" width="60px" height="60px" id="id_img_shop_pic_small" onclick="kj.pic.preview(this.src);"  onerror="this.src='{$temp_baseurl}common/images/no_pic.jpg'"></span>
+			</td></tr>
+		<tr>
+			<td class="x1" valign="top"></td><td valign="top" style="padding-top:30px">
+				<input type="button" name="btn_submit" class="btn-3" value="保 存" onclick="shop.frm_ajax('info.save');">
+			</td></tr>
+		</table>
+</div>
+{include(shop.footer)}
+{include(footer)}
+<script src="shop.js"></script>
+</body>
+</html>
+<script>
+var thisjs = new function() {
+	this.arealist = {$editinfo["area"]["list"]};//json格式，指定id包函的子地区
+	this.areainfo = {$editinfo["area"]["area"]};//对应id地区详细信息
+	this.depth = {$editinfo["area"]["depth"]};//当前地区深度
+	this.defaultval = "{$editinfo['shop_area_allid']}"//当前选择值
+	this.defaultval = this.defaultval.split(",");//格式化成数组
+	//地区下拉发生改变时触发
+	this.changearea = function(val , index) {
+		var obj,i,ii;
+		index++;
+		//当index大于深度时跳出
+		if(index>this.depth) return;
+		//发生改变后，重置之后的地区下拉
+		for(i = index ; i < this.depth; i++) {
+			obj = kj.obj("#id_area_" + i);
+			if(!obj) break;
+			obj.options.length = 0;
+			if(i>index) kj.hide(obj);
+		}
+		var key = "id_" + val;
+		if(!(key in this.arealist) || !("length" in this.arealist[key])) {
+			kj.hide("#id_area_" + index);
+			//跳出则刷新当前地区值
+			this.refresh_area_val();
+			return;
+		}
+		kj.show("#id_area_" + index);
+		kj.add_option("#id_area_" + index , '' , '');
+		for(i = 0 ; i < this.arealist["id_"+val].length ; i++ ) {
+			obj = kj.obj("#id_area_" + index);
+			ii = this.arealist["id_"+val][i];
+			if( !("id_" + ii in this.areainfo ) ) continue;
+			kj.add_option(obj , this.areainfo["id_" + ii]["area_name"] , ii);
+			//选中默认值
+			if(this.defaultval.length>index && obj.options[i+1].value == this.defaultval[index]) {
+				obj.options[i+1].selected=true;
+			}
+		}
+		this.changearea(obj.value , index);
+		this.refresh_area_val();
+	}
+	this.refresh_area_val = function() {
+		var obj = kj.obj(":area_id[]");
+		var arr_id = [];
+		var arr_val = [];
+		var id = 0;
+		for(var i = 0 ; i < obj.length ; i++) {
+			if(obj[i].value != '') {
+				if( !("id_" + obj[i].value in this.areainfo ) ) continue;
+				arr_id[arr_id.length] = obj[i].value;
+				arr_val[arr_val.length] = this.areainfo["id_" + obj[i].value]["area_val"];
+			} else {
+				break;
+			}
+		}
+		if(arr_id.length>0) {
+			kj.obj("#id_shop_area_id").value = arr_id[arr_id.length-1];
+		} else {
+			kj.obj("#id_shop_area_id").value = '';
+		}
+		kj.obj("#id_shop_area_allid").value = arr_id.join(",");
+		kj.obj("#id_shop_area").value = arr_val.join(" ");
+	}
+}
+function attatch_callback(obj) {
+	if('url' in obj) {
+		if(obj.objid == 'id_shop_pic') {
+			kj.obj("#id_shop_pic").value=obj.url;
+			kj.obj("#id_img_shop_pic").src = kj.url_view(obj.url);
+		} else if(obj.objid == 'id_shop_pic_small'){
+			kj.obj("#id_shop_pic_small").value=obj.url;
+			kj.obj("#id_img_shop_pic_small").src = kj.url_view(obj.url);
+		}
+	}
+	kj.dialog.close("#windialog_attatch");
+}
+function upload_callback(info){
+	var obj = kj.json(info);
+	if('url' in obj) {
+		kj.obj("#id_shop_pic").value=obj.url;
+		kj.obj("#id_img_shop_pic").src = kj.url_view(obj.url);
+	}
+}
+function upload_callback2(info){
+	var obj = kj.json(info);
+	if('url' in obj) {
+		kj.obj("#id_shop_pic_small").value=obj.url;
+		kj.obj("#id_img_shop_pic_small").src = kj.url_view(obj.url);
+	}
+}
+
+kj.onload(function() {
+	//加载默认值选中
+	thisjs.changearea(kj.obj("#id_area_0").value,0);
+	{for($i=1;$i<$editinfo["area"]["depth"];$i++)}
+		thisjs.changearea(kj.obj("#id_area_{$i}").value,{$i});
+	{/foreach}
+});
+</script>
+<script src="/common/js/kj.pic.js"></script>

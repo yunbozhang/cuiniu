@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>商家管理中心-{cfg:(site_title,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+<link rel="stylesheet" type="text/css" href="/common/images/emoji.css"/>
+</head>
+<body>
+{include(label.header)}
+<div class="top">
+	<h1>商家管理中心</h1>
+	<a href="?" class="x1"><img src="images/home.png"></a>
+	<a href="?" id="id_top_back" class="x2"><img src="images/back.png"></a>
+</div>
+<div class="utop">
+	<li class="x1">
+		<p class="ypic">{if(!empty($editinfo['shop_pic']))}<img src = "{$editinfo['shop_pic']}">{else}<img src="images/sir.gif">{/if}</p>
+		<p>
+		<span>{$editinfo['shop_name']}</span>
+		<span>上次登录：{cls_obj::get("cls_user")->lastlogintime}</span>
+		</p>
+	</li>
+	<li class="x2">
+		<a href="?channel=all&app_module=shop&app=order">今日订单<br>{$count_info['order_today']}</a>
+		<a href="?channel=all&app_module=shop&app=order">还未处理<br>{$count_info['order_noconfirm']}</a>
+		<a href="?channel=all&app_module=shop&app=order">订单总量<br>{$count_info['order_total']}</a>
+		<a href="?app_module=shop&app=menu">商品总数<br>{$count_info['menu_num']}</a>
+	</li>
+</div>
+<div class="ubox2">
+	<a href="?app_module=shop&app=order&app_act=today"><span class="xs1"></span><font>来单显示</font></a>
+</div>
+<div class="ubox1">
+	<a href="?app=shop&app_act=info"><span class="xs2"></span><font>商家资料</font></a>
+	<a href="?app=shop&app_act=printsms"><span class="xs3"></span><font>打印与短信</font></a>
+	<a href="?app=shop&app_act=extend"><span class="xs4"></span><font>运营配置</font></a>
+	<a href="?app_module=shop&app=menu"><span class="xs5"></span><font>商品管理</font></a>
+	<a href="?app_module=shop&app=menu.group"><span class="xs6"></span><font>商品分组</font></a>
+	<a href="?app_module=shop&app=dispatch"><span class="xs7"></span><font>配送范围</font></a>
+	<a href="?channel=all&app_module=shop&app=order"><span class="xs8"></span><font>订单管理</font></a>
+	<a href="?app_module=shop&app=act"><span class="xs9"></span><font>促销信息</font></a>
+	<a href="?app_module=shop&app=checkout"><span class="xs10"></span><font>结算记录</font></a>
+</div>
+{include(label.footer)}
+</body>
+</html>

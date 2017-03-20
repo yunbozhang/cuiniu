@@ -1,0 +1,1 @@
+alter table {DB_PRE}sys_area engine innodb;

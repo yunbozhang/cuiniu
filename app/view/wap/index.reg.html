@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//WAPFORUM//DTD XHTML Mobile 1.0//EN" "http://www.wapforum.org/DTD/xhtml-mobile10.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>注册-{cfg:(site_title,sys)}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;"/>
+<meta name="format-detection" content="telephone=no"/>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+{if(cls_obj::get('cls_user')->is_login())}
+<script>
+window.open('wap.php?app=member&app_act=main','_self');
+</script>
+{/if}
+</head>
+<body>
+{include(label.header)}
+<div class="top">
+	<h1>会员注册</h1>
+	<a href="?" class="x1"><img src="images/home.png"></a>
+	<a href="javascript:history.back();" id="id_top_back" class="x2"><img src="images/back.png"></a>
+</div>
+<form name="frmReg" method="post" action="{cfg:(dirpath,base)}/{cfg:(basename,base)}?app=ajax&app_act=reg" onsubmit="return pageReg.on_reg(true);">
+<input type="hidden" name="jump_fromurl" value="{$jump_fromurl}" id="id_jump_fromurl">
+<input type="hidden" name="autologin" value="1" checked>
+<div class="main">
+	<div class="login">
+		<li class="xtit"><a href="?app_act=login">登录</a><a href="javascript:void(0);" class="xsel">注册</a></li>
+		<li class="xli">
+			<p class="xname"><i></i><input type="text" name="uname" value="" placeholder="{if(cls_config::get('rule_uname','user')=='email')}邮箱{else if(cls_config::get('rule_uname','user')=='mobile')}手机{else}用户名{/if}"></p>
+			<p class="xpwd"><i></i><input type="password" name="pwd1" value="" placeholder="密码"></p>
+			<p class="xpwd"><i></i><input type="password" name="pwd2" value="" placeholder="再输一次密码"></p>
+			{if(cls_config::get('rule_uname','user')!='email' && cls_config::get('rule_uname','user')!='mobile')}
+			<p class="xemail"><i></i><input type="text" name="email" value="" placeholder="邮箱"></p>
+			{/if}
+			{if($reg_switch==2)}
+			<p class="xemail"><i></i><input type="text" name="invite_code" value="" placeholder="邀请码"></p>
+			{/if}
+			<p class="xtel Tverifypic" style="display:none"><i></i><input type="text" name="verifycode" value="" placeholder="验证码"></p>
+		</li>
+		<li class="xcode Tverifypic" style="display:none">
+			<span>&nbsp;</span>
+			<font>不区分大小写，<a href="">看不清换一张</a></font>
+		<img src="{cfg:(dirpath,base)}/common.php?app=sys&app_act=verifycode&app_contenttype=img" id="id_verify_pic_reg" onclick="this.src='{cfg:(dirpath,base)}/common.php?app=sys&app_act=verifycode&app_contenttype=img&app_rnd='+Math.random();">
+		</li>
+	</div>
+	<a href="javascript:void(0);" onclick="pageReg.on_reg(true);" class="btn-a1 Treg" style="margin-top:15px"><font>注册</font></a>
+	<div class="loginf">
+		<a href="?app_act=login" style="float:left">用户登录</a>
+	</div>
+	{if(cls_config::get("qq_key","userapi")!="" || cls_config::get("weibo_key","userapi")!="")}
+	<div style="width:100%;float:left;text-align:center;font-weight:bold;margin-top:15px">其它方式登录</div>
+	<div style="float:left;width:100%;margin-top:8px">
+	{if(cls_config::get("qq_key","userapi")!="")}
+	<a class="btn_ red w_full" href="{cfg:(dirpath,base)}/common.php?app=api.login&plat=qq" style="float:left"><img src="images/btn_qq.png"></a>
+	{/if}
+	{if(cls_config::get("weibo_key","userapi")!="")}
+	<a class="btn_ red w_full" href="{cfg:(dirpath,base)}/common.php?app=api.login&plat=weibo" style="float:right"><img src="images/btn_sina.png"></a>
+	{/if}
+	</div>
+	{/if}
+</div>
+</form>
+{if(cls_config::get('rule_uname','user')=='email')}
+<div id="id_verify_email_box" style="display:none">
+	<div class="me_box1" style="float:left;padding:10px;line-height:40px">
+	<li style="float:left;width:90%">验证码已发送到您的邮箱，请登录邮箱获取</li>
+	<li style="float:left;width:90%"><input name="emailcode" type="text" class="pTxt1 pTxtL100" id="id_emailcode"/></li>
+	<li style="float:left;width:90%"><span style="float:left"><button class="w_full green" type="submit" name="btn_verify_email" id="id_btn_verify_email" onclick="pageReg.verify_email_ok();">确 定</button></span><span style="float:left;padding:5px 0px 0px 10px"><a href="javascript:kj.dialog.close('#winemailcode');pageReg.on_reg()" style="color:#888888;">重新发送</a></span></li>
+	</div>
+</div>
+{else if(cls_config::get('rule_uname','user')=='mobile')}
+<div id="id_verify_email_box" style="display:none">
+	<div class="me_box1" style="float:left;padding:10px;line-height:40px">
+	<li style="float:left;width:90%">请输入您手机收到的验证码&nbsp;(<span id="id_email_timer_box" style="color:#ff0000">剩余：<font id="id_email_timer"></font>秒</span>)</li>
+	<li style="float:left;width:90%"><input name="emailcode" type="text" class="pTxt1 pTxtL100" id="id_emailcode"/></li>
+	<li style="float:left;width:90%"><span style="float:left"><button class="w_full green" type="submit" name="btn_verify_email" id="id_btn_verify_email" onclick="pageReg.verify_email_ok();">确 定</button></span><span style="float:left;padding:5px 0px 0px 10px"><a href="javascript:kj.dialog.close('#winemailcode');pageReg.on_reg()" style="color:#888888;">重新发送</a></span></li>
+	</div>
+</div>
+{/if}
+{include(label.footer)}
+</body>
+</html>
+<script src="/common/js/kj.dialog.js"></script>
+<script src="page.reg.js"></script>
+<script>
+pageReg.reg_verify = "{cfg:(reg_verify,user)}";
+pageReg.rule_uname = "{cfg:(rule_uname,user)}";
+if(pageReg.reg_verify) {
+	kj.show(".Tverifypic");
+	pageReg.verify_refresh();
+}
+</script>

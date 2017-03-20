@@ -1,0 +1,78 @@
+<script src="{cfg:(dirpath,base)}/common.php?app=sys&app_act=web.config&app_ajax=1"></script>
+<script src="/common/js/kj.js"></script>
+<script src="/common/js/kj.dialog.js?rand=Math.random()"></script>
+<script src="/common/js/kj.ajax.js"></script>
+<div class="top">
+	<div class="main">
+		<li class="x1"><a href="javascript:kj.add_favorite();">收藏本站</a></li>
+		{if(cls_obj::get("cls_user")->uid>0)}
+			<li class="x3">您好 {cls_obj::get("cls_user")->name} 欢迎光临, <a href="{cfg:(dirpath,base)}/index.php?app=member">【会员中心】</a>&nbsp;{if(cls_obj::get("cls_user")->type=='shop')} <a href="{cfg:(dirpath,base)}/index.php?app=shop">【商家管理】</a>{/if}{if(cls_obj::get("cls_user")->is_admin())}&nbsp;<a href="{cfg:(dirpath,base)}/{cfg:(admin_file,base)}" target="_blank">【后台管理】</a>{/if} <a href="{cfg:(dirpath,base)}/common.php?app=sys&app_act=login.out">【退出登录】</a>
+			</li>
+		{else}
+			<li class="x2"><a href="javascript:jsheader.showlogin();" class="btn-a2"><font>登录</font></a><a href="javascript:jsheader.showreg();" class="btn-a1"><font>注册</font></a></li>
+			{if(cls_config::get("weibo_key","userapi")!="")}<li class="xsina"><a href="{cfg:(dirpath,base)}/common.php?app=api.login&plat=weibo"></a></li>{/if}
+			{if(cls_config::get("qq_key","userapi")!="")}<li class="xqq"><a href="{cfg:(dirpath,base)}/common.php?app=api.login&plat=qq"></a></li>{/if}
+		{/if}
+	</div>
+</div>
+<div style="float:left;width:100%;background:#fff;padding:10px 0px 10px 0px">
+<div class="main">
+	<div class="logo"><a href="./"><img src="images/logo.png"></a></div>
+	{if(isset($area_name))}<div class="area"><font>{$area_name}</font><a href="{cfg:(dirpath,base)}/index.php?app_act=area">[更换]</a></div>{/if}
+</div>
+</div>
+{if($app_act!='area')}
+<div class="menu">
+	<div class="main">
+	<a href="./"{if($app=='index' && $app_act=='default')} class="xsel"{/if}>首页</a>
+	<a href="./index.php?app=act.gift"{if($app=='act.gift' && $app_act!='mygift')} class="xsel"{/if}>礼品兑换</a>
+	<a href="index.php?app_act=help"{if($app_act=='help' || $app_act=='reg.shop')} class="xsel"{/if}>帮助中心</a>
+	<a href="index.php?app_act=msg"{if($app_act=='msg')} class="xsel"{/if}>意见反馈</a>
+	<a href="index.php?app_act=cart"{if($app_act=='cart')} class="xsel"{else} class="xcart"{/if}>购物车</a>
+	{if(cls_obj::get("cls_user")->shop_id>0)}
+	<a href="index.php?app=shop"{if($app=='shop' || $app_module=='shop')} class="xsel"{/if}>商家管理</a>
+	{else if(cls_obj::get("cls_user")->uid>0)}
+	<a href="index.php?app=member"{if($app=='member' && $app_act!='payok')} class="xsel"{/if}>会员中心</a>
+	{/if}
+	</div>
+</div>
+{/if}
+<div class="main">
+{if(cls_obj::get("cls_user")->uid==0)}
+<div id="id_loginbox" style="display:none">
+	<form name="frmlogin" method="post" action="{cfg:(dirpath,base)}/common.php?app=sys&app_act=login.verify" onsubmit="return jsheader.on_login();">
+	<div class="loginbox">
+		<ul class="xleft">
+			<li><span class="x1">{if(cls_config::get('rule_uname','user')=='email')}邮箱：{else if(cls_config::get('rule_uname','user')=='mobile')}手机：{else}用户名：{/if}</span><span><input type="text" name="uname" class="txt1"/></span></li>
+			<li><span class="x1">密码：</span><span><input name="pwd" type="password" class="txt1"/></span></li>
+			<li id="id_verify_code"{if(cls_obj::get("cls_user")->is_verifycode()==false)} style="display:none"{/if}><span class="x1">验证码：</span><span><input name="verifycode" type="text" class="txt2"  onfocus="jsheader.show_verify('#id_verify');"/>&nbsp;<img src="" id="id_verify_pic" onclick="this.src='{cfg:(dirpath,base)}/common.php?app=sys&app_act=verifycode&app_contenttype=img&app_rnd='+Math.random();" style="display:none"></span></li>
+			<li><span class="x1"></span><span><label><input type="checkbox" name="autologin" value="1" checked>下次自动登录</label>&nbsp;&nbsp;<a href="{cfg:(dirpath,base)}/index.php?app=index&app_act=findpwd">忘记密码?</a><br><br>
+			<input type="submit" name="btn_submit" value="登 录" class="button1" style="font-size:22px">
+			</span></li>
+		</ul>
+		{if(cls_config::get("qq_key","userapi")!="" || cls_config::get("weibo_key","userapi")!="")}
+		<ul class="xright">
+			<li>使用其它账号登录：</li>
+			{if(cls_config::get("weibo_key","userapi")!="")}<li><a href="{cfg:(dirpath,base)}/common.php?app=api.login&plat=weibo"><img src="images/btn_sina.png"></a></li>{/if}
+			{if(cls_config::get("qq_key","userapi")!="")}<li><a href="{cfg:(dirpath,base)}/common.php?app=api.login&plat=qq"><img src="images/btn_qq.png"></a></li>{/if}
+		</ul>
+		{/if}
+		<ul class="xboot a1">
+		<h1>还不是会员？</h1>一分钟轻松注册，就可以方便订餐<a href="javascript:jsheader.showreg();">【立即注册】</a>
+		</ul>
+	</div>
+	<input type="hidden" name="jump_fromurl" value="{fun_get::get('jump_url')}">
+	</form>
+</div>
+{/if}
+<script src="header.js"></script>
+<script src="/common/js/kj.rule.js"></script>
+<script src="/common/js/kj.alert.js"></script>
+<script>
+kj.onload(function(){
+	jsheader.rule_uname = "{cfg:(rule_uname,user)}";
+	jsheader.reg_verify = "{cfg:(reg_verify,user)}";
+	jsheader.tempurl = "{$temp_url}";
+	jsheader.is_verify = {if(cls_obj::get("cls_user")->is_verifycode())}true{else}false{/if};
+});
+</script>

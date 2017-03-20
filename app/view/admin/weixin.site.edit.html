@@ -1,0 +1,114 @@
+{include(header)}
+<style>
+.beta{float:left;width:400px;padding:10px 0px 0px 10px;line-height:25px};
+.me_div{float:left;margin:10px 0px 0px 10px}
+.me_div li{float:left;margin:5px 0px 5px 10px;border:1px #cccccc solid;padding:5px;background:#efefef}
+</style>
+<script>
+//保存时效验规则
+admin.rule['save'] =[
+];
+
+</script>
+<div class="pMenu" id="id_pMenu">
+	<li class="sel" onclick="admin.edittabel(0);">基本信息</li>
+	<li class = "x_btn"><a href="javascript:parent.thisjs.klkkdj_open('微信站点-帮助','app=service&app_act=help&key=help.weixin.site');" title="帮助"><img src="images/faq.gif"></a></li>
+</div>
+<div class="pMain" id="id_main">
+<table class='pEditTable'>
+<tr class='pTabTitRow'><td class='pTabTitCol' colspan="2"></td></tr>
+<tr>
+	<td class="pTabColName">绑定店铺：</td><td class="pTabColVal">
+		<input type="hidden" name="site_shop_id" value="{$editinfo['site_shop_id']}" id="id_site_shop_id">
+		<div class="more1" onmouseover="kj.windiv({'id':'shop_id_windiv','fid':this,'src':'common.php?app=meal&app_act=shop1&url_mode=2'});" id="id_site_shop" onmouseout="kj.hide('#windivshop_id_windiv');">{if($editinfo["site_shop_id"]==-999)}选择{else}{$editinfo["shop_name"]}{/if}</div>
+	</td>
+	</tr>
+<tr>
+	<td class="pTabColName">站点名称：</td>
+	<td class="pTabColVal">
+		<input type="text" name="site_name" value="{$editinfo['site_name']}" class='pTxt1 pTxtL200' id="id_site_name" ruletips="站点名称不能为空" ruletipsmode=1 required>&nbsp;<span style="color:#ff0000">*</span>
+	</td></tr>
+<tr>
+	<td class="pTabColName">绑定域名：</td>
+	<td class="pTabColVal">
+		<input type="text" name="site_domain" value="{$editinfo['site_domain']}" class='pTxt1 pTxtL200' ruletips="绑定域名不能为空" ruletipsmode=1 required>&nbsp;<span style="color:#ff0000">*</span><span class="pBeta"> 每个商家的域名必须不一样</span>
+	</td></tr>
+<tr>
+	<td class="pTabColName">微信号：</td>
+	<td class="pTabColVal">
+		<input type="text" name="site_wx_uname" value="{$editinfo['site_wx_uname']}" class='pTxt1 pTxtL200' ruletips="微信号不能为空" ruletipsmode=1 required>&nbsp;<span style="color:#ff0000">*</span><span class="pBeta"> 注意不是微信的登录号，而是微信管理中心设置里的微信号/span>
+	</td></tr>
+<tr>
+	<td class="pTabColName">token：</td>
+	<td class="pTabColVal">
+		<input type="text" name="site_wx_token" value="{$editinfo['site_wx_token']}" class='pTxt1 pTxtL200'>&nbsp;<span class="pBeta">自定义token 用于微信验证</span>
+	</td></tr>
+<tr>
+	<td class="pTabColName">APP ID：</td>
+	<td class="pTabColVal">
+		<input type="text" name="site_wx_appid" value="{$editinfo['site_wx_appid']}" class='pTxt1 pTxtL200'>&nbsp;<span class="pBeta">开通服务号后会有这个</span>
+	</td></tr>
+<tr>
+	<td class="pTabColName">APP Secret：</td>
+	<td class="pTabColVal">
+		<input type="text" name="site_wx_appsecret" value="{$editinfo['site_wx_appsecret']}" class='pTxt1 pTxtL200'>&nbsp;<span class="pBeta">开通服务号后会有这个</span>
+	</td></tr>
+<tr>
+	<td class="pTabColName">商户号：</td>
+	<td class="pTabColVal">
+		<input type="text" name="site_wx_mch_id" value="{$editinfo['site_wx_mch_id']}" class='pTxt1 pTxtL200'>&nbsp;<span class="pBeta">开通微支付获得</span>
+	</td></tr>
+<tr>
+	<td class="pTabColName">商户密钥：</td>
+	<td class="pTabColVal">
+		<input type="text" name="site_wx_mch_key" value="{$editinfo['site_wx_mch_key']}" class='pTxt1 pTxtL200'>&nbsp;<span class="pBeta">开通微支付获得</span>
+	</td></tr>
+<tr>
+	<td class="pTabColName">认证服务号：</td>
+	<td class="pTabColVal">
+		<input type="checkbox" name="site_wx_certify" value="1"{if($editinfo['site_wx_certify']==1)} checked{/if}>&nbsp;<span class="pBeta">是否为认证的服务号，用于后台确定是否有相关微信权限</span>
+	</td></tr>
+<tr>
+	<td class="pTabColName">开通多客服：</td>
+	<td class="pTabColVal">
+		<input type="checkbox" name="site_wx_customer_open" value="1"{if($editinfo['site_wx_customer_open']==1)} checked{/if}>&nbsp;<span class="pBeta">如果您的公众号开通了多客服服务，那么可以在这里钩上</span>
+	</td></tr>
+<tr>
+	<td class="pTabColName">启用搜索模式：</td>
+	<td class="pTabColVal">
+		<input type="checkbox" name="site_wx_msgmode" value="1"{if($editinfo['site_wx_msgmode']==1)} checked{/if}>&nbsp;<span class="pBeta">启用的话，用户向公众号发消息时将优先搜索相关商家或菜品</span>
+	</td></tr>
+<tr>
+	<td class="pTabColName">模板独立显示：</td>
+	<td class="pTabColVal">
+		<input type="checkbox" name="site_customview" value="1"{if($editinfo['site_customview']==1)} checked{/if}>&nbsp;<span class="pBeta">当用户从此域名进来时，只显示本店信息，不显示平台信息</span>
+	</td></tr>
+<tr>
+	<td class="pTabColName">状态：</td>
+	<td class="pTabColVal">
+		<select name="site_state">
+		{foreach($arr_state as $item=>$key)}
+			<option value="{$key}"{if($key==$editinfo['site_state'])} selected{/if}>{$item}</option>
+		{/foreach}
+		</select>
+	</td></tr>
+</table>
+</div>
+<div class="pFootAct" id="id_pFootAct">
+	<li>
+	<input type="button" name="dosubmit" value="保存" onclick="admin.frm_ajax('save');" class="pBtn">
+	</li>
+</div>
+<script>
+function shop1_callback(o) {
+	if("id" in o) kj.obj("#id_site_shop_id").value=o.id;
+	if("name" in o) {
+		kj.obj("#id_site_shop").innerHTML = o.name;
+		kj.obj("#id_site_name").value = o.name;
+	}
+	kj.hide("#windivshop_id_windiv");
+}
+var thisjs = new function() {
+}
+</script>
+{include(footer)}

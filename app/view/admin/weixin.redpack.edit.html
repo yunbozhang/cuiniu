@@ -1,0 +1,137 @@
+{include(header)}
+<style>
+.mebox{float:right;margin:10px 10px 0px 0px;border:1px #ccc solid;width:300px;padding:10px;border-radius:5px}
+.mebox ul{float:left;width:300px;margin:0px;padding:0px;border-bottom:1px #ccc solid;padding-bottom:20px}
+.mebox .xtit{border-left:3px #44b549 solid;margin-bottom:10px;padding-left:6px}
+.mebox li{float:left;width:300px;text-align:left;margin:5px 0px}
+.mebox .x1{font-weight:bold}
+.mebox .x2{color:#888}
+.mebox .x3{margin:10px 0px}
+.mebox .x4{color:#888}
+.mebox li font{color:#44b549}
+</style>
+<script>
+//保存时效验规则
+admin.rule['save'] =[
+];
+</script>
+<div class="pMenu" id="id_pMenu">
+	<li class="sel" onclick="admin.edittabel(0);">基本信息</li>
+	<li class = "x_btn"><a href="javascript:parent.thisjs.klkkdj_open('微信站点-帮助','app=service&app_act=help&key=help.weixin.site');" title="帮助"><img src="images/faq.gif"></a></li>
+</div>
+<div class="pMain" id="id_main">
+<table class='pEditTable' style="float:left;width:600px">
+<tr class='pTabTitRow'><td class='pTabTitCol' colspan="2"></td></tr>
+<tr>
+	<td class="pTabColName">所属站点：</td><td class="pTabColVal">
+		<input type="hidden" name="redpack_site_id" value="{$editinfo['redpack_site_id']}" id="id_redpack_site_id">
+		<div class="more1" onmouseover="kj.windiv({'id':'site_id_windiv','fid':this,'src':'common.php?app=weixin&app_act=dialog.site&url_mode=1'});" id="id_redpack_site" onmouseout="kj.hide('#windivsite_id_windiv');">{if($editinfo["redpack_site_id"]==-999)}选择{else}{$editinfo["site_name"]}{/if}</div>
+	</td>
+	</tr>
+<tr>
+	<td class="pTabColName">红包类型：</td>
+	<td class="pTabColVal">
+		<select name="redpack_type">
+			{foreach($arr_type as $item=>$key)}
+				<option value="{$item}"{if($editinfo['redpack_type']==$key)} selected{/if}>{$item}</option>
+			{/foreach}
+		</select>
+	</td></tr>
+<tr>
+	<td class="pTabColName">活动名称：</td>
+	<td class="pTabColVal">
+		<input type="text" name="redpack_title" value="{$editinfo['redpack_title']}" class='pTxt1 pTxtL300' ruletips="活动名称不能为空" ruletipsmode=1 required onkeyup="kj.set('.Ttitle','innerHTML',this.value);">&nbsp;<span class="pBeta">(限10个字)</span>
+	</td></tr>
+<tr>
+	<td class="pTabColName">商家名称：</td>
+	<td class="pTabColVal">
+		<input type="text" name="redpack_shopname" value="{$editinfo['redpack_shopname']}" class='pTxt1 pTxtL300' ruletips="商家名称不能为空" ruletipsmode=1 required onkeyup="kj.set('.Tshopname','innerHTML',this.value);">&nbsp;<span class="pBeta">(限10个字)</span>
+	</td></tr>
+<tr>
+	<td class="pTabColName">备注：</td>
+	<td class="pTabColVal">
+		<input type="text" name="redpack_beta" value="{$editinfo['redpack_beta']}" class='pTxt1 pTxtL300' ruletips="备注不能为空" ruletipsmode=1 required onkeyup="kj.set('.Tbeta','innerHTML',this.value);">&nbsp;<span class="pBeta">(限15个字)</span>
+	</td></tr>
+<tr>
+	<td class="pTabColName">祝福语：</td>
+	<td class="pTabColVal">
+		<input type="text" name="redpack_greet" value="{$editinfo['redpack_greet']}" class='pTxt1 pTxtL300' ruletips="祝福语不能为空" ruletipsmode=1 required onkeyup="kj.set('.Tgreet','innerHTML',this.value);">&nbsp;<span class="pBeta">(限20个字)</span>
+	</td></tr>
+<tr>
+	<td class="pTabColName">总金额：</td>
+	<td class="pTabColVal">
+		<input type="text" name="redpack_total" value="{$editinfo['redpack_total']}" class='pTxt1 pTxtL60'>&nbsp;<span class="pBeta">(抢完为止，0为不限制)</span>
+	</td></tr>
+<tr>
+	<td class="pTabColName">红包范围：</td>
+	<td class="pTabColVal">
+		{cfg:(coinsign,sys)} <input type="text" name="redpack_min_money" value="{$editinfo['redpack_min_money']}" class='pTxt1 pTxtL60' ruletips="红包范围不能为空" ruletipsmode=1 required>&nbsp;到&nbsp;{cfg:(coinsign,sys)} <input type="text" name="redpack_max_money" value="{$editinfo['redpack_max_money']}" class='pTxt1 pTxtL60' ruletips="红包范围不能为空" ruletipsmode=1 required>
+	</td></tr>
+<tr>
+	<td class="pTabColName">抢到机率：</td>
+	<td class="pTabColVal">
+		<input type="text" name="redpack_rate" value="{$editinfo['redpack_rate']}" class='pTxt1 pTxtL60'>&nbsp;<span class="pBeta">% (100表示一定抢到)</span>
+	</td></tr>
+<tr>
+	<td class="pTabColName">用户限制：</td>
+	<td class="pTabColVal">
+		<input type="text" name="redpack_user_limit" value="{$editinfo['redpack_user_limit']}" class='pTxt1 pTxtL60'>&nbsp;<span class="pBeta">(每用户限领取多少次，0为不限制)</span>
+	</td></tr>
+<tr>
+	<td class="pTabColName">领取频率：</td><td class="pTabColVal">每 <input type="text" name="redpack_interval" value="{$editinfo['redpack_interval']}" class='pTxt1 pTxtL60'> <select name="redpack_interval_unit"><option value="minute"{if($editinfo['redpack_interval_unit']=='minute')} selected{/if}>分</option><option value="hour"{if($editinfo['redpack_interval_unit']=='hour')} selected{/if}>小时</option><option value="day"{if($editinfo['redpack_interval_unit']=='day')} selected{/if}>天</option></select> <input type="text" name="redpack_interval_num" value="{$editinfo['redpack_interval_num']}" class='pTxt1 pTxtL60'> 次 <span class='pBeta'>两项都不为空时才有效</span></td>
+	</tr>
+<tr>
+	<td class="pTabColName">活动时间：</td><td class="pTabColVal"><input type="text" name="redpack_starttime" value="{$editinfo['redpack_starttime']}" class='pTxt1 pTxtL150' onfocus="new Calendar().show(this);" ruletips="开始时间不能为空或格式不正确" rule='datetime' ruletipsmode=1 required>&nbsp;&nbsp;<input type="text" name="redpack_endtime" value="{$editinfo['redpack_endtime']}" class='pTxt1 pTxtL150' onfocus="new Calendar().show(this);" ruletips="结束时间不能为空或格式不正确" rule='datetime' ruletipsmode=1 required></td>
+	</tr>
+<tr>
+	<td class="pTabColName">触发事件：</td>
+	<td class="pTabColVal">
+		{foreach($arr_event as $item=>$key)}
+			<label><input type="checkbox" name="redpack_event[]" value="{$item}"{if(in_array($item,$editinfo['event']))} checked{/if}>{$key}</label>&nbsp;&nbsp;
+		{/foreach}
+	</td></tr>
+<tr>
+	<td class="pTabColName">状态：</td>
+	<td class="pTabColVal">
+		<select name="site_state">
+		{foreach($arr_state as $item=>$key)}
+			<option value="{$key}"{if($key==$editinfo['redpack_state'])} selected{/if}>{$item}</option>
+		{/foreach}
+		</select>
+	</td></tr>
+</table>
+<div class="mebox">
+	<ul>
+		<li class="xtit">用户收到红包后的消息</li>
+		<li class="x1">你收到了一个红包</li>
+		<li class="x2">XX月XX日</li>
+		<li class="x3">你参加<font class="Ttitle">{if(!empty($editinfo['redpack_title']))}{$editinfo['redpack_title']}{else}活动名称{/if}</font>成功获得<font class="Tshopname">{if(!empty($editinfo['redpack_shopname']))}{$editinfo['redpack_shopname']}{else}商户名称{/if}</font>赠送的红包。</li>
+		<li class="x4 Tbeta">{if(!empty($editinfo['redpack_beta']))}{$editinfo['redpack_beta']}{else}备注：内容{/if}</li>
+		<li>详情</li>
+	</ul>
+	<ul style="border-bottom:0px;margin-top:20px">
+		<li class="xtit">用户拆开红包后的消息</li>
+		<li class="x1">你领取了一个红包</li>
+		<li class="x2">XX月XX日</li>
+		<li class="x3">你成功领取了<font class="Ttitle">{if(!empty($editinfo['redpack_title']))}{$editinfo['redpack_title']}{else}活动名称{/if}</font>发放的红包。<br>红包金额<font class="Tmoney">?元</font></li>
+		<li class="x4 Tgreet">{if(!empty($editinfo['redpack_greet']))}{$editinfo['redpack_greet']}{else}祝福语{/if}</li>
+		<li>详情</li>
+	</ul>
+</div>
+</div>
+<div class="pFootAct" id="id_pFootAct">
+	<li>
+	<input type="button" name="dosubmit" value="保存" onclick="admin.frm_ajax('save');" class="pBtn">
+	</li>
+</div>
+<script>
+//店铺选择回调函数
+function site_callback(o) {
+	if("id" in o) {
+		kj.set("#id_redpack_site_id" , "value" , o.id);
+		kj.set("#id_redpack_site" , "innerHTML" , o.name);
+		kj.hide('#windivsite_id_windiv');
+	}
+}
+</script>
+{include(footer)}

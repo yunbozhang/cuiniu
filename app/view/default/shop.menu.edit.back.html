@@ -1,0 +1,184 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>{cfg:(site_title,sys)}</title>
+<meta name="keywords" content="{cfg:(keywords,sys)}"/>
+<meta name="description" content="{cfg:(description,sys)}"/>
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+<script src="{cfg:(dirpath,base)}/common.php?app=sys&app_act=web.config&app_ajax=1"></script>
+<script src="/common/js/kj.js"></script>
+<script src="/common/js/kj.ajax.js"></script>
+<script src="/common/js/kj.dialog.js"></script>
+<style>
+.me_pic{float:left;width:95%}
+.me_pic li{float:left;width:95%;text-align:left;line-height:30px;margin:10px 0px 5px 0px}
+.me_pic .x1{float:left;width:450px}
+.me_pic .x2{float:left;width:100px}
+.me_pic .x2 img{width:60px;height:60px}
+.me_picbtn{float:left;width:95%;text-align:left}
+</style>
+</head>
+<body>
+{include(label.shop.header)}
+<script>
+function upload_callback(info){
+	var obj = kj.json(info);
+	if('url' in obj) {
+		kj.obj("#id_goods_pic").value=obj.url;
+		kj.obj("#id_img_goods_pic").src = kj.url_view(obj.url);
+	}
+	if('url_small' in obj) {
+		kj.obj("#id_goods_pic_small").value = obj.url_small;
+		kj.obj("#id_img_goods_pic_small").src = kj.url_view(obj.url_small);
+	}
+}
+function upload_callback_small(info){
+	var obj = kj.json(info);
+	if('url' in obj) {
+		kj.obj("#id_goods_pic_small").value = obj.url;
+		kj.obj("#id_img_goods_pic_small").src = kj.url_view(obj.url_small);
+	}
+}
+function attatch_callback(o) {
+	if('objid' in o) {
+		if(o.objid == 'id_goods_pic') {
+			kj.obj("#id_img_goods_pic").src = kj.url_view(kj.obj("#id_goods_pic").value);
+		} else {
+			kj.obj("#id_img_goods_pic_small").src = kj.url_view(kj.obj("#id_goods_pic_small").value);
+		}
+	}
+	kj.dialog.close("#windialog_attatch");
+}
+//店铺选择回调函数
+function shop1_callback(o) {
+	if("id" in o) kj.obj("#id_goods_shop_id").value=o.id;
+	if("name" in o) kj.obj("#id_goods_shop").innerHTML = o.name;
+	kj.hide("#windivshop_id_windiv");
+}
+
+</script>
+<div class="pMenu" id="id_pMenu" style="width:100%">
+	<li class="sel" onclick="shop.edittabel(0);">基本信息</li>
+	<li onclick="shop.edittabel(1);">详细介绍</li>
+	<li onclick="shop.edittabel(2);">相册图片</li>
+</div>
+<div class="pMain" id="id_main">
+<table class='pEditTable'>
+<tr class='pTabTitRow'><td class='pTabTitCol' colspan="2"></td></tr>
+<tr>
+	<td class="pTabColName">状 态：</td>
+	<td class="pTabColVal">
+		<select name="goods_state">
+		{foreach($arr_state as $item=>$key)}
+			<option value="{$key}"{if($key==$editinfo['goods_state'])} selected{/if}>{$item}</option>
+		{/foreach}
+		</select>
+	</td></tr>
+<tr>
+	<td class="pTabColName">所属组：</td>
+	<td class="pTabColVal">
+		{$editinfo["html_group"]}
+	</td></tr>
+<tr>
+	<td class="pTabColName">名称：</td><td class="pTabColVal"><input type="text" name="goods_name" value="{$editinfo['goods_name']}" class='pTxtL300'></td>
+	</tr>
+<tr>
+	<td class="pTabColName">价格：</td><td class="pTabColVal"><input type="text" name="goods_price" value="{$editinfo['goods_price']}" class='pTxtL150'></td></tr>
+<tr>
+	<td class="pTabColName">库存：</td><td class="pTabColVal"><input type="text" name="goods_store" value="{$editinfo['goods_store']}" class='pTxtL150'></td>
+	</tr>
+<tr>
+	<td class="pTabColName">图片：</td><td class="pTabColVal"><span style="float:left"><input type="text" name="goods_pic" id="id_goods_pic" value="{$editinfo['goods_pic']}" class='pTxtL300'>&nbsp;<a href="javascript:kj.dialog({id:'dialog_attatch',title:'选择图片',url:'common.php?app=other&app_act=attatch&url_objid=id_goods_pic',w:800,showbtnhide:false,type:'iframe'});">选择</a><br><iframe name="frm_article_pic_big" src="common.php?app=other&app_act=upload&small=1" width="300px" height="30px" frameborder=0 scrolling="no"></iframe></span><span style="float:left;margin-left:5px"><img src="{$editinfo['goods_pic']}" width="60px" height="60px" id="id_img_goods_pic" onclick="kj.pic.preview(this.src);"onerror="this.src='{$temp_baseurl}common/images/no_pic.jpg'"></span></td>
+	</tr>
+<tr>
+	<td class="pTabColName">小图：</td><td class="pTabColVal"><span style="float:left"><input type="text" name="goods_pic_small" id="id_goods_pic_small" value="{$editinfo['goods_pic_small']}" class='pTxtL300'>&nbsp;<a href="javascript:kj.dialog({id:'dialog_attatch',title:'选择图片',url:'common.php?app=other&app_act=attatch&url_objid=id_goods_pic_small',w:800,showbtnhide:false,type:'iframe'});">选择</a><br><iframe name="frm_article_pic" src="common.php?app=other&app_act=upload&callback=upload_callback_samll" width="300px" height="30px" frameborder=0 scrolling="no"></iframe></span><span style="float:left;margin-left:5px"><img src="{$editinfo['goods_pic']}" width="60px" height="60px" id="id_img_goods_pic_small" onclick="kj.pic.preview(this.src);"onerror="this.src='{$temp_baseurl}common/images/no_pic.jpg'"></span></td>
+	</tr>
+</table>
+<table class='pEditTable' style='display:none'>
+<tr>
+	<td class="pTabColVal"><textarea name="goods_cont" id="id_goods_cont" cols="60" rows="5" style="display:none">{$editinfo['goods_cont']}</textarea>{fun_get::editor('id_goods_cont','admin')}</td></tr>
+</table>
+<!--label 2 end-->
+<table class='pEditTable' id="id_tab_pic" style='display:none'>
+<tr><td colspan=2>
+<div class="me_pic" id="id_pic1">
+<li style="display:none">
+<input type="hidden" name="pic1_id[]" value="">
+<span class="x1"><input type="text" name="pic1_url[]" id="url_THISID" value="" class='pTxtL300'>&nbsp;<a href="javascript:kj.dialog({id:'dialog_pic',title:'选择图片',url:'common.php?app=other&app_act=attatch&url_objid=url_THISID&callback=pic_callback',w:500,showbtnhide:false,top:0,type:'iframe'});">选择</a>&nbsp;&nbsp;[<a href="javascript:kj.remove('#THISID');">删除</a>]<br><iframe name="frm_THISID" src="common.php?app=other&app_act=upload&callback=pic_upload&url_objid=url_THISID" width="300px" height="30px" frameborder=0 scrolling="no"></iframe></span><span class="x2"><img src="" onclick="kj.pic.preview(this.src);" onerror="this.src = '{$temp_baseurl}common/images/no_pic.jpg'"></span></li>
+{foreach($editinfo['pics'] as $key=>$item)}
+<li id="id_pic_{$key}">
+<span class="x1"><input type="text" name="pic1_url[]" id="id_pic1_{$key}" value="{$item}" class='pTxtL300'>&nbsp;<a href="javascript:kj.dialog({id:'dialog_pic',title:'选择图片',url:'common.php?app=other&app_act=attatch&url_objid=id_pic1_{$key}&callback=pic_callback',w:500,showbtnhide:false,top:0,type:'iframe'});">选择</a>&nbsp;&nbsp;[<a href="javascript:kj.remove('#id_pic_{$key}');">删除</a>]<br><iframe name="frm_pic1_{$item['pic_id']}" src="common.php?app=other&app_act=upload&callback=pic_upload&url_objid=id_pic1_{$key}" width="300px" height="30px" frameborder=0 scrolling="no"></iframe>
+</span><span class="x2"><img src="{fun_get::html_url($item)}" onclick="kj.pic.preview(this.src);" onerror="this.src = '{$temp_baseurl}common/images/no_pic.jpg'"></span>
+</li>
+{/foreach}
+</div>
+<div class="me_picbtn"><input type="button" name="btn_pic_add" value=" 添加照片 " onclick="thisjs.pic_add();"></div>
+</td></tr>
+</table>
+</div>
+<div style="float:left;height:50px;width:100%">&nbsp;</div>
+<div class="peFootAct" id="id_pFootAct">
+	<li>
+	<input type="button" name="dosubmit" class="btn-3" value="保存" onclick="thisjs.get_cont();shop.frm_ajax('save' , function(){thisjs.clear_cont();});">
+	</li>
+</div>
+<script>
+var thisjs = new function() {
+	//因为这里用ajax，fckeditor不会取到内容，所以自己取
+	this.get_cont = function() {
+		kj.obj("#id_goods_cont").value = objEditor.getContent(); //这就是内容
+	}
+	//ajax 提交后，还得清空内容
+	this.clear_cont = function() {
+		//只有当添加时才要清空
+		{if(empty($editinfo['goods_id']))}
+			objEditor.setContent('');
+		{/if}
+	}
+	this.pic_add = function(){
+		var arr = kj.obj("#id_pic1 li");
+		if(!arr) return;
+		if( !('length' in arr) || arr.length < 1 ) return;
+
+		var obj_div = document.createElement("li");
+		var str_id = "id" + Math.random();
+		str_id = str_id.replace(/\./g, "");
+		obj_div.id = str_id;
+		obj_div.className = arr[0].className;
+		obj_div.innerHTML = arr[0].innerHTML.replace(/THISID/g,obj_div.id);
+		kj.obj("#id_pic1").appendChild(obj_div);
+	}}
+//相册图片上传回调
+function pic_upload(o) {
+	o = kj.json(o);
+	if('url' in o && 'objid' in o) {
+		var obj = kj.obj("#" + o.objid);
+		if(!obj) return;
+		obj.value = o.url;
+		var obj_li = kj.parent("#"+o.objid , "li");
+		var obj_img = kj.obj("img" , obj_li);
+		if(obj_img.length>0) {
+			obj_img[0].src = kj.url_view(o.url);
+		}
+	}
+}
+//相册图片选择回调函数
+function pic_callback(o) {
+	if('objid' in o) {
+		var obj = kj.parent("#"+o.objid , "li");
+		var obj_img = kj.obj("img" , obj);
+		if(obj_img.length>0) {
+			obj_img[0].src = kj.url_view(kj.obj("#"+o.objid).value);
+		}
+	}
+	kj.dialog.close("#windialog_pic");
+}
+</script>
+{include(label.shop.footer)}
+</body>
+</html>
+<script src="/common/js/kj.pic.js"></script>
+<script src="/common/js/kj.alert.js"></script>
+<script src="shop.js"></script>
+<script src="shop.table.js"></script>

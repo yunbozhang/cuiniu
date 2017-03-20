@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>用户登录</title>
+<meta name="keywords" content="" />
+<link rel="stylesheet" type="text/css" href="/common/images/common.css"/>
+<link rel="stylesheet" type="text/css" href="images/css.css"/>
+<script src="{cfg:(dirpath,base)}/common.php?app=sys&app_act=web.config&app_ajax=1"></script>
+<script src="/common/js/kj.js"></script>
+<script src="/common/js/kj.rule.js"></script>
+<script src="/common/js/kj.ajax.js"></script>
+<script>
+var thisjs = new function() {
+	this.is_verify = {if(cls_obj::get("cls_user")->is_verifycode()==false)}false{else}true{/if};
+	this.on_login = function() {
+		if(document.frmlogin.uname.value=='') {
+			alert("账号不能为空");
+			document.frmlogin.uname.focus();
+			return false;
+		}
+		if(document.frmlogin.pwd.value=='') {
+			alert("密码不能为空");
+			document.frmlogin.pwd.focus();
+			return false;
+		}
+		kj.ajax.post(document.frmlogin , function(data) {
+			var obj_data=kj.json(data);
+			if(obj_data.isnull) {
+				alert("系统繁忙，请稍后再来试试");
+			} else {
+				if(obj_data.code == 0) {
+					var url = kj.obj("#id_jump_fromurl").value;
+					if(url) {
+						window.open(url , "_self");
+					} else {
+						window.open("{cfg:(dirpath,base)}/" , "_self");
+					}
+				} else {
+					if(thisjs.is_verify) {
+						thisjs.verify_refresh();
+						document.frmlogin.verifycode.value='';
+					}
+					if('show_code' in obj_data && obj_data.show_code == '1') {
+						thisjs.is_verify = true;
+						kj.show("#id_verify_code");
+					}
+					if('msg' in obj_data && obj_data.msg) {
+						alert(obj_data.msg);
+					} else {
+						alert("系统繁忙，请稍后再来试试");
+					}
+				}
+			}
+		});
+		return false;
+	}
+
+	this.show_verify = function() {
+		var objpic = kj.obj("#id_verify_pic");
+		if(objpic.src.indexOf("verifycode")<0) {
+			objpic.src = '{cfg:(url,base)}/common.php?app=sys&app_act=verifycode';
+			kj.handler(document.documentElement,"click",function(e){
+				var arr = new Array('img' , 'input');
+				var target = kj.event_target(e);
+				if(target.name!='verifycode' && target.id!='id_verify_pic') {
+					kj.hide('#id_verify');
+				}
+			});
+		}
+		kj.show('#id_verify');
+	}
+	this.verify_refresh = function() {
+		kj.obj("#id_verify_pic").src = kj.cfg('baseurl') + '/common.php?app=sys&app_act=verifycode&app_contenttype=img&app_rnd='+Math.random();
+	}
+}
+</script>
+</head>
+<body>
+<form name="frmlogin" method="post" action="?app={$app}&app_module={$app_module}&app_act=login.verify" onsubmit="return thisjs.on_login();">
+<div class="loginbg" id="id_loginbg">
+	<div class="main">
+		<div class="xbox">
+			<li><a href="http://www.kjcms.com" target="_blank"><img src="images/kjcms.png"></a></li>
+			<li class="xinput">
+			<span class="xname"><i></i><input type="text" name="uname" value="" placeholder="账号"></span>
+			<span class="xpwd"><i></i><input type="password" name="pwd" value="" placeholder="密码"></span>
+			<span class="xcode" id="id_verify_code"{if(cls_obj::get("cls_user")->is_verifycode()==false)} style="display:none"{/if}><input type="text" name="verifycode" onfocus="thisjs.show_verify('#id_verify');" placeholder="验证码"></span>
+			<div class="xcodepic" id="id_verify" style="display:none" onmouseover="kj.show(this);"><img src="" id="id_verify_pic" onclick="this.src='{cfg:(url,base)}/common.php?app=sys&app_act=verifycode&app_contenttype=img&app_rnd='+Math.random();"></div>
+			</li>
+			<li><input type="submit" name="btnok" value="登 录" class="xbtn"></li>
+			<li><label><input type="checkbox" name="autologin" value="1" checked>下次自动登录</label></li>
+		</div>
+	</div>
+</div>
+<input type="hidden" name="jump_fromurl" value="{$jump_fromurl}" id="id_jump_fromurl">
+</form>
+<script>
+kj.onload(function() {
+	var h = ( kj.h() - 450 ) / 2;
+	kj.set("#id_loginbg" , "style.marginTop" , h + "px");
+});
+</script>
+</body>
+</html>
